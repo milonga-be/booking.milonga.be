@@ -22,4 +22,12 @@ class Activity extends ActiveRecord
     public function getParticipations(){
         return $this->hasMany(Participation::className(), ['activity_id' => 'id']);
     }
+
+    /**
+     * Get the datetime as an object
+     * @return Datetime
+     */
+    public function getDatetimeObject(){
+        return new \Datetime($this->datetime);
+    }
 }

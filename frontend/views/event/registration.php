@@ -55,7 +55,7 @@ foreach($event->activityGroups as $group){ ?>
 			foreach ($activitiesArray as $activity) {
 				echo '<td>';
 				echo 	'<div class="checkbox col-md-10">';
-				echo 		'<label><input type="checkbox" class="form-check-input" name="activity[]" value="'.$activity->id.'"> <strong>'.$activity->title.'</strong></label>';
+				echo 		'<label><input type="checkbox" class="form-check-input" name="activity[]" value="'.$activity->id.'"> <em>'.$activity->datetimeObject->format('G:i').'</em> - <strong>'.$activity->title.'</strong></label>';
 				echo 	'</div>';
 				echo 	'<div class="col-md-2 price text-right">'.round($activity->price, 2).' €</div>';
 				echo '</td>';
@@ -66,6 +66,9 @@ foreach($event->activityGroups as $group){ ?>
 	}
 	?>
 	</table>
+	<p class="activity_group_description text-muted">
+		<?= nl2br($group->description)?>
+	</p>
 <?php
 }
 ?>
