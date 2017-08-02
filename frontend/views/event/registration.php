@@ -45,19 +45,19 @@ foreach($event->activityGroups as $group){ ?>
 				echo 	'<div class="checkbox col-md-10">';
 				echo 		'<label><input type="checkbox" class="form-check-input" name="activity[]" value="'.$activity->id.'"> <strong>'.$activity->title.'</strong> <span class="text-muted">'.$activity->description.'</span></label>';
 				echo 	'</div>';
-				echo 	'<div class="col-md-2 price text-right">'.round($activity->price, 2).' €</div>';
+				echo 	'<div class="col-md-2 price text-right">'.round($activity->price, 2).'€</div>';
 				echo '</td>';
 			}
 			echo '</tr>';
 		}else{
 			$datetime = new \Datetime($date);
-			echo '<tr><td>'.$datetime->format('l j M').'</td>';
+			echo '<tr><td>'.$datetime->format('l').'<br>'.$datetime->format('j M').'</td>';
 			foreach ($activitiesArray as $activity) {
 				echo '<td>';
 				echo 	'<div class="checkbox col-md-10">';
-				echo 		'<label><input type="checkbox" class="form-check-input" name="activity[]" value="'.$activity->id.'"> <em>'.$activity->datetimeObject->format('G:i').'</em> - <strong>'.$activity->title.'</strong></label>';
+				echo 		'<label><input type="checkbox" class="form-check-input" name="activity[]" value="'.$activity->id.'"> <em class="text-muted activity_hour">'.$activity->datetimeObject->format('G:i').'</em> <strong>'.$activity->title.'</strong></label>';
 				echo 	'</div>';
-				echo 	'<div class="col-md-2 price text-right">'.round($activity->price, 2).' €</div>';
+				echo 	'<div class="col-md-2 price text-right">'.round($activity->price, 2).'€</div>';
 				echo '</td>';
 			}
 			echo '</tr>';
@@ -66,7 +66,7 @@ foreach($event->activityGroups as $group){ ?>
 	}
 	?>
 	</table>
-	<p class="activity_group_description text-muted">
+	<p class="activity_group_description text-muted text-right">
 		<?= nl2br($group->description)?>
 	</p>
 <?php

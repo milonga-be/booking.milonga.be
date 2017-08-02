@@ -38,7 +38,8 @@ class Booking extends ActiveRecord
     if(parent::beforeSave($insert)){
 
         if($this->isNewRecord){
-            $this->uuid = uniqid();
+            $string = openssl_random_pseudo_bytes(4);
+            $this->uuid = strtoupper(strtr(base64_encode($string), '+/=', 'ABC'));
         }
         return true;
 

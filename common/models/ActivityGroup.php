@@ -20,7 +20,7 @@ class ActivityGroup extends ActiveRecord
      * @return ActiveQuery
      */
     public function getActivities(){
-        return $this->hasMany(Activity::className(), ['activity_group_id' => 'id']);
+        return $this->hasMany(Activity::className(), ['activity_group_id' => 'id'])->orderBy('datetime');
     }
 
     /**
