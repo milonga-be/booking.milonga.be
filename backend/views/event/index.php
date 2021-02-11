@@ -23,7 +23,7 @@ $this->title = Yii::t('booking', 'Your events');
     		'attribute' => 'title',
     		'format' => 'raw',
     		'value' => function($data){
-    			return Html::a($data->title, ['/event/update', 'uuid' => $data->id]);
+    			return Html::a($data->title, ['/event/update', 'uuid' => $data->uuid]);
     		},
     	],
         [

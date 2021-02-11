@@ -65,6 +65,13 @@ class EventController extends Controller
     public function actionCreate()
     {
         $model = new Event();
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            if($model->save()){
+                // Redirect to the list page
+                $this->redirect(['/event/index']);
+                return;
+            }
+        }
 
         return $this->render('create', ['model' => $model]);
     }

@@ -4,7 +4,6 @@ namespace backend\models;
 
 use Yii;
 use common\models\Event;
-use common\models\File;
 use yii\data\ActiveDataProvider;
 use yii\db\Expression;
 
@@ -14,7 +13,7 @@ class EventSearch extends Event{
 
 	public function rules(){
 		return [
-			[['title', ], 'safe']
+			[['title'], 'safe']
 		];
 	}
 

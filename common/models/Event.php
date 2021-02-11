@@ -7,9 +7,6 @@ use yii\db\ActiveRecord;
 use common\components\UTCDatetimeBehavior;
 use mootensai\behaviors\UUIDBehavior;
 
-/**
- * Login form
- */
 class Event extends ActiveRecord
 {
 	public static function tableName()
@@ -27,6 +24,24 @@ class Event extends ActiveRecord
                 'class' => UUIDBehavior::class,
                 'column' => 'uuid'
             ],
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function rules()
+    {
+        return [
+            [['user_id'], 'default', 'value' => function($model, $attribute) {
+                $user = Yii::$app->user->identity;
+                if($user)
+                    return $user->id;
+                return null;
+            }],
+            [['uuid'], 'safe'],
+            [['title'], 'string'],
+            [['start_date', 'end_date'], 'datetime', 'format' => 'php:Y-m-d H:i:s'],
         ];
     }
 
