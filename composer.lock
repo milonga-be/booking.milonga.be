@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a6fbf2dc0d62cd05b7b502f282732a9f",
+    "content-hash": "b4c056a7ae69f8fa908706b8f63445ca",
     "packages": [
         {
             "name": "bower-asset/bootstrap",
@@ -347,6 +347,61 @@
                 "yii2"
             ],
             "time": "2017-03-14T17:55:56+00:00"
+        },
+        {
+            "name": "mootensai/yii2-uuid-behavior",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mootensai/yii2-uuid-behavior.git",
+                "reference": "aaeb5c6268e77647af48ddc4757c5cb3fb726e55"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mootensai/yii2-uuid-behavior/zipball/aaeb5c6268e77647af48ddc4757c5cb3fb726e55",
+                "reference": "aaeb5c6268e77647af48ddc4757c5cb3fb726e55",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "mootensai\\behaviors\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Yohanes Candrajaya",
+                    "email": "moo.tensai@gmail.com",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Jiwantoro Ndaru",
+                    "email": "jiwanndaru@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Set UUID before save on Yii 2 models",
+            "homepage": "http://github.com/mootensai/yii2-uuid-behavior",
+            "keywords": [
+                "before",
+                "beforesave",
+                "save",
+                "uuid",
+                "yii2"
+            ],
+            "time": "2015-06-22T02:06:14+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",

@@ -28,14 +28,17 @@ AppAsset::register($this);
 <div class="wrap">
     <?php
     NavBar::begin([
-        'brandLabel' => 'My Company',
+        'brandLabel' => 'Tango Booking',
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
             'class' => 'navbar-inverse navbar-fixed-top',
         ],
     ]);
     $menuItems = [
-        ['label' => 'Home', 'url' => ['/site/index']],
+        ['label' => 'Dashboard', 'url' => ['/site/index']],
+        ['label' => 'Events', 'url' => ['/event/index']],
+        ['label' => 'Bookings', 'url' => ['/booking/index']],
+        ['label' => 'Participants', 'url' => ['/participant/index']],
     ];
     if (Yii::$app->user->isGuest) {
         $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
