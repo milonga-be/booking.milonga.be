@@ -103,19 +103,27 @@ class EventController extends Controller
 		$total_price = 0;
 		$counts_per_group = array();
 		$count = 0;
+		$event = Event::findOne($event_id);
+		$activity_ids = array_filter($activity_ids);
+
+		// Finding the reduction that apply on all the activity
+		$count = sizeof($activity_ids);
+		$reduce_every_price_reductions = $event->getAppliedReductions($count, Reduction::REDUCE_EVERY_PRICE);
+
 		foreach ($activity_ids as $activity_id) {
 			if($activity_id){
 				$activity = Activity::findOne($activity_id);
 				$total_price+= $activity->price;
-				$count++;
+				foreach ($reduce_every_price_reductions as $reduction) {
+					$total_price-=$reduction->value;
+				}
 			}
 		}
-		// Applying the reductions
-		$event = Event::findOne($event_id);
-		$reductions = $event->getAppliedReductions($count);
+		// Applying the percentag reductions 
+		$pct_reductions = $event->getAppliedReductions($count, Reduction::PCT_WHOLE_PRICE);
 		
-		foreach ($reductions as $reduction) {
-			$total_price = (100 - $reduction->percentage) * $total_price / 100;
+		foreach ($pct_reductions as $reduction) {
+			$total_price = (100 - $reduction->value) * $total_price / 100;
 		}
 
 		return round($total_price, 2, PHP_ROUND_HALF_DOWN);

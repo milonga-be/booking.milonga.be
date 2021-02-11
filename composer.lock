@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "f08e0abea71b3609f00e1c90c38a4e7d",
+    "content-hash": "a6fbf2dc0d62cd05b7b502f282732a9f",
     "packages": [
         {
             "name": "bower-asset/bootstrap",
@@ -313,6 +313,40 @@
                 "html"
             ],
             "time": "2017-03-13T06:30:53+00:00"
+        },
+        {
+            "name": "ilogs/TranslationBackend",
+            "version": "1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://marcel:R%3DcT-T%3BMpB%2F@gitlab.i-logs.com/ilogs/yii2-translation-backend.git",
+                "reference": "dfcc7cf633e4e014b90cef921b095856540f8307"
+            },
+            "require": {
+                "yiisoft/yii2": "*"
+            },
+            "type": "yii2-extension",
+            "autoload": {
+                "psr-4": {
+                    "ilogs\\TranslationBackend\\": "app/TranslationBackend/"
+                }
+            },
+            "license": [
+                "All Rights Reserved, i-logs SPRL 2015"
+            ],
+            "authors": [
+                {
+                    "name": "Jacquemin Patrick",
+                    "email": "dev@i-logs.com"
+                }
+            ],
+            "description": "Module to manage the translation with db",
+            "keywords": [
+                "TranslationBackend",
+                "ilogs",
+                "yii2"
+            ],
+            "time": "2017-03-14T17:55:56+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",

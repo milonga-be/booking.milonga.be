@@ -40,6 +40,10 @@ AppAsset::register($this);
     if (Yii::$app->user->isGuest) {
         $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
     } else {
+        $menuItems[] = [
+                           'label' => Yii::t('booking', 'Translations'),
+                           'url' => ['/TranslationBackend'],
+                           'active' => Yii::$app->controller->id == 'default'];
         $menuItems[] = '<li>'
             . Html::beginForm(['/site/logout'], 'post')
             . Html::submitButton(

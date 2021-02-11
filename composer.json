@@ -17,7 +17,8 @@
         "php": ">=5.4.0",
         "yiisoft/yii2": "~2.0.6",
         "yiisoft/yii2-bootstrap": "~2.0.0",
-        "yiisoft/yii2-swiftmailer": "~2.0.0"
+        "yiisoft/yii2-swiftmailer": "~2.0.0",
+        "ilogs/TranslationBackend": "^1.0"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",
@@ -38,5 +39,12 @@
     },
     "scripts": {
         "post-install-cmd": "php init --env=Development --overwrite=n"
-    }
+    },
+    "repositories": [
+        {
+            "type": "git",
+            "url":  "https://marcel:R%3DcT-T%3BMpB%2F@gitlab.i-logs.com/ilogs/yii2-translation-backend.git",
+          "reference": "1.0.2"
+        }
+    ]
 }

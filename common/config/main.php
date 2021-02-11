@@ -16,7 +16,7 @@ return [
 					'enableCaching' => true,
 					'sourceMessageTable' => 'source_message',
 					'messageTable' => 'message',
-					'sourceLanguage' => 'en-US',
+					'sourceLanguage' => 'en',
 					'on missingTranslation' => ['common\components\i18n\MissingTranslationHandler', 'load']
 				],
 			],

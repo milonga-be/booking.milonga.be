@@ -1,6 +1,7 @@
 html,
 body {
     height: 100%;
+    font-size:12px
 }
 
 .wrap {
@@ -134,5 +135,8 @@ h3{
     font-size:0.9em;
 }
 .activity_hour{
+    font-size:0.9em;
+}
+.activity_group_table{
     font-size:0.9em;
 }

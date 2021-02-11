@@ -20,4 +20,12 @@ class Partner extends ActiveRecord
             [['firstname', 'lastname'], 'required'],
         ];
     }
+
+    public function attributeLabels(){
+        return [
+            'firstname' => Yii::t('booking', 'Firstname'),
+            'lastname' => Yii::t('booking', 'Lastname'),
+            'email' => Yii::t('booking', 'Email'),
+        ];
+    }
 }

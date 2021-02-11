@@ -16,8 +16,8 @@ class m170531_145858_init_foreign_keys extends Migration
         $this->addForeignKey('fk-participation-participant2_id', 'participation', 'participant2_id', 'participant', 'id');
         $this->addForeignKey('fk-participant-activity_id', 'participant', 'activity_id', 'activity', 'id');
         $this->addForeignKey('fk-participant-couple_participant_id', 'participant', 'couple_participant_id', 'participant', 'id');
-        $this->addForeignKey('fk-booking_activities-booking_id', 'booking_activities', 'booking_id', 'booking', 'id');
-        $this->addForeignKey('fk-booking_activities-booking_participation_id', 'booking_activities', 'participation_id', 'participation', 'id');
+        $this->addForeignKey('fk-booking_participations-booking_id', 'booking_participations', 'booking_id', 'booking', 'id');
+        $this->addForeignKey('fk-booking_participations-booking_participation_id', 'booking_participations', 'participation_id', 'participation', 'id');
     }
 
     public function down()

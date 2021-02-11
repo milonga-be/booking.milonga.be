@@ -33,9 +33,20 @@ $this->registerJs(
 	?>
 </p>
 <?php
-foreach($event->activityGroups as $group){ ?>
-	<h3><?= $group->title ?></h3>
-	<table class="table table-bordered">
+foreach($event->activityGroups as $group){ 
+	$maxLine = 1;
+	foreach ($group->activitiesByDates as $activitiesArray) {
+		if(sizeof($activitiesArray) > $maxLine){
+			$maxLine = sizeof($activitiesArray);
+		}
+	}
+	$pctCell = round(100 / $maxLine, 2, PHP_ROUND_HALF_DOWN);
+?>
+	<h3><?= Yii::t('booking', $group->title) ?></h3>
+	<p class="activity_group_description text-muted text-left">
+		<?= nl2br(Yii::t('booking', $group->introduction))?>
+	</p>
+	<table class="table table-bordered activity_group_table">
 	<?php
 	foreach ($group->activitiesByDates as $date => $activitiesArray) {
 		if(!$date){
@@ -43,7 +54,7 @@ foreach($event->activityGroups as $group){ ?>
 			foreach ($activitiesArray as $activity) {
 				echo '<td>';
 				echo 	'<div class="checkbox col-md-10">';
-				echo 		'<label><input type="checkbox" class="form-check-input" name="activity[]" value="'.$activity->id.'"> <strong>'.$activity->title.'</strong> <span class="text-muted">'.$activity->description.'</span></label>';
+				echo 		'<label><input type="checkbox" class="form-check-input" name="activity[]" value="'.$activity->id.'"> <strong>'.Yii::t('booking', $activity->title).'</strong> <span class="text-muted">'.Yii::t('booking', $activity->description).'</span></label>';
 				echo 	'</div>';
 				echo 	'<div class="col-md-2 price text-right">'.round($activity->price, 2).'€</div>';
 				echo '</td>';
@@ -51,9 +62,9 @@ foreach($event->activityGroups as $group){ ?>
 			echo '</tr>';
 		}else{
 			$datetime = new \Datetime($date);
-			echo '<tr><td>'.$datetime->format('l').'<br>'.$datetime->format('j M').'</td>';
+			echo '<tr><td>'.Yii::t('booking', $datetime->format('l')).'<br>'.$datetime->format('j').' '.Yii::t('booking', $datetime->format('M')).'</td>';
 			foreach ($activitiesArray as $activity) {
-				echo '<td>';
+				echo '<td style="width:'.$pctCell.'%;">';
 				echo 	'<div class="checkbox col-md-10">';
 				echo 		'<label><input type="checkbox" class="form-check-input" name="activity[]" value="'.$activity->id.'"> <em class="text-muted activity_hour">'.$activity->datetimeObject->format('G:i').'</em> <strong>'.$activity->title.'</strong></label>';
 				echo 	'</div>';
@@ -66,8 +77,8 @@ foreach($event->activityGroups as $group){ ?>
 	}
 	?>
 	</table>
-	<p class="activity_group_description text-muted text-right">
-		<?= nl2br($group->description)?>
+	<p class="activity_group_description text-muted text-left">
+		<?= nl2br(Yii::t('booking', $group->description))?>
 	</p>
 <?php
 }

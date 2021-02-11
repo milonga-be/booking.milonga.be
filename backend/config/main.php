@@ -11,7 +11,13 @@ return [
     'basePath' => dirname(__DIR__),
     'controllerNamespace' => 'backend\controllers',
     'bootstrap' => ['log'],
-    'modules' => [],
+    'modules' => [
+        'TranslationBackend' => [
+            'class' => 'ilogs\TranslationBackend\TranslationBackend',
+            'translation_category'  => 'booking',
+            'languages' => ['fr', 'en'],
+        ],
+    ],
     'components' => [
         'request' => [
             'csrfParam' => '_csrf-backend',

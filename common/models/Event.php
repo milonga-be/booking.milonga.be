@@ -27,8 +27,9 @@ class Event extends ActiveRecord
      * Get the reductions applied
      * @return array
      */
-    public function getAppliedReductions($count){
+    public function getAppliedReductions($count, $type){
         $reductions = Reduction::find()->where(['event_id' => $this->id])
+            ->andWhere(['type' => $type])
             ->andWhere([
                 'OR',
                     ['AND', /* valid for a certain number of activities */
