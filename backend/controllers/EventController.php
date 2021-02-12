@@ -6,7 +6,9 @@ use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use common\models\Event;
+use common\models\Booking;
 use backend\models\EventSearch;
+use backend\models\BookingSearch;
 
 /**
  * Site controller
@@ -23,7 +25,7 @@ class EventController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['index', 'create', 'update', 'delete'],
+                        'actions' => ['index', 'view', 'create', 'update', 'delete'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -58,6 +60,20 @@ class EventController extends Controller
     }
 
     /**
+     * Show the details of a model
+     * @param  string $uuid Unique Id of the model
+     * @return string
+     */
+    public function actionView($uuid){
+        $model = Event::findOne(['uuid' => $uuid]);
+        $searchModel = new BookingSearch();
+        $searchModel->event_id = $model->id;
+        $bookingProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('view', ['model' => $model, 'bookingProvider' => $bookingProvider]);
+    }
+
+    /**
      * Create a new model
      *
      * @return string
@@ -74,5 +90,24 @@ class EventController extends Controller
         }
 
         return $this->render('create', ['model' => $model]);
+    }
+
+    /**
+     * Update a model
+     *
+     * @return string
+     */
+    public function actionUpdate($uuid)
+    {
+        $model = Event::findOne(['uuid' => $uuid]);
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            if($model->save()){
+                // Redirect to the list page
+                $this->redirect(['/event/index']);
+                return;
+            }
+        }
+
+        return $this->render('update', ['model' => $model]);
     }
 }

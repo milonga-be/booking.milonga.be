@@ -28,7 +28,7 @@ AppAsset::register($this);
 <div class="wrap">
     <?php
     NavBar::begin([
-        'brandLabel' => 'Tango Booking',
+        'brandLabel' => 'BTF Reservations',
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
             'class' => 'navbar-inverse navbar-fixed-top',
@@ -37,7 +37,7 @@ AppAsset::register($this);
     $menuItems = [
         ['label' => 'Dashboard', 'url' => ['/site/index']],
         ['label' => 'Events', 'url' => ['/event/index']],
-        ['label' => 'Bookings', 'url' => ['/booking/index']],
+        ['label' => 'Reservations', 'url' => ['/booking/index']],
         ['label' => 'Participants', 'url' => ['/participant/index']],
     ];
     if (Yii::$app->user->isGuest) {
