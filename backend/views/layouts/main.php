@@ -37,8 +37,6 @@ AppAsset::register($this);
     $menuItems = [
         ['label' => 'Dashboard', 'url' => ['/site/index']],
         ['label' => 'Events', 'url' => ['/event/index']],
-        ['label' => 'Reservations', 'url' => ['/booking/index']],
-        ['label' => 'Participants', 'url' => ['/participant/index']],
     ];
     if (Yii::$app->user->isGuest) {
         $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
@@ -63,7 +61,7 @@ AppAsset::register($this);
     NavBar::end();
     ?>
 
-    <div class="container">
+    <div class="container content-container">
         <?= Breadcrumbs::widget([
             'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
         ]) ?>

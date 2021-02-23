@@ -2,7 +2,7 @@
 use yii\widgets\ActiveForm;
 use yii\helpers\Url;
 
-$this->title = Yii::t('booking', 'Create Event');
+$this->title = Yii::t('booking', 'Create Activity');
 ?>
 <h1><?= $this->title ?></h1>
 <?php
@@ -13,7 +13,7 @@ $form = ActiveForm::begin([
 echo $this->render('_form', ['model' => $model, 'form' => $form]);
 ?>
 <p class="text-right buttons">
-    <a href="<?= Url::to(['event/index']) ?>" class="btn btn-default btn-md"><?= Yii::t('booking', 'Cancel')?></a>
+    <a href="<?= Url::to(['event/view', 'uuid' => $event->uuid]) ?>" class="btn btn-default btn-md"><?= Yii::t('booking', 'Cancel')?></a>
 	<button class="btn btn-primary btn-md"><?= Yii::t('booking', 'Create')?></button>
 </p>
 <?php

@@ -3,16 +3,15 @@
 namespace backend\models;
 
 use Yii;
-use common\models\Event;
-use common\models\Booking;
+use common\models\Activity;
 use yii\data\ActiveDataProvider;
 use yii\db\Expression;
 
-class BookingSearch extends Booking{
+class ActivitySearch extends Activity{
 
 	public function rules(){
 		return [
-			[['email'], 'safe']
+			[['title'], 'safe']
 		];
 	}
 
@@ -53,8 +52,8 @@ class BookingSearch extends Booking{
         if(!empty($this->event_id)){
             $query->andWhere(['=', 'event_id', $this->event_id]);
         }
-        if(!empty($this->email)){
-            $query->andWhere(['LIKE', 'email', $this->email]);
+        if(!empty($this->title)){
+            $query->andWhere(['LIKE', 'title', $this->title]);
         }
         
       

@@ -4,6 +4,9 @@ namespace common\models;
 use Yii;
 use yii\base\Model;
 use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
+use common\components\UTCDatetimeBehavior;
+use mootensai\behaviors\UUIDBehavior;
 
 /**
  * Login form
@@ -15,9 +18,22 @@ class Booking extends ActiveRecord
         return 'booking';
     }
 
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => UTCDatetimeBehavior::class,
+            ],
+            [
+                'class' => UUIDBehavior::class,
+                'column' => 'uuid'
+            ],
+        ];
+    }
+
     public function rules(){
         return [
-            [['total_price', 'firstname', 'lastname', 'email'], 'required'],
+            [['firstname', 'lastname', 'email'], 'required'],
         ];
     }
 
@@ -26,26 +42,37 @@ class Booking extends ActiveRecord
      * @return ActiveQuery
      */
     public function getParticipations(){
-        return $this->hasMany(Participation::className(), ['id' => 'participation_id'])
-            ->viaTable('booking_participations', ['booking_id' => 'id']);
+        return $this->hasMany(Participation::className(), ['booking_id' => 'id']);
     }
 
     /**
-     * Generates a unique id for communication with the client
-     * @return boolean
+     * Describe the relation between a booking and its event
+     * @return ActiveQuery
      */
-    public function beforeSave($insert){
-    if(parent::beforeSave($insert)){
-
-        if($this->isNewRecord){
-            $string = openssl_random_pseudo_bytes(4);
-            $this->uuid = strtoupper(strtr(base64_encode($string), '+/=', 'ABC'));
-        }
-        return true;
-
-    }else{
-        return false;
+    public function getEvent(){
+        return $this->hasOne(Event::className(), ['event_id' => 'id']);
     }
 
-}
+    /**
+     * Readable name for the booker
+     * @return string
+     */
+    public function getName(){
+        $name = '';
+        if($this->firstname){
+            $name.=$this->firstname.' ';
+        }
+        if($this->lastname){
+            $name.=$this->lastname;
+        }
+        return $name;
+    }
+
+    /**
+     * Get the list of activities for a booking
+     * @return array
+     */
+    public function getActivitiesList(){
+        return ArrayHelper::map(Activity::find()->where(['event_id' => $this->event_id])->asArray()->all() , 'uuid', 'title');
+    }
 }

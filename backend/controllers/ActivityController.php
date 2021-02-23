@@ -6,15 +6,13 @@ use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use common\models\Event;
-use common\models\Booking;
-use backend\models\EventSearch;
-use backend\models\BookingSearch;
+use common\models\Activity;
 use backend\models\ActivitySearch;
 
 /**
  * Site controller
  */
-class EventController extends Controller
+class ActivityController extends Controller
 {
     /**
      * @inheritdoc
@@ -48,13 +46,13 @@ class EventController extends Controller
     }
 
     /**
-     * Displays event list.
+     * Displays booking list.
      *
      * @return string
      */
     public function actionIndex()
     {
-        $searchModel = new EventSearch();
+        $searchModel = new ActivitySearch();
         $provider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', ['searchModel' => $searchModel, 'provider' => $provider]);
@@ -66,19 +64,9 @@ class EventController extends Controller
      * @return string
      */
     public function actionView($uuid){
-        $model = Event::findOne(['uuid' => $uuid]);
+        $model = Activity::findOne(['uuid' => $uuid]);
 
-        // Reservations
-        $searchModel = new BookingSearch();
-        $searchModel->event_id = $model->id;
-        $bookingProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-        // Activities
-        $searchModel = new ActivitySearch();
-        $searchModel->event_id = $model->id;
-        $activityProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-        return $this->render('view', ['model' => $model, 'bookingProvider' => $bookingProvider, 'activityProvider' => $activityProvider]);
+        return $this->render('view', ['model' => $model]);
     }
 
     /**
@@ -86,18 +74,20 @@ class EventController extends Controller
      *
      * @return string
      */
-    public function actionCreate()
+    public function actionCreate($event_uuid)
     {
-        $model = new Event();
+        $model = new Activity();
+        $event = Event::findOne(['uuid' => $event_uuid]);
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            $model->event_id = $event->id;
             if($model->save()){
                 // Redirect to the list page
-                $this->redirect(['/event/index']);
+                $this->redirect(['/event/view', 'uuid' => $event->uuid]);
                 return;
             }
         }
 
-        return $this->render('create', ['model' => $model]);
+        return $this->render('create', ['model' => $model, 'event' => $event]);
     }
 
     /**
@@ -107,16 +97,16 @@ class EventController extends Controller
      */
     public function actionUpdate($uuid)
     {
-        $model = Event::findOne(['uuid' => $uuid]);
+        $model = Activity::findOne(['uuid' => $uuid]);
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             if($model->save()){
                 // Redirect to the list page
-                $this->redirect(['/event/index']);
+                $this->redirect(['/event/view', 'uuid' => $model->event->uuid]);
                 return;
             }
         }
 
-        return $this->render('update', ['model' => $model]);
+        return $this->render('update', ['model' => $model, 'event' => $model->event]);
     }
 
     /**
@@ -126,9 +116,10 @@ class EventController extends Controller
      */
     public function actionDelete($uuid)
     {
-        $model = Event::findOne(['uuid' => $uuid]);
+        $model = Activity::findOne(['uuid' => $uuid]);
+        $event = $model->event;
         $model->delete();
 
-        $this->redirect(['event/index']);
+        $this->redirect(['event/view', 'uuid' => $event->uuid]);
     }
 }

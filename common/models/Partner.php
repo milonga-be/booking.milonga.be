@@ -10,14 +10,15 @@ use yii\db\ActiveRecord;
  */
 class Partner extends ActiveRecord
 {
-	public static function tableName()
+    public static function tableName()
     {
-        return 'participant';
+        return 'partner';
     }
 
     public function rules(){
         return [
-            [['firstname', 'lastname'], 'required'],
+            [['firstname', 'lastname','email'], 'required'],
+            [['email'], 'email'],
         ];
     }
 
@@ -25,7 +26,21 @@ class Partner extends ActiveRecord
         return [
             'firstname' => Yii::t('booking', 'Firstname'),
             'lastname' => Yii::t('booking', 'Lastname'),
-            'email' => Yii::t('booking', 'Email'),
         ];
+    }
+
+    /**
+     * Readable name for the participant
+     * @return string
+     */
+    public function getName(){
+        $name = '';
+        if($this->firstname){
+            $name.=$this->firstname.' ';
+        }
+        if($this->lastname){
+            $name.=$this->lastname;
+        }
+        return $name;
     }
 }

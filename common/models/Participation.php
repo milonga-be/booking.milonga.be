@@ -17,8 +17,8 @@ class Participation extends ActiveRecord
 
     public function rules(){
         return [
-            [['activity_id', 'participant1_id'], 'required'],
-            [['activity_id', 'participant1_id','participant2_id'], 'integer'],
+            [['activity_id', 'booking_id'], 'required'],
+            [['activity_id', 'booking_id','partner_id'], 'integer'],
         ];
     }
 
@@ -28,5 +28,21 @@ class Participation extends ActiveRecord
      */
     public function getActivity(){
         return $this->hasOne(Activity::className(), ['id' => 'activity_id']);
+    }
+
+    /**
+     * Describe the relation between a Participation and its Booking
+     * @return ActiveQuery
+     */
+    public function getBooking(){
+        return $this->hasOne(Booking::className(), ['id' => 'booking_id']);
+    }
+
+    /**
+     * Describe the relation between a Participation and its Partner
+     * @return ActiveQuery
+     */
+    public function getPartner(){
+        return $this->hasOne(Partner::className(), ['id' => 'partner_id']);
     }
 }
