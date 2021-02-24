@@ -4,6 +4,8 @@ namespace common\models;
 use Yii;
 use yii\base\Model;
 use yii\db\ActiveRecord;
+use common\components\UTCDatetimeBehavior;
+use mootensai\behaviors\UUIDBehavior;
 
 /**
  * Login form
@@ -13,6 +15,19 @@ class Participation extends ActiveRecord
 	public static function tableName()
     {
         return 'participation';
+    }
+
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => UTCDatetimeBehavior::class,
+            ],
+            [
+                'class' => UUIDBehavior::class,
+                'column' => 'uuid'
+            ],
+        ];
     }
 
     public function rules(){

@@ -34,6 +34,7 @@ class Activity extends ActiveRecord
         return [
             [['title', 'datetime', 'price'], 'safe'],
             [['title'], 'required'],
+            [['couple_activity'], 'in', 'range' => [0, 1]],
         ];
     }
 

@@ -23,6 +23,7 @@ $this->title = $model->title;
         'title', 
         'price:currency', 
         'datetime:datetime', 
+        'couple_activity:boolean', 
     ],
 ])?>
 <?php

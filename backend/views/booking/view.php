@@ -64,6 +64,16 @@ $participationsProvider = new ArrayDataProvider([
     			return Html::a($data->activity->title, ['/activity/view', 'uuid' => $data->activity->uuid]);
     		},
     	],
+    	[
+    		'attribute' => 'partner.name',
+    		'format' => 'raw',
+    		'value' => function($data){
+    			if(isset($data->partner))
+    				return Html::a($data->partner->name, ['/partner/update', 'uuid' => $data->partner->uuid]);
+    			else
+    				return '-';
+    		},
+    	],
     ]
  ])
 ?>

@@ -13,7 +13,7 @@ use common\models\Activity;
 /**
  * Site controller
  */
-class ParticipationController extends Controller
+class PartnerController extends Controller
 {
     /**
      * @inheritdoc
@@ -52,7 +52,7 @@ class ParticipationController extends Controller
      * @return string
      */
     public function actionView($uuid){
-        $model = Participation::findOne(['uuid' => $uuid]);
+        $model = Partner::findOne(['uuid' => $uuid]);
 
         return $this->render('view', ['model' => $model]);
     }
@@ -65,20 +65,23 @@ class ParticipationController extends Controller
     public function actionCreate($booking_uuid, $activity_uuid)
     {
         $participation = new Participation();
+        $model = new Partner();
         $booking = Booking::findOne(['uuid' => $booking_uuid]);
         $activity = Activity::findOne(['uuid' => $activity_uuid]);
-        if($activity->couple_activity){
-            return $this->redirect(['partner/create', 'booking_uuid' => $booking_uuid, 'activity_uuid' => $activity_uuid]);
-        }
-        if($booking && $activity){
+
+        if ($booking && $activity && $model->load(Yii::$app->request->post()) && $model->validate()) {
+            $model->save();
             $participation->booking_id = $booking->id;
             $participation->activity_id = $activity->id;
+            $participation->partner_id = $model->id;
             if($participation->validate()){
                 $participation->save();
-
+                return $this->redirect(['/booking/view', 'uuid' => $booking->uuid]);
             }
         }
-        $this->redirect(['/booking/view', 'uuid' => $booking->uuid]);
+        
+        return $this->render('create', ['model' => $model, 'activity' => $activity, 'booking' => $booking]);
+        
     }
 
     /**
@@ -88,29 +91,16 @@ class ParticipationController extends Controller
      */
     public function actionUpdate($uuid)
     {
-        $model = Participation::findOne(['uuid' => $uuid]);
+        $model = Partner::findOne(['uuid' => $uuid]);
+        $booking = $model->participation->booking;
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             if($model->save()){
                 // Redirect to the list page
-                $this->redirect(['/activity/view', 'uuid' => $model->activity->uuid]);
+                $this->redirect(['/booking/view', 'uuid' => $booking->uuid]);
                 return;
             }
         }
 
-        return $this->render('update', ['model' => $model, 'activity' => $model->activity]);
-    }
-
-    /**
-     * Delete a model
-     *
-     * @return string
-     */
-    public function actionDelete($uuid)
-    {
-        $model = Participation::findOne(['uuid' => $uuid]);
-        $activity = $model->activity;
-        $model->delete();
-
-        $this->redirect(['activity/view', 'uuid' => $activity->uuid]);
+        return $this->render('update', ['model' => $model, 'booking' => $booking]);
     }
 }
