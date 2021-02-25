@@ -2,7 +2,21 @@
 use yii\widgets\ActiveForm;
 use yii\helpers\Url;
 
-$this->title = Yii::t('booking', 'Update Reservation');
+$this->title = Yii::t('booking', 'Update');
+$this->params['breadcrumbs'] = [
+    [
+        'label' => $model->event->title,
+        'url' => ['event/view', 'uuid' => $model->event->uuid]
+    ],
+    [
+        'label' => Yii::t('booking', 'Reservations'),
+        'url' => ['booking/index', 'event_uuid' => $model->event->uuid]
+    ],
+    [
+        'label' => $model->name,
+        'url' => ['booking/view', 'uuid' => $model->uuid]
+    ]
+];
 ?>
 <h1><?= $this->title ?></h1>
 <?php

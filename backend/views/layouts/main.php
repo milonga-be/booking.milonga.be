@@ -35,7 +35,6 @@ AppAsset::register($this);
         ],
     ]);
     $menuItems = [
-        ['label' => 'Dashboard', 'url' => ['/site/index']],
         ['label' => 'Events', 'url' => ['/event/index']],
     ];
     if (Yii::$app->user->isGuest) {
@@ -64,6 +63,7 @@ AppAsset::register($this);
     <div class="container content-container">
         <?= Breadcrumbs::widget([
             'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
+            'homeLink' => ['label' => Yii::t('booking', 'Events'), 'url' => ['event/index']]
         ]) ?>
         <?= Alert::widget() ?>
         <?= $content ?>

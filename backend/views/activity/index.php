@@ -3,14 +3,24 @@ use yii\grid\GridView;
 use yii\helpers\Url;
 use yii\helpers\Html;
 
-$this->title = Yii::t('booking', 'Events');
+$this->title = Yii::t('booking', 'Activities');
+$this->params['breadcrumbs'] = [
+    [
+        'label' => $event->title,
+        'url' => ['event/view', 'uuid' => $event->uuid]
+    ],
+    [
+        'label' => $this->title,
+        'url' => ['activity/index', 'event_uuid' => $event->uuid]
+    ]
+];
 ?>
 <div class="row">
 	<div class="col-md-10">
 		<h1><?= $this->title ?></h1>
 	</div>
 	<div class="col-md-2 text-right">
-		<a class="btn btn-md btn-default" href="<?= Url::to(['/event/create'])?>"><?= Yii::t('booking', 'Add')?></a>
+		<a class="btn btn-md btn-default" href="<?= Url::to(['/activity/create', 'event_uuid' => $event->uuid])?>"><?= Yii::t('booking', 'New')?></a>
 	</div>
 </div>
 <?= GridView::widget([
@@ -24,7 +34,7 @@ $this->title = Yii::t('booking', 'Events');
     		'attribute' => 'title',
     		'format' => 'raw',
     		'value' => function($data){
-    			return Html::a($data->title, ['/event/view', 'uuid' => $data->uuid]);
+    			return Html::a($data->title, ['/activity/view', 'uuid' => $data->uuid]);
     		},
     	],
         [

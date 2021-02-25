@@ -50,7 +50,7 @@ class Booking extends ActiveRecord
      * @return ActiveQuery
      */
     public function getEvent(){
-        return $this->hasOne(Event::className(), ['event_id' => 'id']);
+        return $this->hasOne(Event::className(), ['id' => 'event_id']);
     }
 
     /**

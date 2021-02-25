@@ -10,6 +10,7 @@ return [
     'id' => 'app-backend',
     'basePath' => dirname(__DIR__),
     'controllerNamespace' => 'backend\controllers',
+    'defaultRoute' => 'event/index',
     'bootstrap' => ['log'],
     'modules' => [
         'TranslationBackend' => [

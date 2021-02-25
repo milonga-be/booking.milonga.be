@@ -89,7 +89,7 @@ class BookingController extends Controller
             }
         }
 
-        return $this->render('create', ['model' => $model]);
+        return $this->render('create', ['model' => $model, 'event' => $event]);
     }
 
     /**

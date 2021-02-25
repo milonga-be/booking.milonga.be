@@ -6,15 +6,22 @@ use yii\grid\GridView;
 use yii\data\ArrayDataProvider;
 
 $this->title = $model->title;
+$this->params['breadcrumbs'] = [
+    [
+        'label' => $model->event->title,
+        'url' => ['event/view', 'uuid' => $model->event->uuid]
+    ],
+    [
+        'label' => Yii::t('booking', 'Activities'),
+        'url' => ['activity/index', 'event_uuid' => $model->event->uuid]
+    ],
+    [
+        'label' => $this->title,
+        'url' => ['activity/view', 'uuid' => $model->uuid]
+    ]
+];
 ?>
-<div class="row">
-	<div class="col-md-10">
-		<h1><?= $this->title ?></h1>
-	</div>
-	<div class="col-md-2 text-right">
-		<a href="<?= Url::to(['activity/update', 'uuid' => $model->uuid]) ?>" class="btn btn-md btn-default"><?= Yii::t('booking', 'Update') ?></a>
-	</div>
-</div>
+<h1><?= $this->title ?></h1>
 <?= DetailView::widget([
     'model' => $model,
     'attributes' => [
@@ -26,6 +33,9 @@ $this->title = $model->title;
         'couple_activity:boolean', 
     ],
 ])?>
+<p class="text-right">
+    <a href="<?= Url::to(['activity/update', 'uuid' => $model->uuid]) ?>" class="btn btn-md btn-default"><?= Yii::t('booking', 'Update') ?></a>
+</p>
 <?php
 $participationsProvider = new ArrayDataProvider([
     'allModels' => $model->participations,

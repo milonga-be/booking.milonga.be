@@ -50,12 +50,14 @@ class ActivityController extends Controller
      *
      * @return string
      */
-    public function actionIndex()
+    public function actionIndex($event_uuid)
     {
+        $event = Event::findOne(['uuid' => $event_uuid]);
         $searchModel = new ActivitySearch();
+        $searchModel->event_id = $event->id;
         $provider = $searchModel->search(Yii::$app->request->queryParams);
 
-        return $this->render('index', ['searchModel' => $searchModel, 'provider' => $provider]);
+        return $this->render('index', ['searchModel' => $searchModel, 'provider' => $provider, 'event' => $event]);
     }
 
     /**
