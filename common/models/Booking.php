@@ -53,6 +53,20 @@ class Booking extends ActiveRecord
         return $this->hasOne(Event::className(), ['id' => 'event_id']);
     }
 
+    public function beforeDelete(){
+        if (!parent::beforeDelete()) {
+            return false;
+        }
+        if(sizeof($this->participations)){
+            foreach ($this->participations as $participation) {
+                if(!$participation->delete()){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     /**
      * Readable name for the booker
      * @return string

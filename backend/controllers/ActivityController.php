@@ -84,7 +84,7 @@ class ActivityController extends Controller
             $model->event_id = $event->id;
             if($model->save()){
                 // Redirect to the list page
-                $this->redirect(['/event/view', 'uuid' => $event->uuid]);
+                $this->redirect(['/activity/index', 'event_uuid' => $event->uuid]);
                 return;
             }
         }
@@ -103,7 +103,7 @@ class ActivityController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             if($model->save()){
                 // Redirect to the list page
-                $this->redirect(['/event/view', 'uuid' => $model->event->uuid]);
+                $this->redirect(['/activity/index', 'event_uuid' => $model->event->uuid]);
                 return;
             }
         }

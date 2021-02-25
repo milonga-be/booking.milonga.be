@@ -4,7 +4,7 @@ use kartik\widgets\DateTimePicker;
 $datepicker_options = [
 	'pluginOptions' => [
         'autoclose'=>true,
-        'format' => 'dd-mm-yyyy hh:ii',
+        'format' => 'yyyy-mm-dd hh:ii',
         'weekStart' => 1
     ]
 ];

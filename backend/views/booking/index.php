@@ -45,6 +45,13 @@ $this->params['breadcrumbs'] = [
             'contentOptions' => ['class' => 'hide-xs text-muted'],
             'headerOptions' => ['class' => 'hide-xs']
         ],
+        [
+            'attribute' => '',
+            'format' => 'raw',
+            'value' => function ($data) {                      
+                return '<a onclick="return confirm(\''.Yii::t('booking', 'Do you really want to delete this item ?').'\')" class="text-danger" href="'.Url::to(['booking/delete', 'uuid' => $data->uuid]).'">x</a>';
+            },
+        ],
     ]
  ])
 ?>

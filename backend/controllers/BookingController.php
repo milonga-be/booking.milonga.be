@@ -119,8 +119,9 @@ class BookingController extends Controller
     public function actionDelete($uuid)
     {
         $model = Booking::findOne(['uuid' => $uuid]);
+        $event = $model->event;
         $model->delete();
 
-        $this->redirect(['booking/index']);
+        $this->redirect(['booking/index', 'event_uuid' => $event->uuid]);
     }
 }

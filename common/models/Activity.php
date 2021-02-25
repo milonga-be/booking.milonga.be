@@ -54,6 +54,20 @@ class Activity extends ActiveRecord
         return new \Datetime($this->datetime);
     }
 
+    public function beforeDelete(){
+        if (!parent::beforeDelete()) {
+            return false;
+        }
+        if(sizeof($this->participations)){
+            foreach ($this->participations as $participation) {
+                if(!$participation->delete()){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     /**
      * Describe the relation between an activity and its event
      * @return ActiveQuery

@@ -10,7 +10,7 @@ $this->title = Yii::t('booking', 'Events');
 		<h1><?= $this->title ?></h1>
 	</div>
 	<div class="col-md-2 text-right">
-		<a class="btn btn-md btn-default" href="<?= Url::to(['/event/create'])?>"><?= Yii::t('booking', 'Add')?></a>
+		<a class="btn btn-md btn-default" href="<?= Url::to(['/event/create'])?>"><?= Yii::t('booking', 'New')?></a>
 	</div>
 </div>
 <?= GridView::widget([
@@ -32,6 +32,13 @@ $this->title = Yii::t('booking', 'Events');
             'format' => ['date', 'php:d M, H:i'],
             'contentOptions' => ['class' => 'hide-xs text-muted'],
             'headerOptions' => ['class' => 'hide-xs']
+        ],
+        [
+            'attribute' => '',
+            'format' => 'raw',
+            'value' => function ($data) {                      
+                return '<a onclick="return confirm(\''.Yii::t('booking', 'Do you really want to delete this item ?').'\')" class="text-danger" href="'.Url::to(['event/delete', 'uuid' =>$data->uuid]).'">x</a>';
+            },
         ],
     ]
  ])

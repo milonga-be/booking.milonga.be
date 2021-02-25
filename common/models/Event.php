@@ -41,7 +41,7 @@ class Event extends ActiveRecord
             }],
             [['uuid'], 'safe'],
             [['title'], 'string'],
-            [['start_date', 'end_date'], 'datetime', 'format' => 'php:Y-m-d H:i:s'],
+            [['start_date', 'end_date'], 'datetime', 'format' => 'php:Y-m-d'],
         ];
     }
 
@@ -83,6 +83,43 @@ class Event extends ActiveRecord
                     ]
             ])->all();
         return $reductions;                
+    }
+
+    public function beforeDelete(){
+        if (!parent::beforeDelete()) {
+            return false;
+        }
+        if(sizeof($this->activities)){
+            foreach ($this->activities as $activity) {
+                if(!$activity->delete()){
+                    return false;
+                }
+            }
+        }
+        if(sizeof($this->bookings)){
+            foreach ($this->bookings as $booking) {
+                if(!$booking->delete()){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Describe the relation between an event and its activities
+     * @return ActiveQuery
+     */
+    public function getActivities(){
+        return $this->hasMany(Activity::className(), ['event_id' => 'id']);
+    }
+
+    /**
+     * Describe the relation between an event and its bookings
+     * @return ActiveQuery
+     */
+    public function getBookings(){
+        return $this->hasMany(Booking::className(), ['event_id' => 'id']);
     }
 
     /**

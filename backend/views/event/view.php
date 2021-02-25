@@ -25,8 +25,8 @@ $this->params['breadcrumbs'] = [
     'model' => $model,
     'attributes' => [
         'title', 
-        'start_date:datetime', // creation date formatted as datetime
-        'end_date:datetime', // creation date formatted as datetime
+        'start_date:date', // creation date formatted as datetime
+        'end_date:date', // creation date formatted as datetime
     ],
 ])?>
 <p class="text-right">
