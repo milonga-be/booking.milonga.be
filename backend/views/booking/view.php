@@ -49,7 +49,7 @@ $participationsProvider = new ArrayDataProvider([
 	<div class="col-md-2 text-right">
 		<div class="btn-group">
 			<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    			Add <span class="caret"></span>
+    			<?= Yii::t('booking', 'New')?> <span class="caret"></span>
   			</button>
 			<ul class="dropdown-menu">
 				<?php $activities = $model->getActivitiesList(); ?>
