@@ -103,7 +103,7 @@ class BookingController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             if($model->save()){
                 // Redirect to the list page
-                $this->redirect(['/booking/index']);
+                $this->redirect(['/booking/view', 'event_uuid' => $model->event->uuid, 'uuid' => $model->uuid]);
                 return;
             }
         }

@@ -34,6 +34,7 @@ class Booking extends ActiveRecord
     public function rules(){
         return [
             [['firstname', 'lastname', 'email'], 'required'],
+            [['total_price'], 'number'],
         ];
     }
 
