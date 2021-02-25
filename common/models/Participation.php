@@ -33,8 +33,19 @@ class Participation extends ActiveRecord
     public function rules(){
         return [
             [['activity_id', 'booking_id'], 'required'],
-            [['activity_id', 'booking_id','partner_id'], 'integer'],
+            [['activity_id', 'booking_id'], 'integer'],
         ];
+    }
+
+    public function beforeDelete(){
+        if (!parent::beforeDelete()) {
+            return false;
+        }
+        if(isset($this->partner)){
+            if(!$this->partner->delete())
+                return false;
+        }
+        return true;
     }
 
     /**
@@ -58,6 +69,6 @@ class Participation extends ActiveRecord
      * @return ActiveQuery
      */
     public function getPartner(){
-        return $this->hasOne(Partner::className(), ['id' => 'partner_id']);
+        return $this->hasOne(Partner::className(), ['participation_id' => 'id']);
     }
 }

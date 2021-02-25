@@ -108,9 +108,9 @@ class ParticipationController extends Controller
     public function actionDelete($uuid)
     {
         $model = Participation::findOne(['uuid' => $uuid]);
-        $activity = $model->activity;
+        $booking = $model->booking;
         $model->delete();
 
-        $this->redirect(['activity/view', 'uuid' => $activity->uuid]);
+        $this->redirect(['booking/view', 'uuid' => $booking->uuid]);
     }
 }

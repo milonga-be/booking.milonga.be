@@ -74,6 +74,13 @@ $participationsProvider = new ArrayDataProvider([
     				return '-';
     		},
     	],
+    	[
+		    'attribute' => 'Delete',
+		    'format' => 'raw',
+		    'value' => function ($data) {                      
+		        return '<a class="text-danger" href="'.Url::to(['participation/delete', 'uuid' =>$data->uuid]).'">x</a>';
+		    },
+		],
     ]
  ])
 ?>

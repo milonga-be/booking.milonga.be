@@ -70,12 +70,11 @@ class PartnerController extends Controller
         $activity = Activity::findOne(['uuid' => $activity_uuid]);
 
         if ($booking && $activity && $model->load(Yii::$app->request->post()) && $model->validate()) {
-            $model->save();
             $participation->booking_id = $booking->id;
             $participation->activity_id = $activity->id;
-            $participation->partner_id = $model->id;
-            if($participation->validate()){
-                $participation->save();
+            if($participation->validate() && $participation->save()){
+                $model->participation_id = $participation->id;
+                $model->save();
                 return $this->redirect(['/booking/view', 'uuid' => $booking->uuid]);
             }
         }

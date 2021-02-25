@@ -49,7 +49,7 @@ class Partner extends ActiveRecord
      * @return ActiveQuery
      */
     public function getParticipation(){
-        return $this->hasOne(Participation::className(), ['partner_id' => 'id']);
+        return $this->hasOne(Participation::className(), ['id' => 'participation_id']);
     }
 
     /**
