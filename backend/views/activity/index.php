@@ -45,8 +45,15 @@ $this->params['breadcrumbs'] = [
         ],
         [
             'attribute' => 'activityGroup_title',
-            'label' => 'Type',
+            'label' => Yii::t('booking', 'Type'),
             'value' => 'activityGroup.title'
+        ],
+        [
+            'attribute' => '',
+            'format' => 'raw',
+            'value' => function ($data) {                      
+                return '<a onclick="return confirm(\''.Yii::t('booking', 'Do you really want to delete this item ?').'\')" class="text-danger" href="'.Url::to(['activity/delete', 'uuid' => $data->uuid]).'">x</a>';
+            },
         ]
     ]
  ])

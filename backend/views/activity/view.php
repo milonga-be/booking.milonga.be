@@ -26,7 +26,10 @@ $this->params['breadcrumbs'] = [
     'model' => $model,
     'attributes' => [
         // 'created_at:datetime', 
-        'activityGroup.title', 
+        [
+            'attribute' => 'activityGroup.title', 
+            'label' => Yii::t('booking', 'Type')
+        ],
         'event.title', 
         'title', 
         'price:currency', 

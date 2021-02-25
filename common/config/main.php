@@ -9,7 +9,7 @@ return [
             'dateFormat' => 'dd.MM.yyyy',
             'decimalSeparator' => ',',
             'thousandSeparator' => ' ',
-            'currencyCode' => 'EUR',
+            'currencyCode' => '€',
        ],
         'mailer' => [
             'class' => 'yii\swiftmailer\Mailer',
