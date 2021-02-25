@@ -35,6 +35,7 @@ class Activity extends ActiveRecord
             [['title', 'datetime', 'price', 'activity_group_id'], 'safe'],
             [['title'], 'required'],
             [['couple_activity'], 'in', 'range' => [0, 1]],
+            [['max_participants'], 'integer'],
         ];
     }
 

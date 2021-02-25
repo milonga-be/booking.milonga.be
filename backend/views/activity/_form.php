@@ -30,6 +30,9 @@ echo $form->field($model, 'title');
 	<div class="col-md-6">
 		<?= $form->field($model, 'datetime')->widget(DateTimePicker::classname(), $datepicker_options) ?>
 	</div>
+	<div class="col-md-6">
+		<?= $form->field($model, 'max_participants')?>
+	</div>
 </div>
 <?php
 echo $form->field($model, 'couple_activity')->checkbox();

@@ -35,6 +35,7 @@ $this->params['breadcrumbs'] = [
         'price:currency', 
         'datetime:datetime', 
         'couple_activity:boolean', 
+        'max_participants', 
     ],
 ])?>
 <p class="text-right">
