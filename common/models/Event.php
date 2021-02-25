@@ -9,6 +9,9 @@ use mootensai\behaviors\UUIDBehavior;
 
 class Event extends ActiveRecord
 {
+
+    const DEFAULT_ACTIVITY_GROUPS = array('Workshop', 'Salon', 'Pass');
+
 	public static function tableName()
     {
         return 'event';
@@ -46,7 +49,7 @@ class Event extends ActiveRecord
     }
 
     /**
-     * Describe the relation between a Weekday and its absence
+     * Describe the relation between an event and its activityGroups
      * @return ActiveQuery
      */
     public function getActivityGroups(){
@@ -85,6 +88,10 @@ class Event extends ActiveRecord
         return $reductions;                
     }
 
+    /**
+     * Before delete : delete all activities and reservations
+     * @return boolean
+     */
     public function beforeDelete(){
         if (!parent::beforeDelete()) {
             return false;
@@ -103,7 +110,30 @@ class Event extends ActiveRecord
                 }
             }
         }
+        if(sizeof($this->activityGroups)){
+            foreach ($this->activityGroups as $activityGroup) {
+                if(!$activityGroup->delete()){
+                    return false;
+                }
+            }
+        }
         return true;
+    }
+
+    /**
+     * After save : create the standard activity groups
+     * @return void
+     */
+    public function afterSave($insert, $changedAttributes){
+        parent::afterSave($insert, $changedAttributes);
+        if ($insert) {
+            foreach (self::DEFAULT_ACTIVITY_GROUPS as $title) {
+                $activityGroup = new ActivityGroup();
+                $activityGroup->title = $title;
+                $activityGroup->event_id = $this->id;
+                $activityGroup->save();
+            }
+        }
     }
 
     /**

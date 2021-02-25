@@ -24,7 +24,7 @@ $form = ActiveForm::begin([
 	'options' => []
 ]);
 
-echo $this->render('_form', ['model' => $model, 'form' => $form]);
+echo $this->render('_form', ['model' => $model, 'form' => $form, 'event' => $event]);
 ?>
 <p class="text-right buttons">
     <a href="<?= Url::to(['activity/index', 'event_uuid' => $event->uuid]) ?>" class="btn btn-default btn-md"><?= Yii::t('booking', 'Cancel')?></a>

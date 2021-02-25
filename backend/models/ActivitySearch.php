@@ -9,9 +9,11 @@ use yii\db\Expression;
 
 class ActivitySearch extends Activity{
 
+    var $activityGroup_title;
+
 	public function rules(){
 		return [
-			[['title'], 'safe']
+			[['title', 'activityGroup_title'], 'safe']
 		];
 	}
 
@@ -25,6 +27,7 @@ class ActivitySearch extends Activity{
     public function search( $params )
     {
         $query = self::find();
+        $query->joinWith('activityGroup');
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -40,6 +43,10 @@ class ActivitySearch extends Activity{
             'asc' => ['created_at' => SORT_ASC],
             'desc' => ['created_at' => SORT_DESC],
         ];
+        $dataProvider->sort->attributes['activityGroup_title'] = [
+            'asc' => ['activity_group.title' => SORT_ASC],
+            'desc' => ['activity_group.title' => SORT_DESC],
+        ];
 
         $this->load($params);
 
@@ -50,10 +57,13 @@ class ActivitySearch extends Activity{
         }
 
         if(!empty($this->event_id)){
-            $query->andWhere(['=', 'event_id', $this->event_id]);
+            $query->andWhere(['=', 'activity.event_id', $this->event_id]);
         }
         if(!empty($this->title)){
-            $query->andWhere(['LIKE', 'title', $this->title]);
+            $query->andWhere(['LIKE', 'activity.title', $this->title]);
+        }
+        if(!empty($this->activityGroup_title)){
+            $query->andWhere(['LIKE', 'activity_group.title', $this->activityGroup_title]);
         }
         
       

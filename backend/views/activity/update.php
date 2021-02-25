@@ -24,7 +24,7 @@ $form = ActiveForm::begin([
 	'options' => []
 ]);
 
-echo $this->render('_form', ['model' => $model, 'form' => $form]);
+echo $this->render('_form', ['model' => $model, 'form' => $form, 'event' => $event]);
 ?>
 <div class="row">
     <div class="col-md-8">

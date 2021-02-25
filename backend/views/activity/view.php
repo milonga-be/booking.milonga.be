@@ -26,6 +26,7 @@ $this->params['breadcrumbs'] = [
     'model' => $model,
     'attributes' => [
         // 'created_at:datetime', 
+        'activityGroup.title', 
         'event.title', 
         'title', 
         'price:currency', 

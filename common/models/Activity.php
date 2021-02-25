@@ -32,9 +32,19 @@ class Activity extends ActiveRecord
 
     public function rules(){
         return [
-            [['title', 'datetime', 'price'], 'safe'],
+            [['title', 'datetime', 'price', 'activity_group_id'], 'safe'],
             [['title'], 'required'],
             [['couple_activity'], 'in', 'range' => [0, 1]],
+        ];
+    }
+
+    public function attributeLabels(){
+        return [
+            'title' => Yii::t('booking', 'Title'),
+            'datetime' => Yii::t('booking', 'Date'),
+            'price' => Yii::t('booking', 'Price'),
+            'activity_group_id' => Yii::t('booking', 'Type'),
+            'couple_activity' => Yii::t('booking', 'Couple Activity'),
         ];
     }
 
@@ -74,5 +84,13 @@ class Activity extends ActiveRecord
      */
     public function getEvent(){
         return $this->hasOne(Event::className(), ['id' => 'event_id']);
+    }
+
+    /**
+     * Describe the relation between an activity and its activity group
+     * @return ActiveQuery
+     */
+    public function getActivityGroup(){
+        return $this->hasOne(ActivityGroup::className(), ['id' => 'activity_group_id']);
     }
 }

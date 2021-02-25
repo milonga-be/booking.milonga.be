@@ -111,7 +111,7 @@ class EventController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             if($model->save()){
                 // Redirect to the list page
-                $this->redirect(['/event/index']);
+                $this->redirect(['/event/view', 'uuid' => $model->uuid]);
                 return;
             }
         }

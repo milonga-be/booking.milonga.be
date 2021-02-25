@@ -43,6 +43,11 @@ $this->params['breadcrumbs'] = [
             'contentOptions' => ['class' => 'hide-xs text-muted'],
             'headerOptions' => ['class' => 'hide-xs']
         ],
+        [
+            'attribute' => 'activityGroup_title',
+            'label' => 'Type',
+            'value' => 'activityGroup.title'
+        ]
     ]
  ])
 ?>
