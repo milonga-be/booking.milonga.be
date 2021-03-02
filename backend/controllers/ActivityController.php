@@ -122,6 +122,6 @@ class ActivityController extends Controller
         $event = $model->event;
         $model->delete();
 
-        $this->redirect(['event/view', 'uuid' => $event->uuid]);
+        $this->redirect(['activity/index', 'event_uuid' => $event->uuid]);
     }
 }

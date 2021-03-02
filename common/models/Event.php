@@ -145,6 +145,14 @@ class Event extends ActiveRecord
     }
 
     /**
+     * Describe the relation between an event and its teachers
+     * @return ActiveQuery
+     */
+    public function getTeachers(){
+        return $this->hasMany(Teacher::className(), ['event_id' => 'id']);
+    }
+
+    /**
      * Describe the relation between an event and its bookings
      * @return ActiveQuery
      */

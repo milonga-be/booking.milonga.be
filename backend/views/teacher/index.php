@@ -3,7 +3,7 @@ use yii\grid\GridView;
 use yii\helpers\Url;
 use yii\helpers\Html;
 
-$this->title = Yii::t('booking', 'Activities');
+$this->title = Yii::t('booking', 'Teachers');
 $this->params['breadcrumbs'] = [
     [
         'label' => $event->title,
@@ -11,7 +11,7 @@ $this->params['breadcrumbs'] = [
     ],
     [
         'label' => $this->title,
-        'url' => ['activity/index', 'event_uuid' => $event->uuid]
+        'url' => ['teacher/index', 'event_uuid' => $event->uuid]
     ]
 ];
 ?>
@@ -20,7 +20,7 @@ $this->params['breadcrumbs'] = [
 		<h1><?= $this->title ?></h1>
 	</div>
 	<div class="col-md-2 text-right">
-		<a class="btn btn-md btn-default" href="<?= Url::to(['/activity/create', 'event_uuid' => $event->uuid])?>"><?= Yii::t('booking', 'New')?></a>
+		<a class="btn btn-md btn-default" href="<?= Url::to(['/teacher/create', 'event_uuid' => $event->uuid])?>"><?= Yii::t('booking', 'New')?></a>
 	</div>
 </div>
 <?= GridView::widget([
@@ -31,23 +31,12 @@ $this->params['breadcrumbs'] = [
     'formatter' => ['class' => 'yii\i18n\Formatter', 'nullDisplay' => ''],
     'columns' => [
     	[
-    		'attribute' => 'title',
+    		'attribute' => 'name',
     		'format' => 'raw',
     		'value' => function($data){
-    			return Html::a($data->summary, ['/activity/view', 'uuid' => $data->uuid]);
+    			return Html::a($data->name, ['/teacher/view', 'uuid' => $data->uuid]);
     		},
     	],
-        [
-            'attribute' => 'created_at',
-            'format' => ['date', 'php:d M, H:i'],
-            'contentOptions' => ['class' => 'hide-xs text-muted'],
-            'headerOptions' => ['class' => 'hide-xs']
-        ],
-        [
-            'attribute' => 'activityGroup_title',
-            'label' => Yii::t('booking', 'Type'),
-            'value' => 'activityGroup.title'
-        ],
         [
             'attribute' => '',
             'format' => 'raw',

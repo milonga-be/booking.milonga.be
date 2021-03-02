@@ -87,3 +87,25 @@ $this->params['breadcrumbs'] = [
 		?>
 	</div>
 </div>
+<div class="row">
+	<div class="col-md-6">
+		<h2 class="text-center"><a class="btn btn-default btn-md" href="<?= Url::to(['teacher/index', 'event_uuid' => $model->uuid])?>"><?= Yii::t('booking', 'Teachers') ?></a></h2>
+		<?= GridView::widget([
+		    'dataProvider' => $teacherProvider,
+		    'showHeader'=> false,
+		    'layout' => '{items}{pager}',
+		    'tableOptions' => ['class' => 'table table-hover  table-striped'],
+		    'formatter' => ['class' => 'yii\i18n\Formatter', 'nullDisplay' => ''],
+		    'columns' => [
+		    	[
+		    		'attribute' => 'name',
+		    		'format' => 'raw',
+		    		'value' => function($data){
+		    			return Html::a($data->name, ['/teacher/view', 'uuid' => $data->uuid]);
+		    		},
+		    	],
+		    ]
+		 ])
+		?>
+	</div>
+</div>

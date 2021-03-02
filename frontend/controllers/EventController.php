@@ -21,68 +21,23 @@ class EventController extends Controller
 
 	/**
 	 * The subscription form for the event
-	 * @param  integer $id The event id 
+	 * @param  string Unique Id of the event
 	 * @return mixed
 	 */
-	public function actionRegistration($id){
-		$event = $this->findModel($id);
-		$participant = new Participant();
-		$partner = new Partner();
+	public function actionRegistration($uuid){
+		$event = $this->findModel($uuid);
 
-		if(\Yii::$app->request->isPost){
-			$participant->load(\Yii::$app->request->post());
-			$partner->load(\Yii::$app->request->post());
-			$post = \Yii::$app->request->post();
-			if( $participant->validate() && $partner->validate() && isset($post['activity']) ){
-				
-				// Checking that the participant doesn't exist yet, if it does, reuse it
-				$existing_participant = Participant::findOne(['email' => $participant->email]);
-				if($existing_participant){
-					$existing_participant->load(\Yii::$app->request->post());
-					$participant = $existing_participant;
-				}
+		return $this->render('registration',['event' => $event]);
+	}
 
-				// Saving the participants
-				$participant->save();
-				$partner->save();
+	/**
+	 * The confirmation form for an event and a specific booking
+	 * @param  string $event_uuid   Event Unique Id
+	 * @param  string $booking_uuid Booking Unique Id
+	 * @return mixed
+	 */
+	public function actionConfirmation($event_uuid, $booking_uuid){
 
-				// Saving the participations in the booking
-				$booking = new Booking();
-				$booking->firstname = $participant->firstname;
-				$booking->lastname = $participant->lastname;
-				$booking->email = $participant->email;
-				$booking->phone = $participant->phone;
-				$booking->total_price = $this->computeTotalPrice($event->id, $post['activity']);
-				$booking->save();
-
-				foreach ($post['activity'] as $activity_id) {
-					$activity = Activity::findOne($activity_id);
-					$participation = new Participation();
-					$participation->activity_id = $activity->id;
-					if($activity->couple_activity){
-						$participation->participant1_id = $participant->id;
-						$participation->participant2_id = $partner->id;
-					}else{
-						$participation->participant1_id = $participant->id;
-					}
-					$participation->save();
-					$booking->link('participations', $participation);
-				}
-				$html = $this->render('registration-complete',['event' => $event, 'booking' => $booking]);
-
-				Yii::$app->mailer->compose()
-				    ->setFrom('booking@carlosyrosa.be')
-				    ->setTo($booking->email)
-				    ->setCc(Yii::$app->params['adminEmail'])
-				    ->setSubject($event->title)
-				    ->setHtmlBody($html)
-				    ->send();
-
-				return $html;
-			}
-		}
-
-		return $this->render('registration',['event' => $event, 'participant' => $participant, 'partner' => $partner]);
 	}
 
 	/**
@@ -90,8 +45,8 @@ class EventController extends Controller
 	 * @param  integer $id The event id 
 	 * @return Event
 	 */
-	private function findModel($id){
-		return Event::findOne($id);
+	private function findModel($uuid){
+		return Event::findOne(['uuid' => $uuid]);
 	}
 
 	/**

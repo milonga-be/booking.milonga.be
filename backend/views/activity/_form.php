@@ -10,8 +10,9 @@ $datepicker_options = [
         'weekStart' => 1
     ]
 ];
-echo $form->field($model, 'activity_group_id')->dropDownlist(ArrayHelper::map($event->activityGroups, 'id', 'title'));
 echo $form->field($model, 'title');
+echo $form->field($model, 'activity_group_id')->dropDownlist(ArrayHelper::map($event->activityGroups, 'id', 'title'));
+echo $form->field($model, 'teacher_id')->dropDownlist(ArrayHelper::map($event->teachers, 'id', 'name'), ['prompt'=>Yii::t('booking', '--')]);
 ?>
 <div class="row">
 	<div class="col-md-6">

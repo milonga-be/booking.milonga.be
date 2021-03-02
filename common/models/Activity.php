@@ -32,7 +32,7 @@ class Activity extends ActiveRecord
 
     public function rules(){
         return [
-            [['title', 'datetime', 'price', 'activity_group_id'], 'safe'],
+            [['title', 'datetime', 'price', 'activity_group_id', 'teacher_id'], 'safe'],
             [['title'], 'required'],
             [['couple_activity'], 'in', 'range' => [0, 1]],
             [['max_participants'], 'integer'],
@@ -45,6 +45,7 @@ class Activity extends ActiveRecord
             'datetime' => Yii::t('booking', 'Date'),
             'price' => Yii::t('booking', 'Price'),
             'activity_group_id' => Yii::t('booking', 'Type'),
+            'teacher_id' => Yii::t('booking', 'Teachers'),
             'couple_activity' => Yii::t('booking', 'Couple Activity'),
         ];
     }
@@ -54,7 +55,7 @@ class Activity extends ActiveRecord
      * @return ActiveQuery
      */
     public function getParticipations(){
-        return $this->hasMany(Participation::className(), ['activity_id' => 'id']);
+        return $this->hasMany(Participation::className(), ['activity_id' => 'id'])->joinWith('booking')->where(['booking.confirmed' => 1]);
     }
 
     /**
@@ -85,6 +86,27 @@ class Activity extends ActiveRecord
      */
     public function getEvent(){
         return $this->hasOne(Event::className(), ['id' => 'event_id']);
+    }
+
+    /**
+     * Describe the relation between an activity and its teachers
+     * @return ActiveQuery
+     */
+    public function getTeacher(){
+        return $this->hasOne(Teacher::className(), ['id' => 'teacher_id']);
+    }
+
+    /**
+     * A summary : teacher + title
+     * @return string
+     */
+    public function getSummary(){
+        $summary = '';
+        if(isset($this->teacher)){
+            $summary.=$this->teacher->name.' : ';
+        }
+        $summary.=$this->title;
+        return $summary;
     }
 
     /**

@@ -3,16 +3,16 @@
 namespace backend\models;
 
 use Yii;
-use common\models\Event;
-use common\models\Booking;
+use common\models\Teacher;
 use yii\data\ActiveDataProvider;
 use yii\db\Expression;
 
-class BookingSearch extends Booking{
+class TeacherSearch extends Teacher{
+
 
 	public function rules(){
 		return [
-			[['email'], 'safe']
+			[['name'], 'safe']
 		];
 	}
 
@@ -25,7 +25,7 @@ class BookingSearch extends Booking{
      */
     public function search( $params )
     {
-        $query = self::find()->where(['confirmed' => 1]);
+        $query = self::find();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -51,10 +51,10 @@ class BookingSearch extends Booking{
         }
 
         if(!empty($this->event_id)){
-            $query->andWhere(['=', 'event_id', $this->event_id]);
+            $query->andWhere(['=', 'teacher.event_id', $this->event_id]);
         }
-        if(!empty($this->email)){
-            $query->andWhere(['LIKE', 'email', $this->email]);
+        if(!empty($this->name)){
+            $query->andWhere(['LIKE', 'teacher.name', $this->name]);
         }
         
       

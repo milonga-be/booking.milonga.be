@@ -5,7 +5,7 @@ use yii\widgets\DetailView;
 use yii\grid\GridView;
 use yii\data\ArrayDataProvider;
 
-$this->title = $model->title;
+$this->title = $model->summary;
 $this->params['breadcrumbs'] = [
     [
         'label' => $model->event->title,
@@ -30,8 +30,9 @@ $this->params['breadcrumbs'] = [
             'attribute' => 'activityGroup.title', 
             'label' => Yii::t('booking', 'Type')
         ],
-        'event.title', 
-        'title', 
+        // 'event.title', 
+        // 'teacher.name', 
+        'summary', 
         'price:currency', 
         'datetime:datetime', 
         'couple_activity:boolean', 

@@ -9,12 +9,12 @@ $this->params['breadcrumbs'] = [
         'url' => ['event/view', 'uuid' => $model->event->uuid]
     ],
     [
-        'label' => Yii::t('booking', 'Activities'),
-        'url' => ['activity/index', 'event_uuid' => $model->event->uuid]
+        'label' => Yii::t('booking', 'Teachers'),
+        'url' => ['teacher/index', 'event_uuid' => $model->event->uuid]
     ],
     [
-        'label' => $model->summary,
-        'url' => ['activity/view', 'uuid' => $model->uuid]
+        'label' => $model->name,
+        'url' => ['teacher/view', 'uuid' => $model->uuid]
     ]
 ];
 ?>
