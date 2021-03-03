@@ -10,10 +10,11 @@ use yii\db\Expression;
 class ActivitySearch extends Activity{
 
     var $activityGroup_title;
+    var $searchSummary;
 
 	public function rules(){
 		return [
-			[['title', 'activityGroup_title'], 'safe']
+			[['title', 'searchSummary', 'activityGroup_title'], 'safe']
 		];
 	}
 
@@ -28,6 +29,7 @@ class ActivitySearch extends Activity{
     {
         $query = self::find();
         $query->joinWith('activityGroup');
+        $query->joinWith('teacher');
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -47,6 +49,10 @@ class ActivitySearch extends Activity{
             'asc' => ['activity_group.title' => SORT_ASC],
             'desc' => ['activity_group.title' => SORT_DESC],
         ];
+        $dataProvider->sort->attributes['searchSummary'] = [
+            'asc' => [new Expression('CONCAT(teacher.name, " : ", activity.title) ASC')],
+            'desc' => [new Expression('CONCAT(teacher.name, " : ", activity.title) DESC')],
+        ];
 
         $this->load($params);
 
@@ -61,6 +67,9 @@ class ActivitySearch extends Activity{
         }
         if(!empty($this->title)){
             $query->andWhere(['LIKE', 'activity.title', $this->title]);
+        }
+        if(!empty($this->searchSummary)){
+            $query->andWhere(['LIKE', 'CONCAT(teacher.name, " : ", activity.title)', $this->searchSummary]);
         }
         if(!empty($this->activityGroup_title)){
             $query->andWhere(['LIKE', 'activity_group.title', $this->activityGroup_title]);

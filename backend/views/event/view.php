@@ -47,7 +47,7 @@ $this->params['breadcrumbs'] = [
 		    		'attribute' => 'title',
 		    		'format' => 'raw',
 		    		'value' => function($data){
-		    			return Html::a($data->title, ['/activity/view', 'uuid' => $data->uuid]);
+		    			return Html::a($data->summary, ['/activity/view', 'uuid' => $data->uuid]);
 		    		},
 		    	],
 		        // [

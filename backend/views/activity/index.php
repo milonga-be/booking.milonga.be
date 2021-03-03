@@ -31,7 +31,8 @@ $this->params['breadcrumbs'] = [
     'formatter' => ['class' => 'yii\i18n\Formatter', 'nullDisplay' => ''],
     'columns' => [
     	[
-    		'attribute' => 'title',
+    		'attribute' => 'searchSummary',
+            'label' => Yii::t('booking', 'Title'),
     		'format' => 'raw',
     		'value' => function($data){
     			return Html::a($data->summary, ['/activity/view', 'uuid' => $data->uuid]);
