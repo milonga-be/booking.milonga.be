@@ -32,7 +32,7 @@ class Activity extends ActiveRecord
 
     public function rules(){
         return [
-            [['title', 'datetime', 'price', 'activity_group_id', 'teacher_id'], 'safe'],
+            [['title', 'datetime', 'price', 'activity_group_id', 'teacher_id', 'dance', 'level'], 'safe'],
             [['title'], 'required'],
             [['couple_activity'], 'in', 'range' => [0, 1]],
             [['max_participants'], 'integer'],
@@ -47,6 +47,8 @@ class Activity extends ActiveRecord
             'activity_group_id' => Yii::t('booking', 'Type'),
             'teacher_id' => Yii::t('booking', 'Teachers'),
             'couple_activity' => Yii::t('booking', 'Couple Activity'),
+            'readableDance' => Yii::t('booking', 'Dance'),
+            'readableLevel' => Yii::t('booking', 'Level'),
         ];
     }
 
@@ -55,6 +57,14 @@ class Activity extends ActiveRecord
      * @return ActiveQuery
      */
     public function getParticipations(){
+        return $this->hasMany(Participation::className(), ['activity_id' => 'id']);
+    }
+
+    /**
+     * Describe the relation between a Activity and its participations (only the confirmed one)
+     * @return ActiveQuery
+     */
+    public function getConfirmedParticipations(){
         return $this->hasMany(Participation::className(), ['activity_id' => 'id'])->joinWith('booking')->where(['booking.confirmed' => 1]);
     }
 
@@ -103,9 +113,18 @@ class Activity extends ActiveRecord
     public function getSummary(){
         $summary = '';
         if(isset($this->teacher)){
-            $summary.=$this->teacher->name.' : ';
+            $summary.=$this->teacher->name;
+        }
+        if(isset($this->dance)){
+            $summary.=' ('.$this->danceList[$this->dance].')';
+        }
+        if(isset($this->teacher)){
+            $summary.=' ';
         }
         $summary.=$this->title;
+        if(strlen($summary) > 30){
+            $summary = substr($summary, 0, 30).'...';
+        }
         return $summary;
     }
 
@@ -115,5 +134,53 @@ class Activity extends ActiveRecord
      */
     public function getActivityGroup(){
         return $this->hasOne(ActivityGroup::className(), ['id' => 'activity_group_id']);
+    }
+
+    /**
+     * Get the list of dances
+     * @return array
+     */
+    public function getDanceList(){
+        return [
+            '' => '--',
+            'tango' => 'Tango',
+            'vals' => 'Vals',
+            'milonga' => 'Milonga'
+        ];
+    }
+
+    /**
+     * Get a human readable dance
+     * @return string
+     */
+    public function getReadableDance(){
+        if(!empty($this->dance))
+        return $this->danceList[$this->dance];
+        return null;
+    }
+
+    /**
+     * Get the list of levels
+     * @return array
+     */
+    public function getLevelList(){
+        return [
+            '' => '--',
+            'beginner' => 'Beginners',
+            'intermediate' => 'Intermediates',
+            'int-adv' => 'Inter-Adv',
+            'advanced' => 'Advanced',
+            'all' => 'All Levels'
+        ];
+    }
+
+    /**
+     * Get a human readable level
+     * @return string
+     */
+    public function getReadableLevel(){
+        if(!empty($this->level))
+        return $this->levelList[$this->level];
+        return null;
     }
 }

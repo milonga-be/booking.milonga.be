@@ -12,6 +12,7 @@ use common\models\Activity;
 use common\models\Reduction;
 use common\models\Booking;
 use common\models\Participation;
+use frontend\models\BookingForm;
 
 /**
  * Site controller
@@ -26,8 +27,13 @@ class EventController extends Controller
 	 */
 	public function actionRegistration($uuid){
 		$event = $this->findModel($uuid);
+		$model = new BookingForm();
 
-		return $this->render('registration',['event' => $event]);
+		if($model->load(Yii::$app->request->post()) && $model->validate()){
+			// var_dump($model->activities);
+		}
+
+		return $this->render('registration',['event' => $event, 'model' => $model]);
 	}
 
 	/**

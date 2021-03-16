@@ -10,7 +10,20 @@ use mootensai\behaviors\UUIDBehavior;
 class Event extends ActiveRecord
 {
 
-    const DEFAULT_ACTIVITY_GROUPS = array('Workshop', 'Salon', 'Pass');
+    const DEFAULT_ACTIVITY_GROUPS = [
+        [
+            'title' => 'Workshop', 
+            'display' => 'grid' 
+        ],
+        [
+            'title' => 'Salon', 
+            'display' => 'list'
+        ],
+        [
+            'title' => 'Pass', 
+            'display' => 'list'
+        ]
+    ];
 
 	public static function tableName()
     {
@@ -127,9 +140,10 @@ class Event extends ActiveRecord
     public function afterSave($insert, $changedAttributes){
         parent::afterSave($insert, $changedAttributes);
         if ($insert) {
-            foreach (self::DEFAULT_ACTIVITY_GROUPS as $title) {
+            foreach (self::DEFAULT_ACTIVITY_GROUPS as $group) {
                 $activityGroup = new ActivityGroup();
-                $activityGroup->title = $title;
+                $activityGroup->title = $group['title'];
+                $activityGroup->display = $group['display'];
                 $activityGroup->event_id = $this->id;
                 $activityGroup->save();
             }

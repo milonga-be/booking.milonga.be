@@ -3,7 +3,9 @@ body {
     height: 100%;
     font-size:12px
 }
-
+*{
+    font-family:'Open Sans';
+}
 .wrap {
     min-height: 100%;
     height: auto;

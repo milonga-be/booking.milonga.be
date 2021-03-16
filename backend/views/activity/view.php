@@ -30,9 +30,10 @@ $this->params['breadcrumbs'] = [
             'attribute' => 'activityGroup.title', 
             'label' => Yii::t('booking', 'Type')
         ],
-        // 'event.title', 
-        // 'teacher.name', 
-        'summary', 
+        'teacher.name', 
+        'title', 
+        'readableDance', 
+        'readableLevel', 
         'price:currency', 
         'datetime:datetime', 
         'couple_activity:boolean', 
@@ -44,7 +45,7 @@ $this->params['breadcrumbs'] = [
 </p>
 <?php
 $participationsProvider = new ArrayDataProvider([
-    'allModels' => $model->participations,
+    'allModels' => $model->confirmedParticipations,
     'pagination' => false,
 ]);
 ?>
