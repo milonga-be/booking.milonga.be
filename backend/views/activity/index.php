@@ -19,9 +19,22 @@ $this->params['breadcrumbs'] = [
 	<div class="col-md-10">
 		<h1><?= $this->title ?></h1>
 	</div>
-	<div class="col-md-2 text-right">
+	<!--div class="col-md-2 text-right">
 		<a class="btn btn-md btn-default" href="<?= Url::to(['/activity/create', 'event_uuid' => $event->uuid])?>"><?= Yii::t('booking', 'New')?></a>
-	</div>
+	</div-->
+    <div class="col-md-2 text-right">
+        <div class="btn-group">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <?= Yii::t('booking', 'New')?> <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <?php foreach ($event->activityGroups as $activityGroup) {
+                    echo '<li><a href="'.Url::to(['activity/create', 'event_uuid' => $event->uuid, 'activity_group_uuid' => $activityGroup->uuid]).'">'.$activityGroup->title.'</a></li>';
+                }
+                ?>
+            </ul>
+        </div>
+    </div>
 </div>
 <?= GridView::widget([
     'dataProvider' => $provider,

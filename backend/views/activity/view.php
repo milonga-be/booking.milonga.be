@@ -22,23 +22,35 @@ $this->params['breadcrumbs'] = [
 ];
 ?>
 <h1><?= $this->title ?></h1>
+<?php
+switch($model->activityGroup->title){
+    case 'Salon':
+        $attributes = [
+            'title',  
+            'datetime:datetime', 
+        ];
+        break;
+    case 'Pass':
+        $attributes = [
+            'title'
+        ];
+        break;
+    default:
+        $attributes = [
+            'teacher.name', 
+            'title', 
+            'readableDance', 
+            'readableLevel', 
+            'price:currency', 
+            'datetime:datetime', 
+            'couple_activity:boolean', 
+            'max_participants', 
+        ];
+
+}?>
 <?= DetailView::widget([
     'model' => $model,
-    'attributes' => [
-        // 'created_at:datetime', 
-        [
-            'attribute' => 'activityGroup.title', 
-            'label' => Yii::t('booking', 'Type')
-        ],
-        'teacher.name', 
-        'title', 
-        'readableDance', 
-        'readableLevel', 
-        'price:currency', 
-        'datetime:datetime', 
-        'couple_activity:boolean', 
-        'max_participants', 
-    ],
+    'attributes' => $attributes,
 ])?>
 <p class="text-right">
     <a href="<?= Url::to(['activity/update', 'uuid' => $model->uuid]) ?>" class="btn btn-md btn-default"><?= Yii::t('booking', 'Update') ?></a>

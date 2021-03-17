@@ -7,6 +7,7 @@ use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use common\models\Event;
 use common\models\Activity;
+use common\models\ActivityGroup;
 use backend\models\ActivitySearch;
 
 /**
@@ -76,12 +77,14 @@ class ActivityController extends Controller
      *
      * @return string
      */
-    public function actionCreate($event_uuid)
+    public function actionCreate($event_uuid, $activity_group_uuid)
     {
         $model = new Activity();
         $event = Event::findOne(['uuid' => $event_uuid]);
+        $activityGroup = ActivityGroup::findOne(['uuid' => $activity_group_uuid]);
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             $model->event_id = $event->id;
+            $model->activity_group_id = $activityGroup->id;
             if($model->save()){
                 // Redirect to the list page
                 $this->redirect(['/activity/index', 'event_uuid' => $event->uuid]);
@@ -89,7 +92,7 @@ class ActivityController extends Controller
             }
         }
 
-        return $this->render('create', ['model' => $model, 'event' => $event]);
+        return $this->render('create', ['model' => $model, 'event' => $event, 'type' => $activityGroup->title]);
     }
 
     /**
@@ -108,7 +111,7 @@ class ActivityController extends Controller
             }
         }
 
-        return $this->render('update', ['model' => $model, 'event' => $model->event]);
+        return $this->render('update', ['model' => $model, 'event' => $model->event, 'type' => $model->activityGroup->title]);
     }
 
     /**
