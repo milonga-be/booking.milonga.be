@@ -27,12 +27,18 @@ switch($model->activityGroup->title){
     case 'Salon':
         $attributes = [
             'title',  
-            'datetime:datetime', 
+            [
+                'attribute' => 'datetime',
+                'format' => 'datetime'
+                // 'format' => ['date', 'php:d M, H:i']
+            ], 
+            'price:currency'
         ];
         break;
     case 'Pass':
         $attributes = [
-            'title'
+            'title',
+            'price:currency'
         ];
         break;
     default:
@@ -42,7 +48,11 @@ switch($model->activityGroup->title){
             'readableDance', 
             'readableLevel', 
             'price:currency', 
-            'datetime:datetime', 
+            [
+                'attribute' => 'datetime:datetime',
+                'format' => 'datetime'
+                // 'format' => ['date', 'php:d M, H:i']
+            ], 
             'couple_activity:boolean', 
             'max_participants', 
         ];

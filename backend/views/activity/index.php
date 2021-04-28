@@ -41,8 +41,14 @@ $this->params['breadcrumbs'] = [
     'filterModel' => $searchModel,
     'layout' => '{items}{pager}',
     'tableOptions' => ['class' => 'table table-hover  table-striped'],
-    'formatter' => ['class' => 'yii\i18n\Formatter', 'nullDisplay' => ''],
+    // 'formatter' => ['class' => 'yii\i18n\Formatter', 'nullDisplay' => ''],
     'columns' => [
+        // [
+        //     'attribute' => 'created_at',
+        //     'format' => ['date', 'php:d M'],
+        //     'contentOptions' => ['class' => 'hide-xs text-muted'],
+        //     'headerOptions' => ['class' => 'hide-xs']
+        // ],
     	[
     		'attribute' => 'searchSummary',
             'label' => Yii::t('booking', 'Title'),
@@ -52,10 +58,9 @@ $this->params['breadcrumbs'] = [
     		},
     	],
         [
-            'attribute' => 'created_at',
-            'format' => ['date', 'php:d M, H:i'],
-            'contentOptions' => ['class' => 'hide-xs text-muted'],
-            'headerOptions' => ['class' => 'hide-xs']
+            'attribute' => 'datetime',
+            'label' => Yii::t('booking', 'Date'),
+            'format' => 'datetime'
         ],
         [
             'attribute' => 'activityGroup_title',

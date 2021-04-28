@@ -1,15 +1,19 @@
 <?php
 return [
     'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',
+    'timeZone' => 'UTC',
     'components' => [
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
         'formatter' => [
-            'dateFormat' => 'dd.MM.yyyy',
+            'dateFormat' => 'php:j M',
+            'datetimeFormat' => 'php:j M H:i',
+            'timeFormat' => 'php:H:i',
             'decimalSeparator' => ',',
             'thousandSeparator' => ' ',
             'currencyCode' => '€',
+            'timeZone' => 'UTC',
        ],
         'mailer' => [
             'class' => 'yii\swiftmailer\Mailer',
