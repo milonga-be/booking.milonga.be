@@ -41,7 +41,7 @@ foreach ($event->activityGroups as $group) {?>
 					ksort($days[$date]);
 				}
 				?>
-				<table class="table table-striped table-condensed">
+				<table class="table table-striped table-activities">
 					<thead>
 						<tr>
 							<th><?= Yii::t('booking', 'Day') ?></th>
@@ -52,18 +52,22 @@ foreach ($event->activityGroups as $group) {?>
 						</tr>
 					</thead>
 					<tbody>
-						<?php foreach ($days as $date => $day) {?>
+						<?php foreach ($days as $date => $day) {
+							$first_day = true;
+							?>
 							<?php foreach ($day as $hour => $teachers) {?>
 							<tr>
-								<td><?= $date ?></td>
+								<td class="day"><strong><?= $first_day?(new \Datetime($date))->format('D M j'):'' ?></strong></td>
 								<td><?= $hour ?></td>
 								<?php foreach ($teachers as $teacher_name => $activity) {?>
-								<td><?php
+								<td class="activity"><?php
 									if(isset($activity)){
 										echo $form->field($model, 'activities[]')->checkbox(['label' => $activity->title, 'value' => $activity->uuid, 'checked' => in_array($activity->uuid, $model->activities)]);
 									} ?>
 								</td>
-								<?php }?>
+								<?php } 
+								$first_day = false;
+								?>
 							</tr>
 							<?php } ?>
 						<?php } ?>
@@ -73,10 +77,10 @@ foreach ($event->activityGroups as $group) {?>
 				break;
 			
 			default: 
-				echo '<table class="table table-striped table-condensed">';
+				echo '<table class="table table-striped table-activities">';
 				foreach ($group->activities as $activity) {
-					echo '<tr><td>';
-					echo $form->field($model, 'activities[]')->checkbox(['label' => $activity->title, 'value' => $activity->uuid, 'checked' => in_array($activity->uuid, $model->activities)]);
+					echo '<tr><td class="activity">';
+					echo $form->field($model, 'activities[]')->checkbox(['label' => isset($activity->datetime)?'<strong>'.(new \Datetime($activity->datetime))->format('D M j').'</strong> - '.$activity->title:$activity->title, 'value' => $activity->uuid, 'checked' => in_array($activity->uuid, $model->activities)]);
 					echo '</td></tr>';
 				}
 				echo '</table>';
@@ -91,3 +95,22 @@ foreach ($event->activityGroups as $group) {?>
 </div>
 <?php
 ActiveForm::end();
+$this->registerJs(
+'
+$(".table-activities td.activity").on("click",function(e){
+	$(this).find("input[type=checkbox]").trigger("click");
+	if($(this).hasClass("checked"))
+		$(this).removeClass("checked");
+	else
+		$(this).addClass("checked");
+});
+
+$(".table-activities td input[type=checkbox]").on("click",function(e){
+	var cell = $(this).parents("td");
+	if(cell.hasClass("checked"))
+		cell.removeClass("checked");
+	else
+		cell.addClass("checked");
+});
+'
+);

@@ -142,3 +142,26 @@ h3{
 .activity_group_table{
     font-size:0.9em;
 }
+.field-bookingform-activities input[type=checkbox]{
+    display:none;
+}
+.table-activities th{
+    text-transform: uppercase;
+}
+.table-activities > tbody > tr > td{
+    padding:12px;
+}
+.table-activities > tbody > tr > td.activity{
+    cursor: pointer;
+}
+.table-activities td label{
+    font-weight: normal;
+    cursor: pointer;
+}
+.table-activities td.checked{
+    background-color: #0d6efd;
+    color:white;
+}
+.table-activities td.day{
+    white-space: nowrap;
+}
