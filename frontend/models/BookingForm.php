@@ -32,6 +32,9 @@ class BookingForm extends Model
             // name, email, subject and body are required
             [['activities_uuids'], 'required'],
             [['firstname', 'lastname', 'email'], 'required', 'on' => self::SCENARIO_CONFIRMATION],
+            [['partner_firstname', 'partner_lastname'], 'required', 'when' => function($attribute, $params){
+                return $this->enablePartnerForm();
+            }],
             [['activities_uuids'], 'each', 'rule' => ['string']],
             [['firstname', 'lastname', 'partner_firstname', 'partner_lastname'], 'string'],
             [['email'], 'email'],
@@ -60,5 +63,18 @@ class BookingForm extends Model
             }
         }
         return $activities;
+    }
+
+    /**
+     * Check if we need partner data
+     * @return boolean
+     */
+    public function enablePartnerForm(){
+        foreach($this->activities as $activity){
+            if($activity->couple_activity){
+                return true;
+            }
+        }
+        return false;
     }
 }

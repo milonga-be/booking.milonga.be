@@ -1,10 +1,12 @@
 <?php
 use yii\widgets\ActiveForm;
+use yii\helpers\Url;
 
 $this->title = Yii::t('booking', 'Registration').' - '.$event->title;
 
 $form = ActiveForm::begin([
-	'options' => []
+	'options' => [],
+	// 'action' => Url::to(['/booking/registration-summary', 'event_uuid' => $event->uuid])
 ]);
 
 foreach ($event->activityGroups as $group) {?>

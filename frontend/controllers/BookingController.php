@@ -17,7 +17,7 @@ use frontend\models\BookingForm;
 /**
  * Site controller
  */
-class EventController extends Controller
+class BookingController extends Controller
 {
 
 	/**
@@ -25,14 +25,11 @@ class EventController extends Controller
 	 * @param  string Unique Id of the event
 	 * @return mixed
 	 */
-	public function actionRegistration($uuid){
-		$event = $this->findModel($uuid);
+	public function actionRegistration($event_uuid){
+		$event = $this->findModel($event_uuid);
 		$model = new BookingForm();
-
 		if($model->load(Yii::$app->request->post()) && $model->validate()){
-			$model->setScenario(BookingForm::SCENARIO_CONFIRMATION);
-			
-			return $this->render('summary', ['model' => $model, 'event' => $event]);
+			return $this->render('registration-summary', ['model' => $model, 'event' => $event]);
 		}
 
 		return $this->render('registration',['event' => $event, 'model' => $model]);
@@ -43,7 +40,7 @@ class EventController extends Controller
 	 * @param  string $event_uuid   Event Unique Id
 	 * @return mixed
 	 */
-	public function actionRegistrationConfirmation($event_uuid){
+	public function actionRegistrationSummary($event_uuid){
 		$event = $this->findModel($event_uuid);
 		$model = new BookingForm();
 		$model->setScenario(BookingForm::SCENARIO_CONFIRMATION);
@@ -71,11 +68,16 @@ class EventController extends Controller
 						$partner->save();
 					}
 				}
-				return $this->render('registration-confirmed', ['booking' => $booking]);
+				return $this->redirect(['booking/registration-confirmed', 'uuid' => $booking->uuid]);
 			}
 			
 		}
 		return $this->render('registration-summary', ['model' => $model, 'event' => $event]);
+	}
+
+	public function actionRegistrationConfirmed($uuid){
+		$booking = Booking::findOne(['uuid' => $uuid]);
+		return $this->render('registration-confirmed', ['booking' => $booking]);
 	}
 
 	/**

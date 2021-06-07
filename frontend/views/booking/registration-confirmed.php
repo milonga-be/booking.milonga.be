@@ -19,10 +19,6 @@
 		<td><?= Yii::t('booking', 'Email')?></td>
 		<td><?= $booking->email ?></td>
 	</tr>
-	<tr>
-		<td><?= Yii::t('booking', 'Phone')?></td>
-		<td><?= $booking->phone ?></td>
-	</tr>
 </table>
 <h3><?= Yii::t('booking', 'Activities') ?></h3>
 <table class="table table-bordered"> 
@@ -47,9 +43,9 @@ foreach ($booking->participations as $participation) {
 </h3>
 <p>
 <?= Yii::t('booking', 'The amount must be paid on the following bank account : ') ?><br>
-<?= Yii::t('booking', 'IBAN : BE06 0682 4026 8522') ?><br>
-<?= Yii::t('booking', 'BIC : GKCCBEBB') ?><br>
-<?= Yii::t('booking', 'NOSOTROS ASBL') ?><br>
-<?= Yii::t('booking', 'Chaussée d\'Alsemberg 980') ?><br>
-<?= Yii::t('booking', '1180 Bruxelles') ?><br>
+<?= Yii::t('booking', 'IBAN : BE59 0014 4018 1026') ?><br>
+<?= Yii::t('booking', 'BIC : GEBABEBB') ?><br>
+<?= Yii::t('booking', 'Alma del Sur ASBL-VZW') ?><br>
+<?= Yii::t('booking', 'Rue Michel Zwaab 18') ?><br>
+<?= Yii::t('booking', '1080 - Brussels') ?><br>
 </p>
