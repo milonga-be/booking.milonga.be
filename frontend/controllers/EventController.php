@@ -30,7 +30,9 @@ class EventController extends Controller
 		$model = new BookingForm();
 
 		if($model->load(Yii::$app->request->post()) && $model->validate()){
-			// var_dump($model->activities);
+			$model->setScenario(BookingForm::SCENARIO_CONFIRMATION);
+			
+			return $this->render('summary', ['model' => $model, 'event' => $event]);
 		}
 
 		return $this->render('registration',['event' => $event, 'model' => $model]);
@@ -39,11 +41,41 @@ class EventController extends Controller
 	/**
 	 * The confirmation form for an event and a specific booking
 	 * @param  string $event_uuid   Event Unique Id
-	 * @param  string $booking_uuid Booking Unique Id
 	 * @return mixed
 	 */
-	public function actionConfirmation($event_uuid, $booking_uuid){
+	public function actionRegistrationConfirmation($event_uuid){
+		$event = $this->findModel($event_uuid);
+		$model = new BookingForm();
+		$model->setScenario(BookingForm::SCENARIO_CONFIRMATION);
 
+		if($model->load(Yii::$app->request->post()) && $model->validate()){
+			// Creating the booking
+			$booking = new Booking();
+			$booking->event_id = $event->id;
+			$booking->firstname = $model->firstname;
+			$booking->lastname = $model->lastname;
+			$booking->email = $model->email;
+			$booking->confirmed = 1;
+			if($booking->save()){
+				// Adding the selected activities
+				foreach($model->activities as $activity){
+					$participation = new Participation();
+					$participation->activity_id = $activity->id;
+					$participation->booking_id = $booking->id;
+					$participation->save();
+					if($activity->couple_activity == 1){
+						$partner = new Partner();
+						$partner->firstname = $model->partner_firstname;
+						$partner->lastname = $model->partner_lastname;
+						$partner->participation_id = $participation->id;
+						$partner->save();
+					}
+				}
+				return $this->render('registration-confirmed', ['booking' => $booking]);
+			}
+			
+		}
+		return $this->render('registration-summary', ['model' => $model, 'event' => $event]);
 	}
 
 	/**

@@ -62,7 +62,7 @@ foreach ($event->activityGroups as $group) {?>
 								<?php foreach ($teachers as $teacher_name => $activity) {?>
 								<td class="activity"><?php
 									if(isset($activity)){
-										echo $form->field($model, 'activities[]')->checkbox(['label' => $activity->title, 'value' => $activity->uuid, 'checked' => in_array($activity->uuid, $model->activities)]);
+										echo $form->field($model, 'activities_uuids[]')->checkbox(['label' => $activity->title, 'value' => $activity->uuid, 'checked' => in_array($activity->uuid, $model->activities_uuids)]);
 									} ?>
 								</td>
 								<?php } 
@@ -80,7 +80,7 @@ foreach ($event->activityGroups as $group) {?>
 				echo '<table class="table table-striped table-activities">';
 				foreach ($group->activities as $activity) {
 					echo '<tr><td class="activity">';
-					echo $form->field($model, 'activities[]')->checkbox(['label' => isset($activity->datetime)?'<strong>'.(new \Datetime($activity->datetime))->format('D M j').'</strong> - '.$activity->title:$activity->title, 'value' => $activity->uuid, 'checked' => in_array($activity->uuid, $model->activities)]);
+					echo $form->field($model, 'activities_uuids[]')->checkbox(['label' => isset($activity->datetime)?'<strong>'.(new \Datetime($activity->datetime))->format('D M j').'</strong> - '.$activity->title:$activity->title, 'value' => $activity->uuid, 'checked' => in_array($activity->uuid, $model->activities_uuids)]);
 					echo '</td></tr>';
 				}
 				echo '</table>';
@@ -98,19 +98,15 @@ ActiveForm::end();
 $this->registerJs(
 '
 $(".table-activities td.activity").on("click",function(e){
-	$(this).find("input[type=checkbox]").trigger("click");
-	if($(this).hasClass("checked"))
+	e.preventDefault();
+	if($(this).hasClass("checked")){
+		$(this).find("input[type=checkbox]").prop("checked", false);
 		$(this).removeClass("checked");
-	else
+	}
+	else{
+		$(this).find("input[type=checkbox]").prop("checked", true);
 		$(this).addClass("checked");
-});
-
-$(".table-activities td input[type=checkbox]").on("click",function(e){
-	var cell = $(this).parents("td");
-	if(cell.hasClass("checked"))
-		cell.removeClass("checked");
-	else
-		cell.addClass("checked");
+	}
 });
 '
 );

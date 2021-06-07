@@ -49,9 +49,8 @@ switch($model->activityGroup->title){
             'readableLevel', 
             'price:currency', 
             [
-                'attribute' => 'datetime:datetime',
+                'attribute' => 'datetime',
                 'format' => 'datetime'
-                // 'format' => ['date', 'php:d M, H:i']
             ], 
             'couple_activity:boolean', 
             'max_participants', 
@@ -97,7 +96,8 @@ $participationsProvider = new ArrayDataProvider([
             'attribute' => 'partner.name',
             'format' => 'raw',
             'value' => function($data){
-                return Html::a($data->partner->name, ['/partner/view', 'uuid' => $data->partner->uuid]);
+                if($data->partner)
+                    return Html::a($data->partner->name, ['/partner/view', 'uuid' => $data->partner->uuid]);
             },
             'visible' => $model->couple_activity
         ],
