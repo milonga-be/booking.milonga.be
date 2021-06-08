@@ -5,6 +5,7 @@ use Yii;
 use yii\base\Model;
 use yii\db\ActiveRecord;
 use common\components\UTCDatetimeBehavior;
+use common\components\PriceManager;
 use mootensai\behaviors\UUIDBehavior;
 
 /**
@@ -37,6 +38,9 @@ class Participation extends ActiveRecord
         ];
     }
 
+    /**
+     * Clean the database before delete
+     */
     public function beforeDelete(){
         if (!parent::beforeDelete()) {
             return false;
@@ -46,6 +50,18 @@ class Participation extends ActiveRecord
                 return false;
         }
         return true;
+    }
+
+    /**
+     * Re-compute the price after adding an activity
+     */
+    public function afterSave($insert, $changedAttributes){
+        parent::afterSave($insert, $changedAttributes);
+        if($insert && !is_null($this->booking)){
+            $booking = $this->booking;
+            $booking->total_price = PriceManager::computeTotalPrice($booking->activities);
+            $booking->save();
+        }
     }
 
     /**

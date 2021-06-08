@@ -39,15 +39,19 @@ class Booking extends ActiveRecord
     }
 
     /**
-     * Describe the relation between a Activity and its group
+     * Describe the relation between a Booking and its participations
      * @return ActiveQuery
      */
     public function getParticipations(){
         return $this->hasMany(Participation::className(), ['booking_id' => 'id']);
     }
 
+    /**
+     * Describe the relation between a Booking and its activities
+     * @return ActiveQuery
+     */
     public function getActivities(){
-        $this->hasMany(Participation::className(), ['booking_id' => 'id'])->hasOne(Activity::className(), ['id' => 'participation_id']);
+        return $this->hasMany(Activity::className(), ['id' => 'activity_id'])->via('participations');
     }
 
     /**

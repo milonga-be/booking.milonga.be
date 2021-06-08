@@ -55,7 +55,6 @@ class BookingController extends Controller
 			$booking->lastname = $model->lastname;
 			$booking->email = $model->email;
 			$booking->confirmed = 1;
-			$booking->total_price = PriceManager::computeTotalPrice($model->activities);
 			if($booking->save()){
 				// Adding the selected activities
 				foreach($model->activities as $activity){
