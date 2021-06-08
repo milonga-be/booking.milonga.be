@@ -4,6 +4,7 @@ namespace frontend\controllers;
 use Yii;
 use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
+use yii\web\NotFoundHttpException;
 use yii\web\Controller;
 use common\models\Event;
 use common\models\Participant;
@@ -13,6 +14,7 @@ use common\models\Reduction;
 use common\models\Booking;
 use common\models\Participation;
 use frontend\models\BookingForm;
+use common\components\PriceManager;
 
 /**
  * Site controller
@@ -25,14 +27,14 @@ class BookingController extends Controller
 	 * @param  string Unique Id of the event
 	 * @return mixed
 	 */
-	public function actionRegistration($event_uuid){
+	public function actionCreate($event_uuid){
 		$event = $this->findModel($event_uuid);
 		$model = new BookingForm();
 		if($model->load(Yii::$app->request->post()) && $model->validate()){
-			return $this->render('registration-summary', ['model' => $model, 'event' => $event]);
+			return $this->render('summary', ['model' => $model, 'event' => $event]);
 		}
 
-		return $this->render('registration',['event' => $event, 'model' => $model]);
+		return $this->render('create',['event' => $event, 'model' => $model]);
 	}
 
 	/**
@@ -40,7 +42,7 @@ class BookingController extends Controller
 	 * @param  string $event_uuid   Event Unique Id
 	 * @return mixed
 	 */
-	public function actionRegistrationSummary($event_uuid){
+	public function actionSummary($event_uuid){
 		$event = $this->findModel($event_uuid);
 		$model = new BookingForm();
 		$model->setScenario(BookingForm::SCENARIO_CONFIRMATION);
@@ -53,6 +55,7 @@ class BookingController extends Controller
 			$booking->lastname = $model->lastname;
 			$booking->email = $model->email;
 			$booking->confirmed = 1;
+			$booking->total_price = PriceManager::computeTotalPrice($model->activities);
 			if($booking->save()){
 				// Adding the selected activities
 				foreach($model->activities as $activity){
@@ -68,16 +71,19 @@ class BookingController extends Controller
 						$partner->save();
 					}
 				}
-				return $this->redirect(['booking/registration-confirmed', 'uuid' => $booking->uuid]);
+				return $this->redirect(['booking/confirmed', 'uuid' => $booking->uuid]);
 			}
 			
 		}
-		return $this->render('registration-summary', ['model' => $model, 'event' => $event]);
+		return $this->render('summary', ['model' => $model, 'event' => $event]);
 	}
 
-	public function actionRegistrationConfirmed($uuid){
+	public function actionConfirmed($uuid){
 		$booking = Booking::findOne(['uuid' => $uuid]);
-		return $this->render('registration-confirmed', ['booking' => $booking]);
+		if(!$booking){
+			throw new NotFoundHttpException('No booking found');
+		}
+		return $this->render('confirmed', ['booking' => $booking, 'event' => $booking->event]);
 	}
 
 	/**

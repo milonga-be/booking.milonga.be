@@ -165,3 +165,7 @@ h2, h3{
 .table-activities td.day{
     white-space: nowrap;
 }
+.total_label,.total{
+    font-size: 1.3em;
+    font-weight: bold;
+}
