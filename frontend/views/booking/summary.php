@@ -1,12 +1,13 @@
 <?php
 use yii\widgets\ActiveForm;
 use yii\helpers\Url;
+use common\components\PriceManager;
 
-$this->title = Yii::t('booking', 'Registration').' - '.$event->title;
+$this->title = Yii::t('booking', 'Registration Summary').' - '.$event->title;
 
 $form = ActiveForm::begin([
 	'options' => [],
-	'action' => Url::to(['/booking/registration-summary', 'event_uuid' => $event->uuid])
+	'action' => Url::to(['/booking/summary', 'event_uuid' => $event->uuid])
 ]);
 
 ?>
@@ -33,6 +34,10 @@ $form = ActiveForm::begin([
 				<td><?= Yii::$app->formatter->asCurrency($activity->price) ?></td>
 			</tr>
 		<?php } ?>
+		<tr>
+			<td class="total_label" colspan="3"><?=  Yii::t('booking', 'Total')?></td>
+			<td class="total"><?= Yii::$app->formatter->asCurrency(PriceManager::computeTotalPrice($model->activities))?></td>
+		</tr>
 	</tbody>
 </table>
 <div class="row">
@@ -51,7 +56,7 @@ $form = ActiveForm::begin([
 	<? endif ?>
 </div>
 <div class="text-right">
-	<button class="btn btn-primary"><?= Yii::t('booking', 'Submit')?></button>
+	<button class="btn btn-primary"><?= Yii::t('booking', 'Send')?></button>
 </div>
 <?php
 ActiveForm::end();
