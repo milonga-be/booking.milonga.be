@@ -42,6 +42,14 @@ class Booking extends ActiveRecord
      * Describe the relation between a Booking and its participations
      * @return ActiveQuery
      */
+    public function getPayments(){
+        return $this->hasMany(Payment::className(), ['booking_id' => 'id']);
+    }
+
+    /**
+     * Describe the relation between a Booking and its participations
+     * @return ActiveQuery
+     */
     public function getParticipations(){
         return $this->hasMany(Participation::className(), ['booking_id' => 'id']);
     }
@@ -97,5 +105,17 @@ class Booking extends ActiveRecord
      */
     public function getActivitiesList(){
         return ArrayHelper::map(Activity::find()->where(['event_id' => $this->event_id])->asArray()->all() , 'uuid', 'title');
+    }
+
+    /**
+     * Get the amount already paid
+     */
+    public function getPaid(){
+        $paid = 0;
+        $payments = $this->payments;
+        foreach($payments as $payment){
+            $paid+= $payment->amount;
+        }
+        return $paid;
     }
 }

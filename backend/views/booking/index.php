@@ -28,10 +28,8 @@ $this->params['breadcrumbs'] = [
     'filterModel' => $searchModel,
     'layout' => '{items}{pager}',
     'tableOptions' => ['class' => 'table table-hover  table-striped'],
-    'formatter' => ['class' => 'yii\i18n\Formatter', 'nullDisplay' => ''],
     'columns' => [
-        'firstname',
-        'lastname',
+        'name',
     	[
     		'attribute' => 'email',
     		'format' => 'raw',
@@ -39,6 +37,7 @@ $this->params['breadcrumbs'] = [
     			return Html::a($data->email, ['/booking/view', 'uuid' => $data->uuid]);
     		},
     	],
+        'total_price:currency',
         [
             'attribute' => 'created_at',
             'format' => ['date', 'php:d M, H:i'],

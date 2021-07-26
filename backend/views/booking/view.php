@@ -30,6 +30,7 @@ $this->params['breadcrumbs'] = [
         'lastname', 
         'email',
         'total_price:currency',
+        'paid:currency',
     ],
 ])?>
 <p class="text-right">
@@ -66,7 +67,6 @@ $participationsProvider = new ArrayDataProvider([
     'showHeader'=> false,
     'layout' => '{items}{pager}',
     'tableOptions' => ['class' => 'table table-hover  table-striped'],
-    'formatter' => ['class' => 'yii\i18n\Formatter', 'nullDisplay' => ''],
     'columns' => [
     	[
     		'attribute' => 'activity.title',
@@ -92,6 +92,48 @@ $participationsProvider = new ArrayDataProvider([
 		        return '<a class="text-danger" href="'.Url::to(['participation/delete', 'uuid' =>$data->uuid]).'">x</a>';
 		    },
 		],
+    ]
+ ])
+?>
+<?php
+$paymentsProvider = new ArrayDataProvider([
+    'allModels' => $model->payments,
+    'pagination' => false,
+]);
+?>
+<hr>
+<div class="row">
+    <div class="col-md-10">
+        <h2><?= Yii::t('booking', 'Payments')?></h2>
+    </div>
+    <div class="col-md-2 text-right">
+        <div class="btn-group">
+            <a href="<?= Url::to(['payment/create', 'booking_uuid' => $model->uuid]) ?>" class="btn btn-default">
+                <?= Yii::t('booking', 'New')?>
+            </a>
+        </div>
+    </div>
+</div>
+<?= GridView::widget([
+    'dataProvider' => $paymentsProvider,
+    'showHeader'=> false,
+    'layout' => '{items}{pager}',
+    'tableOptions' => ['class' => 'table table-hover  table-striped'],
+    'columns' => [
+        [
+            'attribute' => 'amount',
+            'format' => 'raw',
+            'value' => function($data){
+                return Html::a(Yii::$app->formatter->asCurrency($data->amount), ['/payment/view', 'uuid' => $data->uuid]);
+            },
+        ],
+        [
+            'attribute' => 'Delete',
+            'format' => 'raw',
+            'value' => function ($data) {                      
+                return '<a class="text-danger" href="'.Url::to(['payment/delete', 'uuid' =>$data->uuid]).'">x</a>';
+            },
+        ],
     ]
  ])
 ?>

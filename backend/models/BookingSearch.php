@@ -12,7 +12,7 @@ class BookingSearch extends Booking{
 
 	public function rules(){
 		return [
-			[['email'], 'safe']
+			[['email', 'name'], 'safe']
 		];
 	}
 
@@ -55,6 +55,9 @@ class BookingSearch extends Booking{
         }
         if(!empty($this->email)){
             $query->andWhere(['LIKE', 'email', $this->email]);
+        }
+        if(!empty($this->name)){
+            $query->andWhere(['LIKE', 'CONCAT(firstname, lastname)', $this->name]);
         }
         
       
