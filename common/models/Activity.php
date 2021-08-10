@@ -110,7 +110,7 @@ class Activity extends ActiveRecord
      * A summary : teacher + title
      * @return string
      */
-    public function getSummary(){
+    public function getSummary($limit = 30){
         $summary = '';
         if(isset($this->teacher)){
             $summary.=$this->teacher->name;
@@ -122,8 +122,8 @@ class Activity extends ActiveRecord
             $summary.=' ';
         }
         $summary.=$this->title;
-        if(strlen($summary) > 30){
-            $summary = substr($summary, 0, 30).'...';
+        if(strlen($summary) > $limit){
+            $summary = substr($summary, 0, $limit).'...';
         }
         return $summary;
     }

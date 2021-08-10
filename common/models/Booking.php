@@ -63,6 +63,14 @@ class Booking extends ActiveRecord
     }
 
     /**
+     * Returns the activityGroups for which the booking has an activity
+     * @return ActiveQuery
+     */
+    public function getActivityGroups(){
+        return ActivityGroup::find()->joinWith('activities')->where(['IN', 'activity.id', ArrayHelper::getColumn($this->activities, 'id')])->all();
+    }
+
+    /**
      * Describe the relation between a booking and its event
      * @return ActiveQuery
      */

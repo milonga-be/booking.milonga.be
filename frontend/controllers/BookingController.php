@@ -70,6 +70,13 @@ class BookingController extends Controller
 						$partner->save();
 					}
 				}
+				
+				Yii::$app->mailer->compose('@common/mail/booking-confirmed', ['booking' => $booking])
+		            ->setFrom('booking@brusselstangofestival.be')
+		            ->setTo($booking->email)
+		            ->setBcc('info@brusselstangofestival.be')
+		            ->setSubject('New Reservation Confirmed')
+		            ->send();
 				return $this->redirect(['booking/confirmed', 'uuid' => $booking->uuid]);
 			}
 			
