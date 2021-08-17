@@ -6,6 +6,7 @@ use yii\base\Model;
 use yii\db\ActiveRecord;
 use common\components\UTCDatetimeBehavior;
 use mootensai\behaviors\UUIDBehavior;
+use yii\helpers\ArrayHelper;
 
 class Event extends ActiveRecord
 {
@@ -191,6 +192,14 @@ class Event extends ActiveRecord
                         ['>=', 'validity_end', date('Y-m-d')]
                     ]
             ])->all();             
+    }
+
+    /**
+     * Get the list of activities for an event
+     * @return array
+     */
+    public function getActivityGroupsList(){
+        return ArrayHelper::map(ActivityGroup::find()->where(['event_id' => $this->id])->all(), 'id', 'title');
     }
 
 }

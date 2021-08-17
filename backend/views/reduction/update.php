@@ -9,12 +9,12 @@ $this->params['breadcrumbs'] = [
         'url' => ['event/view', 'uuid' => $model->event->uuid]
     ],
     [
-        'label' => Yii::t('booking', 'Teachers'),
-        'url' => ['teacher/index', 'event_uuid' => $model->event->uuid]
+        'label' => Yii::t('booking', 'Reductions'),
+        'url' => ['reduction/index', 'event_uuid' => $model->event->uuid]
     ],
     [
         'label' => $model->name,
-        'url' => ['teacher/view', 'uuid' => $model->uuid]
+        'url' => ['reduction/view', 'uuid' => $model->uuid]
     ]
 ];
 ?>
@@ -28,10 +28,10 @@ echo $this->render('_form', ['model' => $model, 'form' => $form, 'event' => $eve
 ?>
 <div class="row">
     <div class="col-md-8">
-        <a onclick="return confirm('<?= Yii::t('booking', 'Do you really want to delete this item ?') ?>');" href="<?= Url::to(['teacher/delete', 'uuid' => $model->uuid]) ?>" class="btn btn-danger btn-md"><?= Yii::t('booking', 'Delete')?></a>
+        <a onclick="return confirm('<?= Yii::t('booking', 'Do you really want to delete this item ?') ?>');" href="<?= Url::to(['reduction/delete', 'uuid' => $model->uuid]) ?>" class="btn btn-danger btn-md"><?= Yii::t('booking', 'Delete')?></a>
     </div>
     <div class="col-md-4 text-right">
-        <a href="<?= Url::to(['teacher/view', 'uuid' => $model->uuid]) ?>" class="btn btn-default btn-md"><?= Yii::t('booking', 'Cancel')?></a>
+        <a href="<?= Url::to(['reduction/view', 'uuid' => $model->uuid]) ?>" class="btn btn-default btn-md"><?= Yii::t('booking', 'Cancel')?></a>
         <button class="btn btn-primary btn-md"><?= Yii::t('booking', 'Update')?></button>
     </div>
 </div>

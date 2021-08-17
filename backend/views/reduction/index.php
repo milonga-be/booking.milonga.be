@@ -3,7 +3,7 @@ use yii\grid\GridView;
 use yii\helpers\Url;
 use yii\helpers\Html;
 
-$this->title = Yii::t('booking', 'Teachers');
+$this->title = Yii::t('booking', 'Reductions');
 $this->params['breadcrumbs'] = [
     [
         'label' => $event->title,
@@ -11,7 +11,7 @@ $this->params['breadcrumbs'] = [
     ],
     [
         'label' => $this->title,
-        'url' => ['teacher/index', 'event_uuid' => $event->uuid]
+        'url' => ['reduction/index', 'event_uuid' => $event->uuid]
     ]
 ];
 ?>
@@ -20,7 +20,7 @@ $this->params['breadcrumbs'] = [
 		<h1><?= $this->title ?></h1>
 	</div>
 	<div class="col-md-2 text-right">
-		<a class="btn btn-md btn-default" href="<?= Url::to(['/teacher/create', 'event_uuid' => $event->uuid])?>"><?= Yii::t('booking', 'New')?></a>
+		<a class="btn btn-md btn-default" href="<?= Url::to(['/reduction/create', 'event_uuid' => $event->uuid])?>"><?= Yii::t('booking', 'New')?></a>
 	</div>
 </div>
 <?= GridView::widget([
@@ -34,14 +34,14 @@ $this->params['breadcrumbs'] = [
     		'attribute' => 'name',
     		'format' => 'raw',
     		'value' => function($data){
-    			return Html::a($data->name, ['/teacher/view', 'uuid' => $data->uuid]);
+    			return Html::a($data->name, ['/reduction/view', 'uuid' => $data->uuid]);
     		},
     	],
         [
             'attribute' => '',
             'format' => 'raw',
             'value' => function ($data) {                      
-                return '<a onclick="return confirm(\''.Yii::t('booking', 'Do you really want to delete this item ?').'\')" class="text-danger" href="'.Url::to(['teacher/delete', 'uuid' => $data->uuid]).'">x</a>';
+                return '<a onclick="return confirm(\''.Yii::t('booking', 'Do you really want to delete this item ?').'\')" class="text-danger" href="'.Url::to(['reduction/delete', 'uuid' => $data->uuid]).'">x</a>';
             },
         ]
     ]
