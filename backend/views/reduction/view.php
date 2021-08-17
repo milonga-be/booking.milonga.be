@@ -61,7 +61,10 @@ $rulesProvider = new ArrayDataProvider([
             'attribute' => 'lower_limit',
             'format' => 'raw',
             'value' => function($model){
-                return Html::a(Yii::t('booking','Between {lower_limit} & {higher_limit} {title}', ['lower_limit' => $model->lower_limit, 'higher_limit' => $model->higher_limit, 'title' => $model->activityGroup->title]), ['reduction-rule/update', 'uuid' => $model->uuid]);
+                if($model->lower_limit == $model->higher_limit)
+                    return Html::a(Yii::t('booking','{higher_limit} {title}', ['higher_limit' => $model->higher_limit, 'title' => $model->activityGroup->title]), ['reduction-rule/update', 'uuid' => $model->uuid]);
+                else    
+                    return Html::a(Yii::t('booking','Between {lower_limit} & {higher_limit} {title}', ['lower_limit' => $model->lower_limit, 'higher_limit' => $model->higher_limit, 'title' => $model->activityGroup->title]), ['reduction-rule/update', 'uuid' => $model->uuid]);
             }
         ],
         [
