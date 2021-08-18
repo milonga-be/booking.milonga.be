@@ -176,22 +176,11 @@ class Event extends ActiveRecord
     }
 
     /**
-     * Get the reductions applied
+     * Describe the relation between an event and its reductions
      * @return array
      */
     public function getReductions(){
-        return Reduction::find()->where(['event_id' => $this->id])
-            ->andWhere([
-                'OR',
-                    ['AND', /* always valid */
-                        ['IS', 'validity_start', null],
-                        ['IS', 'validity_end', null],
-                    ],
-                    ['AND', /* valid only a certain period of time */
-                        ['<=', 'validity_start', date('Y-m-d')],
-                        ['>=', 'validity_end', date('Y-m-d')]
-                    ]
-            ])->all();             
+        return $this->hasMany(Reduction::className(), ['event_id' => 'id']);            
     }
 
     /**

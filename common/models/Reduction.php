@@ -11,9 +11,6 @@ use mootensai\behaviors\UUIDBehavior;
 class Reduction extends ActiveRecord
 {
 
-	// const PCT_WHOLE_PRICE = 'percentage_of_whole_price';
-	// const REDUCE_EVERY_PRICE = 'reduce_every_price';
-
 	public static function tableName()
     {
         return 'reduction';
@@ -53,5 +50,17 @@ class Reduction extends ActiveRecord
      */
     public function getRules(){
         return $this->hasMany(ReductionRule::className(), ['reduction_id' => 'id']);
+    }
+
+    /**
+     * Returns a complete summary of the reduction (all rules)
+     * @return string
+     */
+    public function getSummary(){
+        $summaries = [];
+        foreach($this->rules as $rule){
+            $summaries[] = $rule->getSummary();
+        }
+        return implode('+', $summaries);
     }
 }

@@ -36,8 +36,22 @@ $form = ActiveForm::begin([
 		<?php } ?>
 		<tr>
 			<td class="total_label" colspan="3"><?=  Yii::t('booking', 'Total')?></td>
-			<td class="total"><?= Yii::$app->formatter->asCurrency(PriceManager::computeTotalPrice($model->activities))?></td>
+			<td class="total"><?= Yii::$app->formatter->asCurrency($priceManager->computeTotalPrice($model->activities))?></td>
 		</tr>
+		<?php
+		$validReductions = $priceManager->getValidReductions($model->activities);
+		foreach($validReductions as $reduction){?>
+		<tr>
+			<td colspan="3"><?=  $reduction->name ?></td>
+			<td><?=  $reduction->summary ?></td>
+		</tr>
+		<?php } ?>
+		<?php if(sizeof($validReductions)){ ?>
+		<tr>
+			<td class="total_label" colspan="3"><?=  Yii::t('booking', 'Total with reductions')?></td>
+			<td class="total"><?= Yii::$app->formatter->asCurrency($priceManager->computeReducedPrice($model->activities))?></td>
+		</tr>
+		<?php }?>
 	</tbody>
 </table>
 <div class="row">

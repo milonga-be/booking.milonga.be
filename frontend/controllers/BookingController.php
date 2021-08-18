@@ -30,8 +30,9 @@ class BookingController extends Controller
 	public function actionCreate($event_uuid){
 		$event = $this->findModel($event_uuid);
 		$model = new BookingForm();
+		$priceManager = new PriceManager($event);
 		if($model->load(Yii::$app->request->post()) && $model->validate()){
-			return $this->render('summary', ['model' => $model, 'event' => $event]);
+			return $this->render('summary', ['model' => $model, 'event' => $event, 'priceManager' => $priceManager]);
 		}
 
 		return $this->render('create',['event' => $event, 'model' => $model]);
@@ -46,6 +47,7 @@ class BookingController extends Controller
 		$event = $this->findModel($event_uuid);
 		$model = new BookingForm();
 		$model->setScenario(BookingForm::SCENARIO_CONFIRMATION);
+		$priceManager = new PriceManager($event);
 
 		if($model->load(Yii::$app->request->post()) && $model->validate()){
 			// Creating the booking
@@ -71,7 +73,7 @@ class BookingController extends Controller
 					}
 				}
 				
-				Yii::$app->mailer->compose('@common/mail/booking-confirmed', ['booking' => $booking])
+				Yii::$app->mailer->compose('@common/mail/booking-confirmed', ['booking' => $booking, 'priceManager' => $priceManager])
 		            ->setFrom('booking@brusselstangofestival.be')
 		            ->setTo($booking->email)
 		            ->setBcc('info@brusselstangofestival.be')
@@ -81,7 +83,7 @@ class BookingController extends Controller
 			}
 			
 		}
-		return $this->render('summary', ['model' => $model, 'event' => $event]);
+		return $this->render('summary', ['model' => $model, 'event' => $event, 'priceManager' => $priceManager]);
 	}
 
 	public function actionConfirmed($uuid){

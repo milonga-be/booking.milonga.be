@@ -64,4 +64,16 @@ class ReductionRule extends ActiveRecord
     public function getActivityGroup(){
         return $this->hasOne(ActivityGroup::className(), ['id' => 'activity_group_id']);
     }
+
+    /**
+     * Get a readable summary of the reduction rule
+     * @return string
+     */
+    public function getSummary(){
+        if($this->type == self::TOTAL_PRICE){
+            return Yii::t('booking', 'All {title}s for {price}', ['title' => $this->activityGroup->title, 'price' => Yii::$app->formatter->asCurrency($this->value)]);
+        }else if($this->type == self::ACTIVITY_PRICE){
+            return Yii::t('booking', 'Each {title} for {price}', ['title' => $this->activityGroup->title, 'price' => Yii::$app->formatter->asCurrency($this->value)]);
+        }
+    }
 }
