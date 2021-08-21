@@ -35,15 +35,15 @@ $form = ActiveForm::begin([
 			</tr>
 		<?php } ?>
 		<tr>
-			<td class="total_label" colspan="3"><?=  Yii::t('booking', 'Total')?></td>
-			<td class="total"><?= Yii::$app->formatter->asCurrency($priceManager->computeTotalPrice($model->activities))?></td>
+			<td class="subtotal_label" colspan="3"><?=  Yii::t('booking', 'Total')?></td>
+			<td class="subtotal"><?= Yii::$app->formatter->asCurrency($priceManager->computeTotalPrice($model->activities))?></td>
 		</tr>
 		<?php
 		$validReductions = $priceManager->getValidReductions($model->activities);
 		foreach($validReductions as $reduction){?>
 		<tr>
-			<td colspan="3"><?=  $reduction->name ?></td>
-			<td><?=  $reduction->summary ?></td>
+			<td class="reduction_label" colspan="3"><?=  $reduction->name ?></td>
+			<td class="reduction_summary"><?=  $reduction->summary ?></td>
 		</tr>
 		<?php } ?>
 		<?php if(sizeof($validReductions)){ ?>

@@ -169,3 +169,10 @@ h2, h3{
     font-size: 1.3em;
     font-weight: bold;
 }
+.subtotal_label,.subtotal{
+    font-size: 1.2em;
+    font-weight: bold;
+}
+.reduction_label,.reduction_summary{
+    color: limegreen;
+}
