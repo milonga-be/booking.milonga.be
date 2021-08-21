@@ -1,6 +1,7 @@
 <?php
 use yii\helpers\Url;
 use yii\helpers\Html;
+use yii\helpers\ArrayHelper;
 use yii\widgets\DetailView;
 use yii\grid\GridView;
 use yii\data\ArrayDataProvider;
@@ -41,6 +42,10 @@ $rulesProvider = new ArrayDataProvider([
     'allModels' => $model->rules,
     'pagination' => false,
 ]);
+$incompatibleReductionsProvider = new ArrayDataProvider([
+    'allModels' => $model->incompatibleReductions,
+    'pagination' => false,
+]);
 ?>
 <div class="row">
 	<div class="col-md-10">
@@ -79,6 +84,53 @@ $rulesProvider = new ArrayDataProvider([
                 return ReductionRule::getTypesList()[$model->type];
             }
         ]
+    ]
+ ])
+?>
+<div class="row">
+    <div class="col-md-10">
+        <h2><?= Yii::t('booking', 'Incompatible Reductions')?></h2>
+    </div>
+    <div class="col-md-2 text-right">
+        <div class="btn-group">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <?= Yii::t('booking', 'New')?> <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <?php 
+                $reductions = $model->event->reductions; 
+                $incompatibleReductionsUuids = ArrayHelper::getColumn($model->incompatibleReductions, 'uuid');
+                ?>
+                <?php foreach ($reductions as $reduction) {
+                    if($reduction->uuid != $model->uuid && !in_array($reduction->uuid, $incompatibleReductionsUuids))
+                        echo '<li><a href="'.Url::to(['reduction-incompatibility/create', 'incompatible_reduction_uuid' => $reduction->uuid, 'reduction_uuid' => $model->uuid]).'">'.$reduction->name.'</a></li>';
+                }
+                ?>
+            </ul>
+        </div>
+    </div>
+</div>
+<?= GridView::widget([
+    'dataProvider' => $incompatibleReductionsProvider,
+    'showHeader'=> false,
+    'layout' => '{items}{pager}',
+    'tableOptions' => ['class' => 'table table-hover  table-striped'],
+    'formatter' => ['class' => 'yii\i18n\Formatter', 'nullDisplay' => ''],
+    'columns' => [
+        [
+            'attribute' => 'name',
+            'format' => 'raw',
+            'value' => function($model){
+                return Html::a($model->name, ['reduction/view', 'uuid' => $model->uuid]);
+            }
+        ],
+        [
+            'attribute' => 'Delete',
+            'format' => 'raw',
+            'value' => function ($data) use ($model)  {                      
+                return '<a class="text-danger" href="'.Url::to(['reduction-incompatibility/delete', 'incompatible_reduction_uuid' => $data->uuid, 'reduction_uuid' => $model->uuid]).'">x</a>';
+            },
+        ],
     ]
  ])
 ?>
