@@ -21,11 +21,13 @@ class PriceManager{
 	public function getValidReductions($activities){
 		$reductions = $this->event->reductions;
 		$activitiesCounts = [];
+		// Counting the activities per group to check if reductions are valid
 		foreach($activities as $activity){
 			if(!isset($activitiesCounts[$activity->activityGroup->id]))
 				$activitiesCounts[$activity->activityGroup->id] = 0;
 			$activitiesCounts[$activity->activityGroup->id]++;
 		}
+		// Building the array with the valid reductions
 		$validReductions = [];
 		foreach($reductions as $reduction){
 			$isValid = true;
@@ -50,7 +52,17 @@ class PriceManager{
 				}
 			}
 			if($isValid)
-				$validReductions[] = $reduction;
+				$validReductions[$reduction->id] = $reduction;
+		}
+		// Removing the reductions incompatible with other reductions
+		foreach($validReductions as $reduction){
+			if(sizeof($reduction->incompatibleReductions) > 0){
+				foreach($reduction->incompatibleReductions as $incompatibleReduction){
+					if(isset($validReductions[$incompatibleReduction->id])){
+						unset($validReductions[$incompatibleReduction->id]);
+					}
+				}
+			}
 		}
 		return $validReductions;
 	}

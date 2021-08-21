@@ -53,6 +53,14 @@ class Reduction extends ActiveRecord
     }
 
     /**
+     * Describe the relation between an reduction and its incompatible reductions
+     * @return ActiveQuery
+     */
+    public function getIncompatibleReductions(){
+        return $this->hasMany(Reduction::className(), ['id' => 'incompatible_reduction_id'])->viaTable('reduction_incompatibility', ['reduction_id' => 'id']);
+    }
+
+    /**
      * Returns a complete summary of the reduction (all rules)
      * @return string
      */
