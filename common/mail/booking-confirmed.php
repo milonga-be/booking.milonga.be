@@ -28,9 +28,23 @@ foreach($booking->activityGroups as $activityGroup){
 ?>
 <table width="100%">
 	<tr>
-		<td width="75%" colspan="2"><h2><?=  Yii::t('booking', 'Total')?></h2></td>
-		<td style="text-align:right;"><strong><?= Yii::$app->formatter->asCurrency($priceManager->computeFinalPrice($booking->activities))?></strong></td>
+		<td width="75%" colspan="2"><strong><?=  Yii::t('booking', 'Total')?></strong></td>
+		<td style="text-align:right;"><strong><?= Yii::$app->formatter->asCurrency($priceManager->computeUnreducedPrice($booking->activities))?></strong></td>
 	</tr>
+	<?php
+	$validReductions = $priceManager->getValidReductions($booking->activities);
+	foreach($validReductions as $reduction){?>
+	<tr>
+		<td style="color:limegreen;" colspan="2"><?=  $reduction->name ?></td>
+		<td style="color:limegreen;text-align:right;" ><?=  $reduction->summary ?></td>
+	</tr>
+	<?php } ?>
+	<?php if(sizeof($validReductions)){ ?>
+	<tr>
+		<td style="font-weight: bold;" colspan="2"><h2 style="margin-top: 0;"><?=  Yii::t('booking', 'Total with reductions')?></h2></td>
+		<td style="font-weight: bold;text-align:right;" ><h2 style="margin-top: 0;"><?= Yii::$app->formatter->asCurrency($priceManager->computeFinalPrice($booking->activities))?></h2></td>
+	</tr>
+	<?php }?>
 </table>
 <p>
 	<?= Yii::t('booking', 'The amount must be paid on the following bank account : ')?><br>
