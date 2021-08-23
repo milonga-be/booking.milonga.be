@@ -29,7 +29,7 @@ foreach($booking->activityGroups as $activityGroup){
 <table width="100%">
 	<tr>
 		<td width="75%" colspan="2"><h2><?=  Yii::t('booking', 'Total')?></h2></td>
-		<td style="text-align:right;"><strong><?= Yii::$app->formatter->asCurrency($priceManager->computeTotalPrice($booking->activities))?></strong></td>
+		<td style="text-align:right;"><strong><?= Yii::$app->formatter->asCurrency($priceManager->computeFinalPrice($booking->activities))?></strong></td>
 	</tr>
 </table>
 <p>

@@ -59,7 +59,8 @@ class Participation extends ActiveRecord
         parent::afterSave($insert, $changedAttributes);
         if($insert && !is_null($this->booking)){
             $booking = $this->booking;
-            $booking->total_price = PriceManager::computeTotalPrice($booking->activities);
+            $priceManager = new PriceManager($booking->event);
+            $booking->total_price = $priceManager->computeFinalPrice($booking->activities);
             $booking->save();
         }
     }

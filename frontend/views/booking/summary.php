@@ -26,7 +26,7 @@ $form = ActiveForm::begin([
 		<?php foreach($model->activities as $activity){?>
 			<tr>
 				<td>
-					<strong><?= $activity->title ?></strong>
+					<?= $activity->title ?>
 					<?= $form->field($model, 'activities_uuids[]')->hiddenInput(['value' => $activity->uuid])->label(false) ?>
 				</td>
 				<td><?= $activity->activityGroup->title ?></td>
@@ -36,7 +36,7 @@ $form = ActiveForm::begin([
 		<?php } ?>
 		<tr>
 			<td class="subtotal_label" colspan="3"><?=  Yii::t('booking', 'Total')?></td>
-			<td class="subtotal"><?= Yii::$app->formatter->asCurrency($priceManager->computeTotalPrice($model->activities))?></td>
+			<td class="subtotal"><?= Yii::$app->formatter->asCurrency($priceManager->computeUnreducedPrice($model->activities))?></td>
 		</tr>
 		<?php
 		$validReductions = $priceManager->getValidReductions($model->activities);
@@ -49,7 +49,7 @@ $form = ActiveForm::begin([
 		<?php if(sizeof($validReductions)){ ?>
 		<tr>
 			<td class="total_label" colspan="3"><?=  Yii::t('booking', 'Total with reductions')?></td>
-			<td class="total"><?= Yii::$app->formatter->asCurrency($priceManager->computeReducedPrice($model->activities))?></td>
+			<td class="total"><?= Yii::$app->formatter->asCurrency($priceManager->computeFinalPrice($model->activities))?></td>
 		</tr>
 		<?php }?>
 	</tbody>

@@ -72,7 +72,7 @@ class PriceManager{
 	 * @param  array $activities list of selected activities
 	 * @return float
 	 */
-	public function computeReducedPrice($activities){
+	public function computeFinalPrice($activities){
 		$reduced_price = 0;
 		$validReductions = $this->getValidReductions($activities);
 
@@ -109,7 +109,7 @@ class PriceManager{
 	 * @param  array $activities list of selected activities
 	 * @return float
 	 */
-	public function computeTotalPrice($activities){
+	public function computeUnreducedPrice($activities){
 		$total_price = 0;
 		foreach ($activities as $activity) {
 			$total_price+= $activity->price;

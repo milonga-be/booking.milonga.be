@@ -6,27 +6,27 @@ $this->title = Yii::t('booking', 'Registration Complete').' - '.$event->title;
 </h3>
 <p>
 	<?= Yii::t('booking', 'Your booking reference is : ') ?>
-	<strong><?= $booking->uuid ?></strong>
+	<strong><?= $model->uuid ?></strong>
 </p>
 <h3><?= Yii::t('booking', 'Personal informations') ?></h3>
 <table class="table table-striped"> 
 	<tr>
 		<td><?= Yii::t('booking', 'Firstname')?></td>
-		<td><?= $booking->firstname ?></td>
+		<td><?= $model->firstname ?></td>
 	</tr>
 	<tr>
 		<td><?= Yii::t('booking', 'Lastname')?></td>
-		<td><?= $booking->lastname ?></td>
+		<td><?= $model->lastname ?></td>
 	</tr>
 	<tr>
 		<td><?= Yii::t('booking', 'Email')?></td>
-		<td><?= $booking->email ?></td>
+		<td><?= $model->email ?></td>
 	</tr>
 </table>
 <h3><?= Yii::t('booking', 'Activities') ?></h3>
 <table class="table table-striped"> 
 <?php
-foreach ($booking->participations as $participation) {
+foreach ($model->participations as $participation) {
 	echo '<tr>';
 	echo '<td>'.$participation->activity->title.'</td>';
 	echo '<td>'.$participation->activity->activityGroup->title.'</td>';
@@ -40,13 +40,27 @@ foreach ($booking->participations as $participation) {
 
 ?>
 	<tr>
-		<td class="total_label" colspan="3"><?=  Yii::t('booking', 'Total')?></td>
-		<td class="total"><?= Yii::$app->formatter->asCurrency($booking->total_price) ?></td>
+		<td class="subtotal_label" colspan="3"><?=  Yii::t('booking', 'Total')?></td>
+		<td class="subtotal"><?= Yii::$app->formatter->asCurrency($priceManager->computeUnreducedPrice($model->activities))?></td>
 	</tr>
+	<?php
+	$validReductions = $priceManager->getValidReductions($model->activities);
+	foreach($validReductions as $reduction){?>
+	<tr>
+		<td class="reduction_label" colspan="3"><?=  $reduction->name ?></td>
+		<td class="reduction_summary"><?=  $reduction->summary ?></td>
+	</tr>
+	<?php } ?>
+	<?php if(sizeof($validReductions)){ ?>
+	<tr>
+		<td class="total_label" colspan="3"><?=  Yii::t('booking', 'Total with reductions')?></td>
+		<td class="total"><?= Yii::$app->formatter->asCurrency($priceManager->computeFinalPrice($model->activities))?></td>
+	</tr>
+	<?php }?>
 </table>
 <h3>
 <?= Yii::t('booking', 'Total price') ?> :
-<?= Yii::$app->formatter->asCurrency($booking->total_price) ?>
+<?= Yii::$app->formatter->asCurrency($model->total_price) ?>
 </h3>
 <p>
 <?= Yii::t('booking', 'The amount must be paid on the following bank account : ') ?><br>
