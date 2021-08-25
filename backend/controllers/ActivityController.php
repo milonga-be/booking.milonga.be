@@ -204,7 +204,7 @@ class ActivityController extends Controller
             $cellName = 'A'.$lineNr;
             $sheet->setCellValue($cellName, $activity->title);
             $cellName = 'B'.$lineNr;
-            $sheet->setCellValue($cellName, (sizeof($activity->participations)*2).' participants');
+            $sheet->setCellValue($cellName, $activity->countParticipants().' participants');
 
             $sheet = $objPHPExcel->createSheet();
         }

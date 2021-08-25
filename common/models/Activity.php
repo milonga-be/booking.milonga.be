@@ -183,4 +183,14 @@ class Activity extends ActiveRecord
         return $this->levelList[$this->level];
         return null;
     }
+
+    /**
+     * Get the number of participants
+     */
+    public function countParticipants(){
+        if($this->couple_activity){
+            return sizeof($this->participations)*2;
+        }else
+            return sizeof($this->participations);
+    }
 }
