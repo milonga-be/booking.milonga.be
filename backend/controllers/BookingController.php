@@ -8,6 +8,8 @@ use yii\filters\AccessControl;
 use common\models\Booking;
 use common\models\Event;
 use backend\models\BookingSearch;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 /**
  * Site controller
@@ -24,7 +26,7 @@ class BookingController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['index', 'view', 'create', 'update', 'delete'],
+                        'actions' => ['index', 'view', 'create', 'update', 'delete', 'export-payments'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -123,5 +125,69 @@ class BookingController extends Controller
         $model->delete();
 
         $this->redirect(['booking/index', 'event_uuid' => $event->uuid]);
+    }
+
+    /**
+     * Export a file with the participant and their payments
+     *
+     * @return string
+     */
+    public function actionExportPayments($event_uuid){
+        header('Content-type: application/vnd.openXMLformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="export.xlsx"');
+
+        $objPHPExcel = new Spreadsheet();
+        $sheet = $objPHPExcel->getActiveSheet();
+        $lineNr = 1;
+        $rowNumber = 1;
+        $headings = array(
+            ['title' => Yii::t('booking', 'Lastname'), 'width' => 30], 
+            ['title' => Yii::t('booking', 'Firstname'), 'width' => 30], 
+            ['title' => Yii::t('booking', 'Amount to pay'), 'width' => 20], 
+            ['title' => Yii::t('booking', 'Total Paid'), 'width' => 20]
+        );
+        // First building the columns titles
+        $cellNr = 0;
+        foreach ($headings as $heading) {
+            $header = $heading['title'];
+            $letter = chr($cellNr + 65);
+            $cellName = $letter.$lineNr;
+            $sheet->setCellValue($cellName, $header);
+            // Forcing the width of the columns
+            if(isset($heading['width'])){
+                $sheet->getColumnDimension($letter)->setWidth($heading['width']);
+            }
+            // In bold
+            $sheet->getStyle( $cellName )->getFont()->setBold(true);
+            $cellNr++;
+        }
+        $event = Event::findOne(['uuid' => $event_uuid]);
+        $lineNr++;
+        foreach($event->bookings as $booking){
+            // Lastname
+            $cellName = 'A'.$lineNr;
+            $sheet->setCellValue($cellName, $booking->lastname);
+        
+            // Firstname
+            $cellName = 'B'.$lineNr;
+            $sheet->setCellValue($cellName, $booking->firstname);
+
+            // Price
+            $cellName = 'C'.$lineNr;
+            $sheet->setCellValue($cellName, $booking->total_price);
+
+            // Price
+            $cellName = 'D'.$lineNr;
+            $sheet->setCellValue($cellName, $booking->paid);
+
+            $lineNr++;
+        }
+
+        $objWriter = new Xlsx($objPHPExcel);
+        $tmpfile = tempnam(sys_get_temp_dir(), "export");
+        $objWriter->save( $tmpfile );
+
+        fpassthru( fopen($tmpfile, 'rb') );
+        exit();
     }
 }

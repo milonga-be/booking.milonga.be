@@ -16,17 +16,17 @@ $this->params['breadcrumbs'] = [
 ];
 ?>
 <div class="row">
-	<div class="col-md-10">
+	<div class="col-md-9">
 		<h1><?= $this->title ?></h1>
 	</div>
-	<div class="col-md-2 text-right">
-		<a class="btn btn-md btn-default" href="<?= Url::to(['/booking/create', 'event_uuid' => $event->uuid])?>"><?= Yii::t('booking', 'New')?></a>
+	<div class="col-md-3 text-right">
+        <a class="btn btn-md btn-default" href="<?= Url::to(['/booking/create', 'event_uuid' => $event->uuid])?>"><?= Yii::t('booking', 'New')?></a>
 	</div>
 </div>
 <?= GridView::widget([
     'dataProvider' => $provider,
     'filterModel' => $searchModel,
-    'layout' => '{items}{pager}',
+    'layout' => '{items}'.'<a class="export pull-right btn btn-md btn-default" href="'.Url::to(['booking/export-payments', 'event_uuid' => $event->uuid]).'">'.Yii::t('booking', 'Export').'</a>'.'{pager}',
     'tableOptions' => ['class' => 'table table-hover  table-striped'],
     'columns' => [
         'name',

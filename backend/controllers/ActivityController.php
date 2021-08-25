@@ -9,6 +9,8 @@ use common\models\Event;
 use common\models\Activity;
 use common\models\ActivityGroup;
 use backend\models\ActivitySearch;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 /**
  * Site controller
@@ -25,7 +27,7 @@ class ActivityController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['index', 'view', 'create', 'update', 'delete'],
+                        'actions' => ['index', 'view', 'create', 'update', 'delete', 'export-participants'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -126,5 +128,86 @@ class ActivityController extends Controller
         $model->delete();
 
         $this->redirect(['activity/index', 'event_uuid' => $event->uuid]);
+    }
+
+
+
+    /**
+     * Export a file with the activities and their participants
+     *
+     * @return string
+     */
+    public function actionExportParticipants($event_uuid){
+        header('Content-type: application/vnd.openXMLformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="export.xlsx"');
+
+        $objPHPExcel = new Spreadsheet();
+        $sheet = $objPHPExcel->getActiveSheet();
+
+        $headings = array(
+            ['title' => Yii::t('booking', 'Participant'), 'width' => 50], 
+            ['title' => Yii::t('booking', 'Partner'), 'width' => 50], 
+        );
+
+        $event = Event::findOne(['uuid' => $event_uuid]);
+        foreach($event->activities as $activity){
+            $sheet_title = '';
+            // $sheet_title = substr($activity->activityGroup->title, 0, 2);
+            // $sheet_title.=' ';
+            if(isset($activity->teacher))
+                $sheet_title.=' '.$activity->teacher->name;
+            else
+                $sheet_title.=' '.$activity->title;
+            if(isset($activity->datetime)){
+                $sheet_title.=' '.(new \Datetime($activity->datetime))->format('D G.i');
+            }
+            $invalidCharacters = $sheet->getInvalidCharacters();
+            $title = str_replace($invalidCharacters, '', $sheet_title);
+            if(strlen($title) > 31){
+                $title = substr($title, 0, 31);
+            }
+            $sheet->setTitle($title);
+
+            $cellNr = 0;
+            $lineNr = 1;
+            $rowNumber = 1;
+            foreach ($headings as $heading) {
+                $header = $heading['title'];
+                if($header == 'Partner' && !$activity->couple_activity)
+                    continue;
+                $letter = chr($cellNr + 65);
+                $cellName = $letter.$lineNr;
+                $sheet->setCellValue($cellName, $header);
+                // Forcing the width of the columns
+                if(isset($heading['width'])){
+                    $sheet->getColumnDimension($letter)->setWidth($heading['width']);
+                }
+                // In bold
+                $sheet->getStyle( $cellName )->getFont()->setBold(true);
+                $cellNr++;
+            }
+            $lineNr++;
+            foreach($activity->participations as $participation){
+                // Participant
+                $cellName = 'A'.$lineNr;
+                $sheet->setCellValue($cellName, $participation->booking->name);
+            
+                // Partner
+                $cellName = 'B'.$lineNr;
+                if(isset($participation->partner))
+                    $sheet->setCellValue($cellName, $participation->partner->name);
+
+                $lineNr++;
+            }
+
+            $sheet = $objPHPExcel->createSheet();
+        }
+
+        $objWriter = new Xlsx($objPHPExcel);
+        $tmpfile = tempnam(sys_get_temp_dir(), "export");
+        $objWriter->save( $tmpfile );
+
+        fpassthru( fopen($tmpfile, 'rb') );
+        exit();
     }
 }

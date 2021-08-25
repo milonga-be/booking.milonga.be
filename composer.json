@@ -22,7 +22,8 @@
         "mootensai/yii2-uuid-behavior": "^1.0",
         "kartik-v/yii2-widgets": "^3.4",
         "bower-asset/chartjs": "^2.9",
-        "kartik-v/yii2-number": "^1.0"
+        "kartik-v/yii2-number": "^1.0",
+        "phpoffice/phpspreadsheet": "^1.12"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",
