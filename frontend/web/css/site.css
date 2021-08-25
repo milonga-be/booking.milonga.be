@@ -176,3 +176,10 @@ h2, h3{
 .reduction_label,.reduction_summary{
     color: limegreen;
 }
+td.full .text-danger{
+    font-size: 1.2em;
+}
+td.full label{
+    color: grey;
+    text-decoration: line-through;
+}

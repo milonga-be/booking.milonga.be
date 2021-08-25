@@ -62,9 +62,12 @@ foreach ($event->activityGroups as $group) {?>
 								<td class="day"><strong><?= $first_day?(new \Datetime($date))->format('D M j'):'' ?></strong></td>
 								<td><?= $hour ?></td>
 								<?php foreach ($teachers as $teacher_name => $activity) {?>
-								<td class="activity"><?php
+								<td class="activity <?= $activity && $activity->isFull()?'full':'' ?>"><?php
 									if(isset($activity)){
-										echo $form->field($model, 'activities_uuids[]')->checkbox(['label' => $activity->title, 'value' => $activity->uuid, 'checked' => in_array($activity->uuid, $model->activities_uuids)]);
+										echo $form->field($model, 'activities_uuids[]')->checkbox(['label' => $activity->title, 'value' => $activity->uuid, 'checked' => in_array($activity->uuid, $model->activities_uuids), 'disabled' => $activity->isFull()]);
+										if($activity->isFull()){
+											echo '<strong class="text-danger">'.Yii::t('booking', 'FULL').'</strong>';
+										}
 									} ?>
 								</td>
 								<?php } 
@@ -81,8 +84,11 @@ foreach ($event->activityGroups as $group) {?>
 			default: 
 				echo '<table class="table table-striped table-activities">';
 				foreach ($group->activities as $activity) {
-					echo '<tr><td class="activity">';
-					echo $form->field($model, 'activities_uuids[]')->checkbox(['label' => isset($activity->datetime)?'<strong>'.(new \Datetime($activity->datetime))->format('D M j').'</strong> - '.$activity->title:$activity->title, 'value' => $activity->uuid, 'checked' => in_array($activity->uuid, $model->activities_uuids)]);
+					echo '<tr><td class="activity '.($activity && $activity->isFull()?'full':'').'">';
+					echo $form->field($model, 'activities_uuids[]')->checkbox(['label' => isset($activity->datetime)?'<strong>'.(new \Datetime($activity->datetime))->format('D M j').'</strong> - '.$activity->title:$activity->title, 'value' => $activity->uuid, 'checked' => in_array($activity->uuid, $model->activities_uuids), 'disabled' => $activity->isFull()]);
+					if($activity->isFull()){
+						echo '<strong class="text-danger">'.Yii::t('booking', 'FULL').'</strong>';
+					}
 					echo '</td></tr>';
 				}
 				echo '</table>';
@@ -99,7 +105,7 @@ foreach ($event->activityGroups as $group) {?>
 ActiveForm::end();
 $this->registerJs(
 '
-$(".table-activities td.activity").on("click",function(e){
+$(".table-activities td.activity").not(".full").on("click",function(e){
 	e.preventDefault();
 	if($(this).hasClass("checked")){
 		$(this).find("input[type=checkbox]").prop("checked", false);

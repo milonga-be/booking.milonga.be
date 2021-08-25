@@ -193,4 +193,15 @@ class Activity extends ActiveRecord
         }else
             return sizeof($this->participations);
     }
+
+    /**
+     * Checks that an activity has reached its max number of participants
+     */
+    public function isFull(){
+        if(isset($this->max_participants)){
+            return ($this->countParticipants() >= $this->max_participants);
+        }else{
+            return false;
+        }
+    }
 }
