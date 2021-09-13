@@ -2,6 +2,9 @@
 use yii\grid\GridView;
 use yii\helpers\Url;
 use yii\helpers\Html;
+use backend\assets\ChartJsAsset;
+
+ChartJsAsset::register($this);
 
 $this->title = Yii::t('booking', 'Reservations');
 $this->params['breadcrumbs'] = [
@@ -14,6 +17,8 @@ $this->params['breadcrumbs'] = [
         'url' => ['booking/index', 'event_uuid' => $event->uuid]
     ]
 ];
+$color_amount = '#61ab3b';
+$color_quantity = '#2c4399';
 ?>
 <div class="row">
 	<div class="col-md-9">
@@ -54,3 +59,70 @@ $this->params['breadcrumbs'] = [
     ]
  ])
 ?>
+<h3><?= Yii::t('booking', 'Amounts per month')?></h3>
+<div class="row">
+    <div class="col-md-12 text-center">
+        <canvas id="bars-amounts" width="100" height="300"></canvas>
+    </div>
+</div>
+<h3><?= Yii::t('booking', 'Quantities per month')?></h3>
+<div class="row">
+    <div class="col-md-12 text-center">
+        <canvas id="bars-quantities" width="100" height="300"></canvas>
+    </div>
+</div>
+<?php 
+$this->registerJs(
+'
+var data = {
+    datasets: [
+    {
+        label : "'.Yii::t('booking', 'Amounts').'",
+        data: '.json_encode(array_values($amount_datas)).',
+        backgroundColor: "'.$color_amount.'",
+        barThickness: "flex"
+    }
+    ],
+    labels: '.json_encode(array_keys($amount_datas)).',
+};
+var options = {
+    maintainAspectRatio : false,
+    legend: {
+        display: true,
+        position : "right"
+    },
+    scales: {
+        xAxes: [{ stacked: true }],
+        yAxes: [{ 
+            stacked: true,
+            ticks: {
+                beginAtZero: true,
+                suggestedMax: 50
+            }
+        }]
+      }
+};
+var myBarChart = new Chart( $("#bars-amounts"), {
+    type: "bar",
+    data: data,
+    options: options
+});
+
+var data = {
+    datasets: [
+    {
+        label : "'.Yii::t('booking', 'Quantities').'",
+        data: '.json_encode(array_values($quantity_datas)).',
+        backgroundColor: "'.$color_quantity.'",
+        barThickness: "flex"
+    },
+    ],
+    labels: '.json_encode(array_keys($amount_datas)).',
+};
+
+var myBarChart = new Chart( $("#bars-quantities"), {
+    type: "bar",
+    data: data,
+    options: options
+});
+');

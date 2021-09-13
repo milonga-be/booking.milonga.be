@@ -59,7 +59,23 @@ class BookingController extends Controller
         $searchModel->event_id = $event->id;
         $provider = $searchModel->search(Yii::$app->request->queryParams);
 
-        return $this->render('index', ['searchModel' => $searchModel, 'provider' => $provider, 'event' => $event]);
+        $amount_datas = [];
+        $date = new \Datetime($event->start_date);
+        $date->modify('-12 month');
+
+        for($i = 0;$i<12;$i++){
+            $amount_datas[$date->format('M')] = (Booking::find()
+                ->where(['LIKE', 'created_at', $date->format('Y-m-')])
+                ->andWhere(['=', 'event_id', $event->id])
+                ->select('SUM(total_price) AS total')->asArray()->one())['total'];
+            $quantity_datas[$date->format('M')] = Booking::find()
+                ->where(['LIKE', 'created_at', $date->format('Y-m-')])
+                ->andWhere(['=', 'event_id', $event->id])
+                ->count();
+            $date->modify('+1 month');
+        }
+
+        return $this->render('index', ['searchModel' => $searchModel, 'provider' => $provider, 'event' => $event, 'amount_datas' => $amount_datas, 'quantity_datas' => $quantity_datas]);
     }
 
     /**
