@@ -34,7 +34,7 @@ foreach ($model->participations as $participation) {
 		echo 	'<td>'.Yii::$app->formatter->asDatetime($participation->activity->datetime).'</td>';
 	else
 		echo 	'<td></td>';
-	echo '<td>'.Yii::$app->formatter->asCurrency($participation->activity->price).'</td>';
+	echo '<td class="price">'.$participation->activity->getPriceSummary().'</td>';
 	echo '</tr>';
 }
 

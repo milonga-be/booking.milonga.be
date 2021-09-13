@@ -19,7 +19,7 @@ $form = ActiveForm::begin([
 			<th><?= Yii::t('booking', 'Activity')?></th>
 			<th><?= Yii::t('booking', 'Type')?></th>
 			<th><?= Yii::t('booking', 'Date')?></th>
-			<th><?= Yii::t('booking', 'Price')?></th>
+			<th class="price"><?= Yii::t('booking', 'Price')?></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -31,7 +31,7 @@ $form = ActiveForm::begin([
 				</td>
 				<td><?= $activity->activityGroup->title ?></td>
 				<td><?= Yii::$app->formatter->asDatetime($activity->datetime) ?></td>
-				<td><?= Yii::$app->formatter->asCurrency($activity->price) ?></td>
+				<td class="price"><?= $activity->getPriceSummary() ?></td>
 			</tr>
 		<?php } ?>
 		<tr>

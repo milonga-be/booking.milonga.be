@@ -88,16 +88,16 @@ class PriceManager{
 			if(isset($activityGroupsReductionRule[$activity->activityGroup->id])){
 				$rule = $activityGroupsReductionRule[$activity->activityGroup->id];
 				if($rule->type == ReductionRule::ACTIVITY_PRICE)
-					$reduced_price+= $rule->value;
+					$reduced_price+= $rule->value;//*$activity->getPersonsIncluded();
 			}else{
-				$reduced_price+= $activity->price;
+				$reduced_price+= $activity->price;//*$activity->getPersonsIncluded();
 			}
 		}
 		// Applying the reductions where the reduction has a price for the group of activities
 		foreach($validReductions as $reduction){
 			foreach($reduction->rules as $rule){
 				if($rule->type == ReductionRule::TOTAL_PRICE){
-					$reduced_price+=$rule->value;
+					$reduced_price+=$rule->value;//*$activity->getPersonsIncluded();
 				}
 			}
 		}
@@ -112,7 +112,7 @@ class PriceManager{
 	public function computeUnreducedPrice($activities){
 		$total_price = 0;
 		foreach ($activities as $activity) {
-			$total_price+= $activity->price;
+			$total_price+= $activity->price;//*$activity->getPersonsIncluded();
 		}
 		return $total_price;
 	}

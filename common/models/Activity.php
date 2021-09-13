@@ -185,13 +185,33 @@ class Activity extends ActiveRecord
     }
 
     /**
+     * Get the number of persons included for one booking
+     * @return integer 
+     */
+    public function getPersonsIncluded(){
+        if($this->couple_activity)
+            return 2;
+        else
+            return 1;
+    }
+
+    /**
+     * A summary of the price with the number of times the price is counted (for workshops)
+     * @return string
+     */
+    public function getPriceSummary(){
+        // if($this->getPersonsIncluded() > 1){
+        //     return $this->getPersonsIncluded().' x '.Yii::$app->formatter->asCurrency($this->price);
+        // }else{
+            return Yii::$app->formatter->asCurrency($this->price);
+        // }
+    }
+
+    /**
      * Get the number of participants
      */
     public function countParticipants(){
-        if($this->couple_activity){
-            return sizeof($this->participations)*2;
-        }else
-            return sizeof($this->participations);
+        return sizeof($this->participations)*$this->getPersonsIncluded();
     }
 
     /**
