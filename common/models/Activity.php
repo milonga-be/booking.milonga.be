@@ -200,11 +200,11 @@ class Activity extends ActiveRecord
      * @return string
      */
     public function getPriceSummary(){
-        // if($this->getPersonsIncluded() > 1){
-        //     return $this->getPersonsIncluded().' x '.Yii::$app->formatter->asCurrency($this->price);
-        // }else{
+        if($this->getPersonsIncluded() > 1){
+            return $this->getPersonsIncluded().' x '.Yii::$app->formatter->asCurrency($this->price);
+        }else{
             return Yii::$app->formatter->asCurrency($this->price);
-        // }
+        }
     }
 
     /**

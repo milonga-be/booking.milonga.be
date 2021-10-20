@@ -88,9 +88,9 @@ class PriceManager{
 			if(isset($activityGroupsReductionRule[$activity->activityGroup->id])){
 				$rule = $activityGroupsReductionRule[$activity->activityGroup->id];
 				if($rule->type == ReductionRule::ACTIVITY_PRICE)
-					$reduced_price+= $rule->value;//*$activity->getPersonsIncluded();
+					$reduced_price+= $rule->value*$activity->getPersonsIncluded();
 			}else{
-				$reduced_price+= $activity->price;//*$activity->getPersonsIncluded();
+				$reduced_price+= $activity->price*$activity->getPersonsIncluded();
 			}
 		}
 		// Applying the reductions where the reduction has a price for the group of activities
