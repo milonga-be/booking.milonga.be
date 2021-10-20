@@ -1,4 +1,4 @@
-<header class="site-header">
+<header class="site-header" style="background-image: url(<?= \Yii::getAlias('@web') ?>/uploads/<?= $event->banner ?>);">
     <a class="home-link" href="http://brusselstangofestival.com/" title="The Brussels Tango Festival" rel="home">
         <h1 class="site-title">The Brussels Tango Festival</h1>
         <h2 class="site-description">Brussels, Belgium</h2>

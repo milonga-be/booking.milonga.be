@@ -7,6 +7,7 @@ use yii\db\ActiveRecord;
 use common\components\UTCDatetimeBehavior;
 use mootensai\behaviors\UUIDBehavior;
 use yii\helpers\ArrayHelper;
+use yii\web\UploadedFile;
 
 class Event extends ActiveRecord
 {
@@ -25,6 +26,8 @@ class Event extends ActiveRecord
             'display' => 'list'
         ]
     ];
+
+    var $bannerFile;
 
 	public static function tableName()
     {
@@ -58,6 +61,7 @@ class Event extends ActiveRecord
             }],
             [['uuid'], 'safe'],
             [['title'], 'string'],
+            [['bannerFile'], 'file', 'extensions' => 'png, jpg, jpeg, gif'],
             [['start_date', 'end_date'], 'datetime', 'format' => 'php:Y-m-d'],
         ];
     }
@@ -148,6 +152,21 @@ class Event extends ActiveRecord
                 $activityGroup->event_id = $this->id;
                 $activityGroup->save();
             }
+        }
+    }
+
+    /**
+     * Saves the files on the disk and saves the reference in the database
+     */
+    public function saveFiles(){
+        $this->bannerFile = UploadedFile::getInstance($this, 'bannerFile');
+        if($this->bannerFile && $this->validate()){
+            $picture_dir = \Yii::$app->basePath.'/../frontend/web/uploads/';
+            $path = 'event'.date('YmdHis').'.' . $this->bannerFile->extension;
+            $complete_path = $picture_dir.$path;
+            $this->bannerFile->saveAs($complete_path);
+            $this->banner = $path;
+            $this->bannerFile = null;
         }
     }
 

@@ -7,7 +7,7 @@ body {
     font-family:'Open Sans';
 }
 .site-header {
-    background: url(http://brusselstangofestival.com/wp-content/uploads/2018/12/cropped-bandeau-site-BTF2019-3.jpg) no-repeat scroll top;
+    /*background: url(http://brusselstangofestival.com/wp-content/uploads/2018/12/cropped-bandeau-site-BTF2019-3.jpg) no-repeat scroll top;*/
     background-size: 1600px auto;
     position: relative;
     height: 230px;

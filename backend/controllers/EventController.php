@@ -102,6 +102,7 @@ class EventController extends Controller
     {
         $model = new Event();
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            $model->saveFiles();
             if($model->save()){
                 // Redirect to the list page
                 $this->redirect(['/event/index']);
@@ -121,6 +122,7 @@ class EventController extends Controller
     {
         $model = Event::findOne(['uuid' => $uuid]);
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            $model->saveFiles();
             if($model->save()){
                 // Redirect to the list page
                 $this->redirect(['/event/view', 'uuid' => $model->uuid]);
