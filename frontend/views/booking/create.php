@@ -3,7 +3,12 @@ use yii\widgets\ActiveForm;
 use yii\helpers\Url;
 
 $this->title = Yii::t('booking', 'Registration').' - '.$event->title;
+?>
+<div class="wrap">
+	<?= $this->render('_banner', ['event' => $event]) ?>
 
+    <div class="container">
+<?php
 $form = ActiveForm::begin([
 	'options' => [],
 	// 'action' => Url::to(['/booking/registration-summary', 'event_uuid' => $event->uuid])
@@ -118,3 +123,6 @@ $(".table-activities td.activity").not(".full").on("click",function(e){
 });
 '
 );
+?>
+	</div>
+</div>

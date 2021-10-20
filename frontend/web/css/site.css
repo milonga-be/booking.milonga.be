@@ -6,6 +6,25 @@ body {
 *{
     font-family:'Open Sans';
 }
+.site-header {
+    background: url(http://brusselstangofestival.com/wp-content/uploads/2018/12/cropped-bandeau-site-BTF2019-3.jpg) no-repeat scroll top;
+    background-size: 1600px auto;
+    position: relative;
+    height: 230px;
+}
+.site-title, .site-description {
+    position: absolute;
+    clip: rect(1px 1px 1px 1px);
+    clip: rect(1px, 1px, 1px, 1px);
+}
+.title h1{
+    /*padding: 15px;*/
+    margin-top: 0;
+    margin-bottom: 0;
+    color: black;
+    /*text-transform: uppercase;*/
+    font-size: 21px;
+}
 .wrap {
     min-height: 100%;
     height: auto;
@@ -13,10 +32,12 @@ body {
     padding: 0 0 60px;
 }
 
-.wrap > .container {
-    padding: 70px 15px 20px;
+.wrap > .container,.wrap > .title{
+    padding: 20px 15px 20px;
 }
-
+.title{
+    background-color: #f7f5e7;
+}
 .footer {
     height: 60px;
     background-color: #f5f5f5;

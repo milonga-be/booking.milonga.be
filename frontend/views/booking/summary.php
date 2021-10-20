@@ -4,6 +4,11 @@ use yii\helpers\Url;
 use common\components\PriceManager;
 
 $this->title = Yii::t('booking', 'Registration Summary').' - '.$event->title;
+?>
+<div class="wrap">
+	<?= $this->render('_banner', ['event' => $event]) ?>
+    <div class="container">
+<?php
 
 $form = ActiveForm::begin([
 	'options' => [],
@@ -74,3 +79,6 @@ $form = ActiveForm::begin([
 </div>
 <?php
 ActiveForm::end();
+?>
+</div>
+</div>
