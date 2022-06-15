@@ -59,6 +59,7 @@ class ActivityController extends Controller
         $searchModel = new ActivitySearch();
         $searchModel->event_id = $event->id;
         $provider = $searchModel->search(Yii::$app->request->queryParams);
+        $provider->pagination->pageSize = 50;
 
         return $this->render('index', ['searchModel' => $searchModel, 'provider' => $provider, 'event' => $event]);
     }

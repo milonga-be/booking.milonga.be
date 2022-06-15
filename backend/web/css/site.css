@@ -19,7 +19,7 @@ body {
     background-color:white;
 }
 .wrap .content-container{
-    max-width: 800px;
+    /*max-width: 800px;*/
 }
 .footer {
     height: 60px;
