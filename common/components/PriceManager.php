@@ -97,7 +97,7 @@ class PriceManager{
 		foreach($validReductions as $reduction){
 			foreach($reduction->rules as $rule){
 				if($rule->type == ReductionRule::TOTAL_PRICE){
-					$reduced_price+=$rule->value;//*$activity->getPersonsIncluded();
+					$reduced_price+=$rule->value*$activity->getPersonsIncluded();
 				}
 			}
 		}
@@ -112,7 +112,7 @@ class PriceManager{
 	public function computeUnreducedPrice($activities){
 		$total_price = 0;
 		foreach ($activities as $activity) {
-			$total_price+= $activity->price;//*$activity->getPersonsIncluded();
+			$total_price+= $activity->price*$activity->getPersonsIncluded();
 		}
 		return $total_price;
 	}

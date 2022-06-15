@@ -65,6 +65,13 @@ $this->params['breadcrumbs'] = [
             'value' => 'activityGroup.title'
         ],
         [
+            'attribute' => 'countParticipants',
+            'label' => Yii::t('booking', 'Nr Participants'),
+            'value' => function ($data) {
+                return $data->countParticipants();
+            }
+        ],
+        [
             'attribute' => '',
             'format' => 'raw',
             'value' => function ($data) {                      

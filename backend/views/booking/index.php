@@ -59,13 +59,13 @@ $color_quantity = '#2c4399';
     ]
  ])
 ?>
-<h3><?= Yii::t('booking', 'Amounts per month')?></h3>
+<h3><?= Yii::t('booking', 'Total')?></h3>
 <div class="row">
     <div class="col-md-12 text-center">
         <canvas id="bars-amounts" width="100" height="300"></canvas>
     </div>
 </div>
-<h3><?= Yii::t('booking', 'Quantities per month')?></h3>
+<h3><?= Yii::t('booking', 'Reservations')?></h3>
 <div class="row">
     <div class="col-md-12 text-center">
         <canvas id="bars-quantities" width="100" height="300"></canvas>
@@ -77,7 +77,7 @@ $this->registerJs(
 var data = {
     datasets: [
     {
-        label : "'.Yii::t('booking', 'Amounts').'",
+        label : "'.Yii::t('booking', 'Euro').'",
         data: '.json_encode(array_values($amount_datas)).',
         backgroundColor: "'.$color_amount.'",
         barThickness: "flex"
@@ -111,7 +111,7 @@ var myBarChart = new Chart( $("#bars-amounts"), {
 var data = {
     datasets: [
     {
-        label : "'.Yii::t('booking', 'Quantities').'",
+        label : "'.Yii::t('booking', 'Reservations number').'",
         data: '.json_encode(array_values($quantity_datas)).',
         backgroundColor: "'.$color_quantity.'",
         barThickness: "flex"

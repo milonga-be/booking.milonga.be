@@ -97,7 +97,7 @@ $participationsProvider = new ArrayDataProvider([
             'format' => 'raw',
             'value' => function($data){
                 if($data->partner)
-                    return Html::a($data->partner->name, ['/partner/view', 'uuid' => $data->partner->uuid]);
+                    return /*Html::a(*/$data->partner->name/*, ['/partner/update', 'uuid' => $data->partner->uuid])*/;
             },
             'visible' => $model->couple_activity
         ],
