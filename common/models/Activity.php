@@ -189,9 +189,9 @@ class Activity extends ActiveRecord
      * @return integer 
      */
     public function getPersonsIncluded(){
-        if($this->couple_activity)
+        /*if($this->couple_activity)
             return 2;
-        else
+        else*/
             return 1;
     }
 
@@ -212,6 +212,20 @@ class Activity extends ActiveRecord
      */
     public function countParticipants(){
         return sizeof($this->participations)*$this->getPersonsIncluded();
+    }
+
+    /**
+     * Get the number of leaders
+     */
+    public function countLeaders(){
+        return $this->getParticipations()->where(['role' => 'leader'])->count() /*+ $this->getParticipations()->joinWith('partner')->where(['partner.role' => 'leader'])->count()*/;
+    }
+
+    /**
+     * Get the number of followers
+     */
+    public function countFollowers(){
+        return $this->getParticipations()->where(['role' => 'follower'])->count() /*+ $this->getParticipations()->joinWith('partner')->where(['partner.role' => 'follower'])->count()*/;
     }
 
     /**

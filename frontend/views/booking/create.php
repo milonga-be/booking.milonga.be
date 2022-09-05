@@ -13,7 +13,18 @@ $form = ActiveForm::begin([
 	'options' => [],
 	// 'action' => Url::to(['/booking/registration-summary', 'event_uuid' => $event->uuid])
 ]);
-
+?>
+<div class="row">
+	<div class="col-md-6">
+		<h4><?= Yii::t('booking', 'Booking Column 1 Title')?></h4>
+		<p><?= nl2br(Yii::t('booking', 'Booking Column 1 Text'))?></p>
+	</div>
+	<div class="col-md-6">
+		<h4><?= Yii::t('booking', 'Booking Column 2 Title')?></h4>
+		<p><?= nl2br(Yii::t('booking', 'Booking Column 2 Text'))?></p>
+	</div>
+</div>
+<?php
 foreach ($event->activityGroups as $group) {?>
 	<h2><?= $group->title ?></h2>
 	<?php
@@ -69,7 +80,7 @@ foreach ($event->activityGroups as $group) {?>
 								<?php foreach ($teachers as $teacher_name => $activity) {?>
 								<td class="activity <?= $activity && $activity->isFull()?'full':'' ?>"><?php
 									if(isset($activity)){
-										echo $form->field($model, 'activities_uuids[]')->checkbox(['label' => $activity->title, 'value' => $activity->uuid, 'checked' => in_array($activity->uuid, $model->activities_uuids), 'disabled' => $activity->isFull()]);
+										echo $form->field($model, 'activities_uuids[]')->checkbox(['label' => (!empty($activity->dance)?$activity->readableDance.' - ':'').$activity->title, 'value' => $activity->uuid, 'checked' => in_array($activity->uuid, $model->activities_uuids), 'disabled' => $activity->isFull()]);
 										if($activity->isFull()){
 											echo '<strong class="text-danger">'.Yii::t('booking', 'FULL').'</strong>';
 										}

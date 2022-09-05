@@ -18,7 +18,7 @@ return [
         'urlManager' => [
             'class'=>'common\components\i18n\I18nUrlManager',
              'enablePrettyUrl' => true,
-             'languages' => ['fr', 'en'],
+             'languages' => ['en_US'],
             'showScriptName' => true,
             'rules'=> [
                 '<controller>s'=>'<controller>/index',

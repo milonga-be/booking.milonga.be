@@ -16,7 +16,7 @@ return [
         'TranslationBackend' => [
             'class' => 'ilogs\TranslationBackend\TranslationBackend',
             'translation_category'  => 'booking',
-            'languages' => ['fr', 'en'],
+            'languages' => ['en_US'],
         ],
     ],
     'components' => [

@@ -64,10 +64,11 @@ class BookingController extends Controller
         $date->modify('-12 month');
 
         for($i = 0;$i<12;$i++){
-            $amount_datas[$date->format('M')] = (Booking::find()
+            $total_query_row = Booking::find()
                 ->where(['LIKE', 'created_at', $date->format('Y-m-')])
                 ->andWhere(['=', 'event_id', $event->id])
-                ->select('SUM(total_price) AS total')->asArray()->one())['total'];
+                ->select('SUM(total_price) AS total')->asArray()->one();
+            $amount_datas[$date->format('M')] = $total_query_row['total'];
             $quantity_datas[$date->format('M')] = Booking::find()
                 ->where(['LIKE', 'created_at', $date->format('Y-m-')])
                 ->andWhere(['=', 'event_id', $event->id])

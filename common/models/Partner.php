@@ -21,6 +21,7 @@ class Partner extends ActiveRecord
     public function rules(){
         return [
             [['firstname', 'lastname'], 'required'],
+            [['role'], 'in', 'range' => ['leader', 'follower']],
         ];
     }
 

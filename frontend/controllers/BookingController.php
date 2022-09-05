@@ -63,12 +63,17 @@ class BookingController extends Controller
 					$participation = new Participation();
 					$participation->activity_id = $activity->id;
 					$participation->booking_id = $booking->id;
+					$participation->role = $model->role;
 					$participation->save();
-					if($activity->couple_activity == 1){
+					if($activity->couple_activity == 1 && $model->has_partner == 'yes'){
 						$partner = new Partner();
 						$partner->firstname = $model->partner_firstname;
 						$partner->lastname = $model->partner_lastname;
 						$partner->participation_id = $participation->id;
+						if($model->role == 'leader')
+							$partner->role = 'follower';
+						else if($model->role == 'follower')
+							$partner->role = 'leader';
 						$partner->save();
 					}
 				}

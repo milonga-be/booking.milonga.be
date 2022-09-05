@@ -208,3 +208,6 @@ td.full label{
     color: grey;
     text-decoration: line-through;
 }
+#bookingform-has_partner label,#bookingform-role label{
+    margin-right: 24px;
+}

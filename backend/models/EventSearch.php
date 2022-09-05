@@ -45,10 +45,10 @@ class EventSearch extends Event{
             'desc' => ['created_at' => SORT_DESC],
         ];
 
-        $user = Yii::$app->user->identity;
-        $query->andFilterWhere([
-            'user_id' => $user->id,
-        ]);
+        // $user = Yii::$app->user->identity;
+        // $query->andFilterWhere([
+        //     'user_id' => $user->id,
+        // ]);
 
         $this->load($params);
 

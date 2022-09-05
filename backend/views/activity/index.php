@@ -51,7 +51,7 @@ $this->params['breadcrumbs'] = [
             'label' => Yii::t('booking', 'Title'),
     		'format' => 'raw',
     		'value' => function($data){
-    			return Html::a($data->summary, ['/activity/view', 'uuid' => $data->uuid]);
+    			return Html::a($data->summary, ['/activity/view', 'uuid' => $data->uuid], ['title' => $data->title]);
     		},
     	],
         [
@@ -69,6 +69,12 @@ $this->params['breadcrumbs'] = [
             'label' => Yii::t('booking', 'Nr Participants'),
             'value' => function ($data) {
                 return $data->countParticipants();
+            }
+        ],
+        [
+            'label' => Yii::t('booking', 'Balance H/F'),
+            'value' => function ($data) {
+                return $data->countLeaders().' / '.$data->countFollowers();
             }
         ],
         [

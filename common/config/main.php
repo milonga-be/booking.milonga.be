@@ -1,5 +1,6 @@
 <?php
 return [
+    'language' => 'en_US',
     'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',
     'timeZone' => 'UTC',
     'components' => [
@@ -8,12 +9,13 @@ return [
         ],
         'formatter' => [
             'dateFormat' => 'php:j M',
-            'datetimeFormat' => 'php:j M H:i',
+            'datetimeFormat' => 'php:D j M H:i',
             'timeFormat' => 'php:H:i',
             'decimalSeparator' => ',',
             'thousandSeparator' => ' ',
-            'currencyCode' => '€',
+            'currencyCode' => 'EUR',
             'timeZone' => 'UTC',
+            'locale' => 'fr-BE'
        ],
         'mailer' => [
             'class' => 'yii\swiftmailer\Mailer',
@@ -23,7 +25,7 @@ return [
 			'translations' => [
 				'booking*' => [
 					'class' => 'yii\i18n\DbMessageSource',
-					'enableCaching' => true,
+					'enableCaching' => false,
 					'sourceMessageTable' => 'source_message',
 					'messageTable' => 'message',
 					'sourceLanguage' => 'en',

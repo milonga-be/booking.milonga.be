@@ -16,6 +16,8 @@ class BookingForm extends Model
     var $firstname;
     var $lastname;
     var $email;
+    var $role;
+    var $has_partner = 'yes';
 
     var $partner_firstname;
     var $partner_lastname;
@@ -31,13 +33,21 @@ class BookingForm extends Model
         return [
             // name, email, subject and body are required
             [['activities_uuids'], 'required'],
-            [['firstname', 'lastname', 'email'], 'required', 'on' => self::SCENARIO_CONFIRMATION],
-            [['partner_firstname', 'partner_lastname'], 'required', 'when' => function($attribute, $params){
+            [['firstname', 'lastname', 'email', 'role'], 'required', 'on' => self::SCENARIO_CONFIRMATION],
+            [[/*'partner_firstname', 'partner_lastname', */'has_partner'], 'required', 'when' => function($attribute, $params){
                 return $this->enablePartnerForm();
             }],
             [['activities_uuids'], 'each', 'rule' => ['string']],
-            [['firstname', 'lastname', 'partner_firstname', 'partner_lastname'], 'string'],
+            [['firstname', 'lastname', 'role', 'partner_firstname', 'partner_lastname'], 'string'],
             [['email'], 'email'],
+            [['role'], 'in', 'range' => ['leader', 'follower']],
+            [['has_partner'], 'in', 'range' => ['yes', 'no']],
+        ];
+    }
+
+    public function attributeLabels(){
+        return [
+            'has_partner' => Yii::t('booking', 'I have a partner')
         ];
     }
 
@@ -47,7 +57,7 @@ class BookingForm extends Model
     public function scenarios(){
         return [
             self::SCENARIO_DEFAULT => ['activities_uuids'],
-            self::SCENARIO_CONFIRMATION => ['activities_uuids', 'firstname', 'lastname', 'email', 'partner_firstname', 'partner_lastname'],
+            self::SCENARIO_CONFIRMATION => ['activities_uuids', 'firstname', 'lastname', 'email', 'partner_firstname', 'partner_lastname', 'role'],
         ];
     }
 

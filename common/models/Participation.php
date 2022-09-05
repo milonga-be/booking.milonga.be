@@ -35,6 +35,7 @@ class Participation extends ActiveRecord
         return [
             [['activity_id', 'booking_id'], 'required'],
             [['activity_id', 'booking_id'], 'integer'],
+            [['role'], 'in', 'range' => ['leader', 'follower']],
         ];
     }
 
