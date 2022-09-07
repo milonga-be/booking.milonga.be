@@ -70,7 +70,7 @@ $form = ActiveForm::begin([
 	<? if($model->enablePartnerForm()):?>
 	<div class="col-md-6">
 		<h2><?=  Yii::t('booking', 'Your partner')?></h2>
-		<?= $form->field($model, 'has_partner')->radioList(['yes' => Yii::t('booking', 'Yes'), 'no' => Yii::t('booking', 'No')], ['itemOptions' => ['class' => 'mr-2']])?>
+		<?= $form->field($model, 'has_partner')->radioList(['yes' => Yii::t('booking', 'Yes'), 'no' => Yii::t('booking', 'No')])?>
 		<?= $form->field($model, 'partner_firstname')?>
 		<?= $form->field($model, 'partner_lastname')?>
 	</div>

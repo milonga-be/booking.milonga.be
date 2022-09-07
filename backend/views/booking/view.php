@@ -50,7 +50,7 @@ $participationsProvider = new ArrayDataProvider([
 	<div class="col-md-2 text-right">
 		<div class="btn-group">
 			<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    			<?= Yii::t('booking', 'New')?> <span class="caret"></span>
+    			<?= Yii::t('booking', 'Add')?> <span class="caret"></span>
   			</button>
 			<ul class="dropdown-menu">
 				<?php $activities = $model->getActivitiesList(); ?>
@@ -75,6 +75,9 @@ $participationsProvider = new ArrayDataProvider([
     			return Html::a($data->activity->title, ['/activity/view', 'uuid' => $data->activity->uuid]);
     		},
     	],
+        [
+            'attribute' => 'role'
+        ],
     	[
     		'attribute' => 'partner.name',
     		'format' => 'raw',

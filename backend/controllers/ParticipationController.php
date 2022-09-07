@@ -5,6 +5,7 @@ use Yii;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
+use backend\models\ParticipationForm;
 use common\models\Participation;
 use common\models\Booking;
 use common\models\Partner;
@@ -64,13 +65,34 @@ class ParticipationController extends Controller
      */
     public function actionCreate($booking_uuid, $activity_uuid)
     {
-        $participation = new Participation();
         $booking = Booking::findOne(['uuid' => $booking_uuid]);
         $activity = Activity::findOne(['uuid' => $activity_uuid]);
         if($activity->couple_activity){
-            return $this->redirect(['partner/create', 'booking_uuid' => $booking_uuid, 'activity_uuid' => $activity_uuid]);
+            $model = new ParticipationForm();
+            if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+                $participation = new Participation();
+                $participation->booking_id = $booking->id;
+                $participation->activity_id = $activity->id;
+                $participation->role = $model->role;
+                $participation->has_partner = ($model->has_partner == 'yes');
+                $participation->save();
+                if($model->has_partner == 'yes'){
+                    $partner = new Partner();
+                    $partner->firstname = $model->partner_firstname;
+                    $partner->lastname = $model->partner_lastname;
+                    $partner->participation_id = $participation->id;
+                    if($model->role == 'leader')
+                        $partner->role = 'follower';
+                    else if($model->role == 'follower')
+                        $partner->role = 'leader';
+                    $partner->save();
+                }
+                $this->redirect(['/booking/view', 'uuid' => $booking->uuid]);
+            }
+            return $this->render('create', ['model' => $model, 'event' => $activity->event, 'booking' => $booking, 'activity' => $activity]);
         }
         if($booking && $activity){
+            $participation = new Participation();
             $participation->booking_id = $booking->id;
             $participation->activity_id = $activity->id;
             if($participation->validate()){
