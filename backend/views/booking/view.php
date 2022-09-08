@@ -64,7 +64,7 @@ $participationsProvider = new ArrayDataProvider([
 </div>
 <?= GridView::widget([
     'dataProvider' => $participationsProvider,
-    'showHeader'=> false,
+    'showHeader'=> true,
     'layout' => '{items}{pager}',
     'tableOptions' => ['class' => 'table table-hover  table-striped'],
     'columns' => [
@@ -76,7 +76,17 @@ $participationsProvider = new ArrayDataProvider([
     		},
     	],
         [
-            'attribute' => 'role'
+            'attribute' => 'quantity'
+        ],
+        [
+            'attribute' => 'role',
+            'format' => 'raw',
+            'value' => function($data){
+                if(isset($data->activity->couple_activity))
+                    return $data->role;
+                else
+                    return '-';
+            },
         ],
     	[
     		'attribute' => 'partner.name',

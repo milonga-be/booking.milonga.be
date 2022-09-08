@@ -15,14 +15,15 @@ class PriceManager{
 
 	/**
 	 * Get the valid reductions
-	 * @param  array $activities The selected activities
+	 * @param  array $participations The selected activities with the quantities
 	 * @return boolean
 	 */
-	public function getValidReductions($activities){
+	public function getValidReductions($participations){
 		$reductions = $this->event->reductions;
 		$activitiesCounts = [];
 		// Counting the activities per group to check if reductions are valid
-		foreach($activities as $activity){
+		foreach($participations as $participation){
+			$activity = $participation->activity;
 			if(!isset($activitiesCounts[$activity->activityGroup->id]))
 				$activitiesCounts[$activity->activityGroup->id] = 0;
 			$activitiesCounts[$activity->activityGroup->id]++;
@@ -69,12 +70,12 @@ class PriceManager{
 
 	/**
 	 * Compute the price with the reductions applied
-	 * @param  array $activities list of selected activities
+	 * @param  array $participations list of selected activities with the quantities
 	 * @return float
 	 */
-	public function computeFinalPrice($activities){
+	public function computeFinalPrice($participations){
 		$reduced_price = 0;
-		$validReductions = $this->getValidReductions($activities);
+		$validReductions = $this->getValidReductions($participations);
 
 		// Filtering the rules on the activityGroup
 		$activityGroupsReductionRule = [];
@@ -84,20 +85,21 @@ class PriceManager{
 			}
 		}
 		// Applying the price for the activity
-		foreach ($activities as $activity) {
+		foreach ($participations as $participation) {
+			$activity = $participation->activity;
 			if(isset($activityGroupsReductionRule[$activity->activityGroup->id])){
 				$rule = $activityGroupsReductionRule[$activity->activityGroup->id];
 				if($rule->type == ReductionRule::ACTIVITY_PRICE)
-					$reduced_price+= $rule->value*$activity->getPersonsIncluded();
+					$reduced_price+= $rule->value + $activity->price*($participation->quantity - 1); // one at reduced price and the others at normal price
 			}else{
-				$reduced_price+= $activity->price*$activity->getPersonsIncluded();
+				$reduced_price+= $activity->price*$participation->quantity;
 			}
 		}
 		// Applying the reductions where the reduction has a price for the group of activities
 		foreach($validReductions as $reduction){
 			foreach($reduction->rules as $rule){
 				if($rule->type == ReductionRule::TOTAL_PRICE){
-					$reduced_price+=$rule->value*$activity->getPersonsIncluded();
+					$reduced_price+=$rule->value + $activity->price*($participation->quantity - 1); // one at reduced price and the others at normal price
 				}
 			}
 		}
@@ -109,10 +111,11 @@ class PriceManager{
 	 * @param  array $activities list of selected activities
 	 * @return float
 	 */
-	public function computeUnreducedPrice($activities){
+	public function computeUnreducedPrice($participations){
 		$total_price = 0;
-		foreach ($activities as $activity) {
-			$total_price+= $activity->price*$activity->getPersonsIncluded();
+		foreach ($participations as $participation) {
+			$activity = $participation->activity;
+			$total_price+= $activity->price*$participation->quantity;
 		}
 		return $total_price;
 	}

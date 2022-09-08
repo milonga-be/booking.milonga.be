@@ -100,12 +100,22 @@ foreach ($event->activityGroups as $group) {?>
 			default: 
 				echo '<table class="table table-striped table-activities">';
 				foreach ($group->activities as $activity) {
-					echo '<tr><td class="activity '.($activity && $activity->isFull()?'full':'').'">';
-					echo $form->field($model, 'activities_uuids[]')->checkbox(['label' => isset($activity->datetime)?'<strong>'.(new \Datetime($activity->datetime))->format('D M j').'</strong> - '.$activity->title:$activity->title, 'value' => $activity->uuid, 'checked' => in_array($activity->uuid, $model->activities_uuids), 'disabled' => $activity->isFull()]);
+					echo '<tr><td class="'.($activity && $activity->isFull()?'full':'').'">';
+					// echo $form->field($model, 'activities_uuids[]')->checkbox(['label' => isset($activity->datetime)?'<strong>'.(new \Datetime($activity->datetime))->format('D M j').'</strong> - '.$activity->title:$activity->title, 'value' => $activity->uuid, 'checked' => in_array($activity->uuid, $model->activities_uuids), 'disabled' => $activity->isFull()]);
+					echo isset($activity->datetime)?'<strong>'.(new \Datetime($activity->datetime))->format('D M j').'</strong> - '.$activity->title:$activity->title;
 					if($activity->isFull()){
 						echo '<strong class="text-danger">'.Yii::t('booking', 'FULL').'</strong>';
 					}
-					echo '</td></tr>';
+					echo '</td>';
+					echo '<td class="quantity">
+							<div class="input-group">
+								<input id="'.$activity->uuid.'" type="hidden" data-uuid="'.$activity->uuid.'" name="BookingForm[activities_with_quantities][]" value="'.$activity->uuid.':0"/>
+  								<input type="button" value="-" class="button-minus" data-field="quantity_'.$activity->uuid.'">
+  								<input type="text" step="1" max="" value="0" data-uuid="'.$activity->uuid.'" name="quantity_'.$activity->uuid.'" class="quantity-field">
+  								<input type="button" value="+" class="button-plus" data-field="quantity_'.$activity->uuid.'">
+							</div>
+						</td>';
+					echo '</tr>';
 				}
 				echo '</table>';
 				break;
@@ -134,6 +144,52 @@ $(".table-activities td.activity").not(".full").on("click",function(e){
 });
 '
 );
+$this->registerJs("
+function incrementValue(e) {
+  e.preventDefault();
+  var fieldName = $(e.target).data('field');
+  var parent = $(e.target).closest('div');
+  var field = parent.find('input[name=\"' + fieldName + '\"]');
+  var currentVal = parseInt(field.val(), 10);
+
+  if (!isNaN(currentVal)) {
+    field.val(currentVal + 1);
+  } else {
+    field.val(0);
+  }
+  var uuid = field.data('uuid');
+  $('#'+uuid+'').val(uuid+':'+field.val());
+}
+
+function decrementValue(e) {
+  e.preventDefault();
+  var fieldName = $(e.target).data('field');
+  var parent = $(e.target).closest('div');
+  var field = parent.find('input[name=\"' + fieldName + '\"]');
+  var currentVal = parseInt(field.val(), 10);
+
+  if (!isNaN(currentVal) && currentVal > 0) {
+    field.val(currentVal - 1);
+  } else {
+    field.val(0);
+  }
+  var uuid = field.data('uuid');
+  $('#'+uuid+'').val(uuid+':'+field.val());
+}
+
+$('.input-group').on('click', '.button-plus', function(e) {
+  incrementValue(e);
+});
+
+$('.input-group').on('click', '.button-minus', function(e) {
+  decrementValue(e);
+});
+
+$('.input-group').on('keydown', '.quantity-field', function(e) {
+  var uuid = $(this).data('uuid');
+  $('#'+uuid+'').val(uuid+':'+$(this).val());
+});
+")
 ?>
 	</div>
 </div>

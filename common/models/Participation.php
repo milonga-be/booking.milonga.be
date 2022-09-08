@@ -36,6 +36,7 @@ class Participation extends ActiveRecord
             [['activity_id', 'booking_id'], 'required'],
             [['activity_id', 'booking_id'], 'integer'],
             [['role'], 'in', 'range' => ['leader', 'follower']],
+            [['quantity'], 'integer'],
         ];
     }
 
@@ -61,7 +62,7 @@ class Participation extends ActiveRecord
         if($insert && !is_null($this->booking)){
             $booking = $this->booking;
             $priceManager = new PriceManager($booking->event);
-            $booking->total_price = $priceManager->computeFinalPrice($booking->activities);
+            $booking->total_price = $priceManager->computeFinalPrice($booking->participations);
             $booking->save();
         }
     }
@@ -88,5 +89,16 @@ class Participation extends ActiveRecord
      */
     public function getPartner(){
         return $this->hasOne(Partner::className(), ['participation_id' => 'id']);
+    }
+
+    /**
+     * A summary of the price with the number of times the price is counted
+     */
+    public function getPriceSummary(){
+        if($this->quantity > 1){
+            return $this->quantity.' x '.Yii::$app->formatter->asCurrency($this->activity->price);
+        }else{
+            return Yii::$app->formatter->asCurrency($this->activity->price);
+        }
     }
 }

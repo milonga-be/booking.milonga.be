@@ -28,23 +28,25 @@ $form = ActiveForm::begin([
 		</tr>
 	</thead>
 	<tbody>
-		<?php foreach($model->activities as $activity){?>
+		<?php foreach($model->participations as $participation){
+			$activity = $participation->activity;
+			?>
 			<tr>
 				<td>
 					<?= $activity->title ?>
-					<?= $form->field($model, 'activities_uuids[]')->hiddenInput(['value' => $activity->uuid])->label(false) ?>
+					<?= $form->field($model, 'activities_with_quantities[]')->hiddenInput(['value' => $activity->uuid.':'.$participation->quantity])->label(false) ?>
 				</td>
 				<td><?= $activity->activityGroup->title ?></td>
 				<td><?= Yii::$app->formatter->asDatetime($activity->datetime) ?></td>
-				<td class="price"><?= $activity->getPriceSummary() ?></td>
+				<td class="price"><?= $participation->getPriceSummary() ?></td>
 			</tr>
 		<?php } ?>
 		<tr>
 			<td class="subtotal_label" colspan="3"><?=  Yii::t('booking', 'Total')?></td>
-			<td class="subtotal"><?= Yii::$app->formatter->asCurrency($priceManager->computeUnreducedPrice($model->activities))?></td>
+			<td class="subtotal"><?= Yii::$app->formatter->asCurrency($priceManager->computeUnreducedPrice($model->participations))?></td>
 		</tr>
 		<?php
-		$validReductions = $priceManager->getValidReductions($model->activities);
+		$validReductions = $priceManager->getValidReductions($model->participations);
 		foreach($validReductions as $reduction){?>
 		<tr>
 			<td class="reduction_label" colspan="3"><?=  $reduction->name ?></td>
@@ -54,7 +56,7 @@ $form = ActiveForm::begin([
 		<?php if(sizeof($validReductions)){ ?>
 		<tr>
 			<td class="total_label" colspan="3"><?=  Yii::t('booking', 'Total with reductions')?></td>
-			<td class="total"><?= Yii::$app->formatter->asCurrency($priceManager->computeFinalPrice($model->activities))?></td>
+			<td class="total"><?= Yii::$app->formatter->asCurrency($priceManager->computeFinalPrice($model->participations))?></td>
 		</tr>
 		<?php }?>
 	</tbody>
@@ -76,8 +78,14 @@ $form = ActiveForm::begin([
 	</div>
 	<? endif ?>
 </div>
-<div class="text-right">
-	<button class="btn btn-primary"><?= Yii::t('booking', 'Send')?></button>
+<div class="row">
+	<div class="col-md-6 text-left">
+		
+	</div>
+	<div class="col-md-6 text-right">
+		<a href="<?= Url::to(['booking/create', 'event_uuid' => $event->uuid])?>" class="btn btn-danger"><?= Yii::t('booking', 'Back')?></a>
+		<button class="btn btn-primary"><?= Yii::t('booking', 'Send')?></button>
+	</div>
 </div>
 <?php
 ActiveForm::end();

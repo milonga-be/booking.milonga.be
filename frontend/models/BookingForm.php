@@ -5,6 +5,7 @@ namespace frontend\models;
 use Yii;
 use yii\base\Model;
 use common\models\Activity;
+use frontend\models\UnconfirmedParticipation;
 
 /**
  * ContactForm is the model behind the contact form.
@@ -12,6 +13,7 @@ use common\models\Activity;
 class BookingForm extends Model
 {
 	var $activities_uuids = array();
+    var $activities_with_quantities = array();
 
     var $firstname;
     var $lastname;
@@ -32,7 +34,7 @@ class BookingForm extends Model
     {
         return [
             // name, email, subject and body are required
-            [['activities_uuids'], 'required'],
+            [['activities_uuids', 'activities_with_quantities'], 'required'],
             [['firstname', 'lastname', 'email', 'role'], 'required', 'on' => self::SCENARIO_CONFIRMATION],
             [[/*'partner_firstname', 'partner_lastname', */'has_partner'], 'required', 'when' => function($attribute, $params){
                 return $this->enablePartnerForm();
@@ -56,8 +58,8 @@ class BookingForm extends Model
      */
     public function scenarios(){
         return [
-            self::SCENARIO_DEFAULT => ['activities_uuids'],
-            self::SCENARIO_CONFIRMATION => ['activities_uuids', 'firstname', 'lastname', 'email', 'partner_firstname', 'partner_lastname', 'role'],
+            self::SCENARIO_DEFAULT => ['activities_uuids', 'activities_with_quantities'],
+            self::SCENARIO_CONFIRMATION => ['activities_with_quantities', 'firstname', 'lastname', 'email', 'partner_firstname', 'partner_lastname', 'role'],
         ];
     }
 
@@ -72,7 +74,39 @@ class BookingForm extends Model
                 $activities[] = Activity::findOne(['uuid' => $activity_uuid]);
             }
         }
+        foreach ($this->activities_with_quantities as $value) {
+            list($activity_uuid,$quantity) = explode(':', $value);
+            if($activity_uuid && $quantity){
+                $activities[] = Activity::findOne(['uuid' => $activity_uuid]);
+            }
+        }
         return $activities;
+    }
+
+    /**
+     * Returns a list of unconfirmed participations based on the activities uuids and the quantities
+     * @return array
+     */
+    public function getParticipations(){
+        $participations = array();
+        foreach ($this->activities_uuids as $activity_uuid) {
+            if($activity_uuid){
+                $participation = new UnconfirmedParticipation();
+                $participation->activity_uuid = $activity_uuid;
+                $participation->quantity = 1;
+                $participations[] = $participation;
+            }
+        }
+        foreach ($this->activities_with_quantities as $value) {
+            list($activity_uuid,$quantity) = explode(':', $value);
+            if($activity_uuid && $quantity){
+                $participation = new UnconfirmedParticipation();
+                $participation->activity_uuid = $activity_uuid;
+                $participation->quantity = $quantity;
+                $participations[] = $participation;
+            }
+        }
+        return $participations;
     }
 
     /**

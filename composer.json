@@ -18,7 +18,7 @@
         "yiisoft/yii2": "2.0.40",
         "yiisoft/yii2-bootstrap": "~2.0.0",
         "yiisoft/yii2-swiftmailer": "~2.0.0",
-        "ilogs/TranslationBackend": "^1.0",
+        "ilogs/translationbackend": "^1.0",
         "mootensai/yii2-uuid-behavior": "^1.0",
         "kartik-v/yii2-widgets": "^3.4",
         "bower-asset/chartjs": "^2.9",
@@ -34,7 +34,10 @@
         "codeception/verify": "~0.3.1"
     },
     "config": {
-        "process-timeout": 1800
+        "process-timeout": 1800,
+        "allow-plugins": {
+            "yiisoft/yii2-composer": true
+        }
     },
     "extra": {
         "asset-installer-paths": {

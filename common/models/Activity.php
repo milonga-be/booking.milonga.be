@@ -185,47 +185,24 @@ class Activity extends ActiveRecord
     }
 
     /**
-     * Get the number of persons included for one booking
-     * @return integer 
-     */
-    public function getPersonsIncluded(){
-        /*if($this->couple_activity)
-            return 2;
-        else*/
-            return 1;
-    }
-
-    /**
-     * A summary of the price with the number of times the price is counted (for workshops)
-     * @return string
-     */
-    public function getPriceSummary(){
-        if($this->getPersonsIncluded() > 1){
-            return $this->getPersonsIncluded().' x '.Yii::$app->formatter->asCurrency($this->price);
-        }else{
-            return Yii::$app->formatter->asCurrency($this->price);
-        }
-    }
-
-    /**
      * Get the number of participants
      */
     public function countParticipants(){
-        return sizeof($this->participations)*$this->getPersonsIncluded();
+        return sizeof($this->participations);
     }
 
     /**
      * Get the number of leaders
      */
     public function countLeaders(){
-        return $this->getParticipations()->where(['role' => 'leader'])->count() /*+ $this->getParticipations()->joinWith('partner')->where(['partner.role' => 'leader'])->count()*/;
+        return $this->getParticipations()->where(['role' => 'leader'])->count();
     }
 
     /**
      * Get the number of followers
      */
     public function countFollowers(){
-        return $this->getParticipations()->where(['role' => 'follower'])->count() /*+ $this->getParticipations()->joinWith('partner')->where(['partner.role' => 'follower'])->count()*/;
+        return $this->getParticipations()->where(['role' => 'follower'])->count();
     }
 
     /**

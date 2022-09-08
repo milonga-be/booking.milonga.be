@@ -13,12 +13,13 @@ use common\components\PriceManager;
 foreach($booking->activityGroups as $activityGroup){
 	echo '<h3>'.$activityGroup->title.'</h3>';
 	echo '<table width="100%">';
-	foreach($booking->activities as $activity){
+	foreach($booking->participations as $participation){
+		$activity = $participation->activity;
 		if($activity->activityGroup->id == $activityGroup->id){
 			echo '<tr>';
 			echo '<td width="15%">'.Yii::$app->formatter->asDatetime($activity->datetime).'</td>';
 			echo '<td width="60%">'.$activity->getSummary(75).'</td>';
-			echo '<td style="text-align:right;">'.Yii::$app->formatter->asCurrency($activity->price).'</td>';
+			echo '<td style="text-align:right;">'.$participation->getPriceSummary().'</td>';
 			echo '</tr>';
 		}
 	}
@@ -29,10 +30,10 @@ foreach($booking->activityGroups as $activityGroup){
 <table width="100%">
 	<tr>
 		<td width="75%" colspan="2"><strong><?=  Yii::t('booking', 'Total')?></strong></td>
-		<td style="text-align:right;"><strong><?= Yii::$app->formatter->asCurrency($priceManager->computeUnreducedPrice($booking->activities))?></strong></td>
+		<td style="text-align:right;"><strong><?= Yii::$app->formatter->asCurrency($priceManager->computeUnreducedPrice($booking->participations))?></strong></td>
 	</tr>
 	<?php
-	$validReductions = $priceManager->getValidReductions($booking->activities);
+	$validReductions = $priceManager->getValidReductions($booking->participations);
 	foreach($validReductions as $reduction){?>
 	<tr>
 		<td style="color:limegreen;" colspan="2"><?=  $reduction->name ?></td>
@@ -42,7 +43,7 @@ foreach($booking->activityGroups as $activityGroup){
 	<?php if(sizeof($validReductions)){ ?>
 	<tr>
 		<td style="font-weight: bold;" colspan="2"><h2 style="margin-top: 0;"><?=  Yii::t('booking', 'Total with reductions')?></h2></td>
-		<td style="font-weight: bold;text-align:right;" ><h2 style="margin-top: 0;"><?= Yii::$app->formatter->asCurrency($priceManager->computeFinalPrice($booking->activities))?></h2></td>
+		<td style="font-weight: bold;text-align:right;" ><h2 style="margin-top: 0;"><?= Yii::$app->formatter->asCurrency($priceManager->computeFinalPrice($booking->participations))?></h2></td>
 	</tr>
 	<?php }?>
 </table>

@@ -59,10 +59,12 @@ class BookingController extends Controller
 			$booking->confirmed = 1;
 			if($booking->save()){
 				// Adding the selected activities
-				foreach($model->activities as $activity){
+				foreach($model->participations as $unconfirmed_participation){
+					$activity = $unconfirmed_participation->activity;
 					$participation = new Participation();
 					$participation->activity_id = $activity->id;
 					$participation->booking_id = $booking->id;
+					$participation->quantity = $unconfirmed_participation->quantity;
 					$participation->role = $model->role;
 					$participation->has_partner = ($model->has_partner == 'yes');
 					$participation->save();

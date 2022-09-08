@@ -1,4 +1,7 @@
 <?php
+
+use yii\helpers\Url;
+
 $this->title = Yii::t('booking', 'Registration Complete').' - '.$event->title;
 ?>
 <div class="wrap">
@@ -37,17 +40,17 @@ $this->title = Yii::t('booking', 'Registration Complete').' - '.$event->title;
 				echo 	'<td>'.Yii::$app->formatter->asDatetime($participation->activity->datetime).'</td>';
 			else
 				echo 	'<td></td>';
-			echo '<td class="price">'.$participation->activity->getPriceSummary().'</td>';
+			echo '<td class="price">'.$participation->getPriceSummary().'</td>';
 			echo '</tr>';
 		}
 
 		?>
 			<tr>
 				<td class="subtotal_label" colspan="3"><?=  Yii::t('booking', 'Total')?></td>
-				<td class="subtotal"><?= Yii::$app->formatter->asCurrency($priceManager->computeUnreducedPrice($model->activities))?></td>
+				<td class="subtotal"><?= Yii::$app->formatter->asCurrency($priceManager->computeUnreducedPrice($model->participations))?></td>
 			</tr>
 			<?php
-			$validReductions = $priceManager->getValidReductions($model->activities);
+			$validReductions = $priceManager->getValidReductions($model->participations);
 			foreach($validReductions as $reduction){?>
 			<tr>
 				<td class="reduction_label" colspan="3"><?=  $reduction->name ?></td>
@@ -57,7 +60,7 @@ $this->title = Yii::t('booking', 'Registration Complete').' - '.$event->title;
 			<?php if(sizeof($validReductions)){ ?>
 			<tr>
 				<td class="total_label" colspan="3"><?=  Yii::t('booking', 'Total with reductions')?></td>
-				<td class="total"><?= Yii::$app->formatter->asCurrency($priceManager->computeFinalPrice($model->activities))?></td>
+				<td class="total"><?= Yii::$app->formatter->asCurrency($priceManager->computeFinalPrice($model->participations))?></td>
 			</tr>
 			<?php }?>
 		</table>
@@ -65,13 +68,20 @@ $this->title = Yii::t('booking', 'Registration Complete').' - '.$event->title;
 		<?= Yii::t('booking', 'Total price') ?> :
 		<?= Yii::$app->formatter->asCurrency($model->total_price) ?>
 		</h3>
-		<p>
-		<?= Yii::t('booking', 'The amount must be paid on the following bank account : ') ?><br>
-		<?= Yii::t('booking', 'IBAN : BE59 0014 4018 1026') ?><br>
-		<?= Yii::t('booking', 'BIC : GEBABEBB') ?><br>
-		<?= Yii::t('booking', 'Alma del Sur ASBL-VZW') ?><br>
-		<?= Yii::t('booking', 'Rue Michel Zwaab 18') ?><br>
-		<?= Yii::t('booking', '1080 - Brussels') ?><br>
-		</p>
+		<div class="row">
+			<div class="col-md-8">
+				<p>
+				<?= Yii::t('booking', 'The amount must be paid on the following bank account : ') ?><br>
+				<?= Yii::t('booking', 'IBAN : BE59 0014 4018 1026') ?><br>
+				<?= Yii::t('booking', 'BIC : GEBABEBB') ?><br>
+				<?= Yii::t('booking', 'Alma del Sur ASBL-VZW') ?><br>
+				<?= Yii::t('booking', 'Rue Michel Zwaab 18') ?><br>
+				<?= Yii::t('booking', '1080 - Brussels') ?><br>
+				</p>
+			</div>
+			<div class="text-right col-md-4">
+				<a class="btn btn-primary" href="<?= Url::to(['booking/create', 'event_uuid' => $event->uuid])?>"><?= Yii::t('booking', 'Make a new reservation')?></a>
+			</div>
+		</div>
 	</div>
 </div>
