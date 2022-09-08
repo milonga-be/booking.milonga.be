@@ -93,11 +93,17 @@ class ParticipationController extends Controller
             return $this->render('create', ['model' => $model, 'event' => $activity->event, 'booking' => $booking, 'activity' => $activity]);
         }
         if($booking && $activity){
-            $participation = new Participation();
-            $participation->booking_id = $booking->id;
-            $participation->activity_id = $activity->id;
-            if($participation->validate()){
-                $participation->save();
+            $existing_participation = Participation::findOne(['booking_id' => $booking->id, 'activity_id' => $activity->id]);
+            if($existing_participation){
+                $existing_participation->quantity++;
+                $existing_participation->save();
+            }else{
+                $participation = new Participation();
+                $participation->booking_id = $booking->id;
+                $participation->activity_id = $activity->id;
+                if($participation->validate()){
+                    $participation->save();
+                }
             }
             $booking->saveFinalPrice();
         }

@@ -122,7 +122,9 @@ class Booking extends ActiveRecord
      * @return array
      */
     public function getActivitiesList(){
-        return ArrayHelper::map(Activity::find()->where(['event_id' => $this->event_id])->andWhere(['NOT IN', 'activity.id', ArrayHelper::getColumn($this->activities, 'id')])->asArray()->all() , 'uuid', 'title');
+        $workshops = Activity::find()->where(['event_id' => $this->event_id])->andWhere(['NOT IN', 'activity.id', ArrayHelper::getColumn($this->activities, 'id')])->andWhere(['=', 'activity.couple_activity', 1])->asArray()->all();
+        $others = Activity::find()->where(['event_id' => $this->event_id])->andWhere(['=', 'activity.couple_activity', 0])->asArray()->all();
+        return ArrayHelper::map( array_merge($workshops, $others), 'uuid', 'title');
     }
 
     /**
