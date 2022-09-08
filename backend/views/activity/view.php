@@ -54,6 +54,18 @@ switch($model->activityGroup->title){
             ], 
             'couple_activity:boolean', 
             'max_participants', 
+            [
+                'label' => 'Participants',
+                'value' => function($data){
+                    return $data->countParticipants();
+                } 
+            ],
+            [
+                'label' => 'Balance H/F',
+                'value' => function($data){
+                    return $data->countLeaders().' / '.$data->countFollowers();
+                } 
+            ]
         ];
 
 }?>
