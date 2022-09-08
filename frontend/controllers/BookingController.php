@@ -80,6 +80,7 @@ class BookingController extends Controller
 						$partner->save();
 					}
 				}
+				$booking->saveFinalPrice();
 				
 				Yii::$app->mailer->compose('@common/mail/booking-confirmed', ['booking' => $booking, 'priceManager' => $priceManager])
 		            ->setFrom('booking@brusselstangofestival.be')

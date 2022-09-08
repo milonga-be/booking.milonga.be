@@ -7,6 +7,7 @@ use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 use common\components\UTCDatetimeBehavior;
 use mootensai\behaviors\UUIDBehavior;
+use common\components\PriceManager;
 
 /**
  * Login form
@@ -90,6 +91,15 @@ class Booking extends ActiveRecord
             }
         }
         return true;
+    }
+
+    /**
+     * Recompute and save the final price
+     */
+    public function saveFinalPrice(){
+        $priceManager = new PriceManager($this->event);
+        $this->total_price = $priceManager->computeFinalPrice($this->participations);
+        return $this->save();
     }
 
     /**

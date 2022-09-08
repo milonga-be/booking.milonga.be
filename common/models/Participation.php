@@ -57,15 +57,15 @@ class Participation extends ActiveRecord
     /**
      * Re-compute the price after adding an activity
      */
-    public function afterSave($insert, $changedAttributes){
-        parent::afterSave($insert, $changedAttributes);
-        if($insert && !is_null($this->booking)){
-            $booking = $this->booking;
-            $priceManager = new PriceManager($booking->event);
-            $booking->total_price = $priceManager->computeFinalPrice($booking->participations);
-            $booking->save();
-        }
-    }
+    // public function afterSave($insert, $changedAttributes){
+    //     parent::afterSave($insert, $changedAttributes);
+    //     if($insert && !is_null($this->booking)){
+    //         $booking = $this->booking;
+    //         $priceManager = new PriceManager($booking->event);
+    //         $booking->total_price = $priceManager->computeFinalPrice($booking->participations);
+    //         $booking->save();
+    //     }
+    // }
 
     /**
      * Describe the relation between a Participation and its Activity

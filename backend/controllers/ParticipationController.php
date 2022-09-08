@@ -87,6 +87,7 @@ class ParticipationController extends Controller
                         $partner->role = 'leader';
                     $partner->save();
                 }
+                $booking->saveFinalPrice();
                 $this->redirect(['/booking/view', 'uuid' => $booking->uuid]);
             }
             return $this->render('create', ['model' => $model, 'event' => $activity->event, 'booking' => $booking, 'activity' => $activity]);
@@ -97,8 +98,8 @@ class ParticipationController extends Controller
             $participation->activity_id = $activity->id;
             if($participation->validate()){
                 $participation->save();
-
             }
+            $booking->saveFinalPrice();
         }
         $this->redirect(['/booking/view', 'uuid' => $booking->uuid]);
     }
@@ -132,6 +133,7 @@ class ParticipationController extends Controller
         $model = Participation::findOne(['uuid' => $uuid]);
         $booking = $model->booking;
         $model->delete();
+        $booking->saveFinalPrice();
 
         $this->redirect(['booking/view', 'uuid' => $booking->uuid]);
     }
