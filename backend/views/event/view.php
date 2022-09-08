@@ -27,6 +27,13 @@ $this->params['breadcrumbs'] = [
         'title', 
         'start_date:date', // creation date formatted as datetime
         'end_date:date', // creation date formatted as datetime
+        [
+        	'attribute' => 'bookingurl',
+        	'format' => 'raw',
+        	'value' => function($data){
+        		return Html::a($data->bookingUrl, $data->bookingUrl, ['target' => '_blank']);
+        	}
+        ]
     ],
 ])?>
 <p class="text-right">

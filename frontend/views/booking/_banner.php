@@ -6,6 +6,11 @@
 </header>
 <div class="title">
     <div class="container">
-        <h1><?= Yii::t('booking', 'Book your activities')?></h1>
+        <div class="row">
+            <div class="col-md-10">
+                <h1><?= $event->title ?> - <?= Yii::t('booking', 'Book your activities')?></h1>
+            </div>
+            <div class="col-md-2"><a class="btn btn-default" href="http://www.brusselstangofestival.com"><?= Yii::t('booking', 'Back to the website') ?></a></div>
+        </div>
     </div>
 </div>
