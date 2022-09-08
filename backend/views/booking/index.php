@@ -33,6 +33,7 @@ $color_quantity = '#2c4399';
     'filterModel' => $searchModel,
     'layout' => '{items}'.'<a class="export pull-right btn btn-md btn-default" href="'.Url::to(['booking/export-payments', 'event_uuid' => $event->uuid]).'">'.Yii::t('booking', 'Export').'</a>'.'{pager}',
     'tableOptions' => ['class' => 'table table-hover  table-striped'],
+    'options' => ['class' => 'mb-4'],
     'columns' => [
         'name',
     	[
@@ -60,7 +61,7 @@ $color_quantity = '#2c4399';
  ])
 ?>
 <h3><?= Yii::t('booking', 'Total')?></h3>
-<div class="row">
+<div class="row mb-4">
     <div class="col-md-12 text-center">
         <canvas id="bars-amounts" width="100" height="300"></canvas>
     </div>
