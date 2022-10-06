@@ -79,6 +79,14 @@ class Booking extends ActiveRecord
         return $this->hasOne(Event::className(), ['id' => 'event_id']);
     }
 
+    /**
+     * Describe the relation between a booking and its partner booking
+     * @return ActiveQuery
+     */
+    public function getPartnerBooking(){
+        return $this->hasOne(Booking::className(), ['id' => 'partner_booking_id']);
+    }
+
     public function beforeDelete(){
         if (!parent::beforeDelete()) {
             return false;
@@ -86,6 +94,13 @@ class Booking extends ActiveRecord
         if(sizeof($this->participations)){
             foreach ($this->participations as $participation) {
                 if(!$participation->delete()){
+                    return false;
+                }
+            }
+        }
+        if(sizeof($this->payments)){
+            foreach ($this->payments as $payment) {
+                if(!$payment->delete()){
                     return false;
                 }
             }

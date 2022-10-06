@@ -21,7 +21,21 @@ $this->params['breadcrumbs'] = [
     ]
 ];
 ?>
-<h1><?= $this->title ?></h1>
+<div class="row">
+    <div class="col-md-10">
+        <h1><?= $this->title ?></h1>
+    </div>
+    <div class="col-md-2 text-right">
+        <div class="btn-group">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <?= Yii::t('booking', 'Actions')?> <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="<?= Url::to(['booking/send-email-summary', 'uuid' => $model->uuid ]) ?>">Send Email Summary</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
 <?= DetailView::widget([
     'model' => $model,
     'attributes' => [
@@ -31,6 +45,15 @@ $this->params['breadcrumbs'] = [
         'email',
         'total_price:currency',
         'paid:currency',
+        [
+            'label' => Yii::t('booking', 'Partner'),
+            'format' => 'raw',
+            'value' => function($data){
+                if(isset($data->partnerBooking))
+                    return Html::a($data->partnerBooking->name, ['booking/view', 'uuid' => $data->partnerBooking->uuid]);
+                return null;
+            },
+        ]
     ],
 ])?>
 <p class="text-right">
