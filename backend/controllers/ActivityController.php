@@ -148,6 +148,7 @@ class ActivityController extends Controller
         $headings = array(
             ['title' => Yii::t('booking', 'Participant'), 'width' => 50], 
             ['title' => Yii::t('booking', 'Partner'), 'width' => 50], 
+            ['title' => Yii::t('booking', 'Payment'), 'width' => 50], 
         );
 
         $event = Event::findOne(['uuid' => $event_uuid]);
@@ -175,7 +176,7 @@ class ActivityController extends Controller
             foreach ($headings as $heading) {
                 $header = $heading['title'];
                 if($header == 'Partner' && !$activity->couple_activity)
-                    continue;
+                    $header = '';
                 $letter = chr($cellNr + 65);
                 $cellName = $letter.$lineNr;
                 $sheet->setCellValue($cellName, $header);
@@ -197,7 +198,12 @@ class ActivityController extends Controller
                 $cellName = 'B'.$lineNr;
                 if(isset($participation->partner))
                     $sheet->setCellValue($cellName, $participation->partner->name);
+                else if($participation->quantity > 1)
+                    $sheet->setCellValue($cellName, 'x '.$participation->quantity);
 
+                // Payment
+                $cellName = 'C'.$lineNr;
+                $sheet->setCellValue($cellName, $participation->booking->getPaymentStatus());
                 $lineNr++;
             }
             $lineNr++;
@@ -211,7 +217,7 @@ class ActivityController extends Controller
         }
 
         $objWriter = new Xlsx($objPHPExcel);
-        $tmpfile = tempnam(sys_get_temp_dir(), "export");
+        $tmpfile = @tempnam(ini_get('upload_tmp_dir'), "export");
         $objWriter->save( $tmpfile );
 
         fpassthru( fopen($tmpfile, 'rb') );

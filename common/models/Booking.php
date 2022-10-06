@@ -103,6 +103,20 @@ class Booking extends ActiveRecord
     }
 
     /**
+     * Send an email to the booker with the summary of the booking
+     * @return boolean
+     */
+    public function sendEmailSummary(){
+        $priceManager = new PriceManager($this->event);
+        return Yii::$app->mailer->compose('@common/mail/booking-confirmed', ['booking' => $this, 'priceManager' => $priceManager])
+                    ->setFrom('booking@brusselstangofestival.be')
+                    ->setTo($this->email)
+                    ->setBcc('info@brusselstangofestival.be')
+                    ->setSubject(Yii::t('booking', 'Reservation Summary'))
+                    ->send();
+    }
+
+    /**
      * Readable name for the booker
      * @return string
      */
@@ -115,6 +129,14 @@ class Booking extends ActiveRecord
             $name.=$this->lastname;
         }
         return $name;
+    }
+
+    /**
+     * Readable reference for the booker
+     * @return string
+     */
+    public function getReference(){
+        return str_pad($this->id, 5, '0', STR_PAD_LEFT);
     }
 
     /**
@@ -137,5 +159,12 @@ class Booking extends ActiveRecord
             $paid+= $payment->amount;
         }
         return $paid;
+    }
+
+    /**
+     * Get a payment status : paid / total price
+     */
+    public function getPaymentStatus(){
+        return $this->getPaid().'/'.(int)$this->total_price.'€';
     }
 }

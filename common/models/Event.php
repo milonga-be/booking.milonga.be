@@ -63,6 +63,7 @@ class Event extends ActiveRecord
             [['title'], 'string'],
             [['bannerFile'], 'file', 'extensions' => 'png, jpg, jpeg, gif'],
             [['start_date', 'end_date'], 'datetime', 'format' => 'php:Y-m-d'],
+            [['closed'], 'in', 'range' => [0, 1]],
         ];
     }
 

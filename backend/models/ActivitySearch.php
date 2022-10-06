@@ -69,7 +69,7 @@ class ActivitySearch extends Activity{
             $query->andWhere(['LIKE', 'activity.title', $this->title]);
         }
         if(!empty($this->searchSummary)){
-            $query->andWhere(['LIKE', 'CONCAT(teacher.name, " : ", activity.title)', $this->searchSummary]);
+            $query->andWhere(['LIKE', 'CONCAT_WS(IFNULL(teacher.name,""),activity.title," ")', $this->searchSummary]);
         }
         if(!empty($this->activityGroup_title)){
             $query->andWhere(['LIKE', 'activity_group.title', $this->activityGroup_title]);

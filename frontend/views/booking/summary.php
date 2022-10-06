@@ -11,6 +11,8 @@ $this->title = Yii::t('booking', 'Registration Summary').' - '.$event->title;
 <?php
 
 $form = ActiveForm::begin([
+	'id' => 'registration',
+	'enableClientValidation' => false,
 	'options' => [],
 	'action' => Url::to(['/booking/summary', 'event_uuid' => $event->uuid])
 ]);
@@ -40,13 +42,15 @@ $form = ActiveForm::begin([
 				<td><?= Yii::$app->formatter->asDatetime($activity->datetime) ?></td>
 				<td class="price"><?= $participation->getPriceSummary() ?></td>
 			</tr>
-		<?php } ?>
+		<?php }
+		$validReductions = $priceManager->getValidReductions($model->participations);
+		?>
 		<tr>
-			<td class="subtotal_label" colspan="3"><?=  Yii::t('booking', 'Total')?></td>
+			<td class="subtotal_label" colspan="3"><?=  Yii::t('booking', sizeof($validReductions)?'Total without reductions':'Total')?></td>
 			<td class="subtotal"><?= Yii::$app->formatter->asCurrency($priceManager->computeUnreducedPrice($model->participations))?></td>
 		</tr>
 		<?php
-		$validReductions = $priceManager->getValidReductions($model->participations);
+		
 		foreach($validReductions as $reduction){?>
 		<tr>
 			<td class="reduction_label" colspan="3"><?=  $reduction->name ?></td>
@@ -73,8 +77,11 @@ $form = ActiveForm::begin([
 	<div class="col-md-6">
 		<h2><?=  Yii::t('booking', 'Your partner')?></h2>
 		<?= $form->field($model, 'has_partner')->radioList(['yes' => Yii::t('booking', 'Yes'), 'no' => Yii::t('booking', 'No')])?>
-		<?= $form->field($model, 'partner_firstname')?>
-		<?= $form->field($model, 'partner_lastname')?>
+		<div id="partner-form" class="<?= $model->has_partner=='no'?'hidden':'' ?>">
+			<?= $form->field($model, 'partner_firstname')?>
+			<?= $form->field($model, 'partner_lastname')?>
+			<?= $form->field($model, 'partner_email')?>
+		</div>
 	</div>
 	<? endif ?>
 </div>
@@ -92,3 +99,15 @@ ActiveForm::end();
 ?>
 </div>
 </div>
+<?php 
+// Force validation refresh when changing the partner radio
+$this->registerJs(
+'
+	$("input[name=\'BookingForm[has_partner]\'][value=no]").on("click", function(){
+		$("#partner-form").addClass("hidden");
+	});
+	$("input[name=\'BookingForm[has_partner]\'][value=yes]").on("click", function(){
+		$("#partner-form").removeClass("hidden");
+	});
+'
+);

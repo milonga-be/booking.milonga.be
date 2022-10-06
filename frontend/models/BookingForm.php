@@ -23,6 +23,7 @@ class BookingForm extends Model
 
     var $partner_firstname;
     var $partner_lastname;
+    var $partner_email;
 
     // const SCENARIO_REGISTRATION = 'registration';
     const SCENARIO_CONFIRMATION = 'confirmation';
@@ -36,12 +37,23 @@ class BookingForm extends Model
             // name, email, subject and body are required
             [['activities_uuids', 'activities_with_quantities'], 'required'],
             [['firstname', 'lastname', 'email', 'role'], 'required', 'on' => self::SCENARIO_CONFIRMATION],
-            [[/*'partner_firstname', 'partner_lastname', */'has_partner'], 'required', 'when' => function($attribute, $params){
-                return $this->enablePartnerForm();
-            }],
+            [['has_partner'], 'required', 
+                'when' => 
+                    function($attribute, $params){
+                        return $this->enablePartnerForm();
+                    },
+                'on' => self::SCENARIO_CONFIRMATION
+            ],
+            [['partner_firstname', 'partner_lastname', 'partner_email'], 'required', 
+                'when' => 
+                    function($attribute, $params){
+                        return ($this->has_partner == 'yes' && $this->enablePartnerForm());
+                    },
+                'on' => self::SCENARIO_CONFIRMATION
+            ],
             [['activities_uuids'], 'each', 'rule' => ['string']],
             [['firstname', 'lastname', 'role', 'partner_firstname', 'partner_lastname'], 'string'],
-            [['email'], 'email'],
+            [['email', 'partner_email'], 'email'],
             [['role'], 'in', 'range' => ['leader', 'follower']],
             [['has_partner'], 'in', 'range' => ['yes', 'no']],
         ];
@@ -59,7 +71,7 @@ class BookingForm extends Model
     public function scenarios(){
         return [
             self::SCENARIO_DEFAULT => ['activities_uuids', 'activities_with_quantities'],
-            self::SCENARIO_CONFIRMATION => ['activities_with_quantities', 'firstname', 'lastname', 'email', 'partner_firstname', 'partner_lastname', 'role'],
+            self::SCENARIO_CONFIRMATION => ['activities_with_quantities', 'firstname', 'lastname', 'email', 'role', 'has_partner', 'partner_lastname', 'partner_firstname', 'partner_email'],
         ];
     }
 

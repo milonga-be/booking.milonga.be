@@ -14,6 +14,13 @@ $form = ActiveForm::begin([
 	// 'action' => Url::to(['/booking/registration-summary', 'event_uuid' => $event->uuid])
 ]);
 ?>
+<?php if($event->closed): ?>
+	<h3><?= Yii::t('booking', 'Reservations are closed, enjoy your Festival ! ') ?></h3>
+	<hr>
+<?php else: ?>
+<h4>
+	<?= nl2br(Yii::t('booking', 'Booking Intro Text'))?>
+</h4>
 <div class="row">
 	<div class="col-md-6">
 		<h4><?= Yii::t('booking', 'Booking Column 1 Title')?></h4>
@@ -193,3 +200,4 @@ $('.input-group').on('keydown', '.quantity-field', function(e) {
 ?>
 	</div>
 </div>
+<?php endif; ?>

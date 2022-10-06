@@ -17,14 +17,13 @@ $this->params['breadcrumbs'] = [
         'url' => ['booking/index', 'event_uuid' => $event->uuid]
     ]
 ];
-$color_amount = '#61ab3b';
-$color_quantity = '#2c4399';
 ?>
 <div class="row">
 	<div class="col-md-9">
 		<h1><?= $this->title ?></h1>
 	</div>
 	<div class="col-md-3 text-right">
+        <a class="btn btn-md btn-default" href="<?= Url::to(['/booking/stats', 'event_uuid' => $event->uuid])?>"><?= Yii::t('booking', 'Statistics')?></a> 
         <a class="btn btn-md btn-default" href="<?= Url::to(['/booking/create', 'event_uuid' => $event->uuid])?>"><?= Yii::t('booking', 'New')?></a>
 	</div>
 </div>
@@ -35,6 +34,11 @@ $color_quantity = '#2c4399';
     'tableOptions' => ['class' => 'table table-hover  table-striped'],
     'options' => ['class' => 'mb-4'],
     'columns' => [
+        [
+            'attribute' => 'id',
+            'value' => 'reference',
+            'label' => Yii::t('booking', 'Ref.')
+        ],
         'name',
     	[
     		'attribute' => 'email',
@@ -60,70 +64,3 @@ $color_quantity = '#2c4399';
     ]
  ])
 ?>
-<h3><?= Yii::t('booking', 'Total')?></h3>
-<div class="row mb-4">
-    <div class="col-md-12 text-center">
-        <canvas id="bars-amounts" width="100" height="300"></canvas>
-    </div>
-</div>
-<h3><?= Yii::t('booking', 'Reservations')?></h3>
-<div class="row">
-    <div class="col-md-12 text-center">
-        <canvas id="bars-quantities" width="100" height="300"></canvas>
-    </div>
-</div>
-<?php 
-$this->registerJs(
-'
-var data = {
-    datasets: [
-    {
-        label : "'.Yii::t('booking', 'Euro').'",
-        data: '.json_encode(array_values($amount_datas)).',
-        backgroundColor: "'.$color_amount.'",
-        barThickness: "flex"
-    }
-    ],
-    labels: '.json_encode(array_keys($amount_datas)).',
-};
-var options = {
-    maintainAspectRatio : false,
-    legend: {
-        display: true,
-        position : "right"
-    },
-    scales: {
-        xAxes: [{ stacked: true }],
-        yAxes: [{ 
-            stacked: true,
-            ticks: {
-                beginAtZero: true,
-                suggestedMax: 50
-            }
-        }]
-      }
-};
-var myBarChart = new Chart( $("#bars-amounts"), {
-    type: "bar",
-    data: data,
-    options: options
-});
-
-var data = {
-    datasets: [
-    {
-        label : "'.Yii::t('booking', 'Reservations number').'",
-        data: '.json_encode(array_values($quantity_datas)).',
-        backgroundColor: "'.$color_quantity.'",
-        barThickness: "flex"
-    },
-    ],
-    labels: '.json_encode(array_keys($amount_datas)).',
-};
-
-var myBarChart = new Chart( $("#bars-quantities"), {
-    type: "bar",
-    data: data,
-    options: options
-});
-');

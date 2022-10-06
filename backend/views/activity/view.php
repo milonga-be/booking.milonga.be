@@ -105,6 +105,15 @@ $participationsProvider = new ArrayDataProvider([
     		},
     	],
         [
+            'attribute' => 'quantity',
+            'visible' => !$model->couple_activity,
+            'format' => 'raw',
+            'value' => function($data){
+                if($data->quantity > 1)
+                    return 'x '.$data->quantity;
+            },
+        ],
+        [
             'attribute' => 'partner.name',
             'format' => 'raw',
             'value' => function($data){

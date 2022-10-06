@@ -7,6 +7,7 @@ use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use common\models\Booking;
 use common\models\Event;
+use common\models\Payment;
 use backend\models\BookingSearch;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -26,7 +27,7 @@ class BookingController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['index', 'view', 'create', 'update', 'delete', 'export-payments'],
+                        'actions' => ['index', 'view', 'create', 'update', 'delete', 'export-payments', 'stats'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -59,24 +60,54 @@ class BookingController extends Controller
         $searchModel->event_id = $event->id;
         $provider = $searchModel->search(Yii::$app->request->queryParams);
 
+        return $this->render('index', ['searchModel' => $searchModel, 'provider' => $provider, 'event' => $event]);
+    }
+
+    /**
+     * Display the stats for this event
+     * @param  string $event_uuid The event identifier
+     * @return mixed
+     */
+    public function actionStats($event_uuid){
+        $event = Event::findOne(['uuid' => $event_uuid]);
+
         $amount_datas = [];
         $date = new \Datetime($event->start_date);
         $date->modify('-12 month');
 
+        // Sum booking Prices and number of bookings
         for($i = 0;$i<12;$i++){
             $total_query_row = Booking::find()
                 ->where(['LIKE', 'created_at', $date->format('Y-m-')])
                 ->andWhere(['=', 'event_id', $event->id])
                 ->select('SUM(total_price) AS total')->asArray()->one();
             $amount_datas[$date->format('M')] = $total_query_row['total'];
-            $quantity_datas[$date->format('M')] = Booking::find()
-                ->where(['LIKE', 'created_at', $date->format('Y-m-')])
-                ->andWhere(['=', 'event_id', $event->id])
-                ->count();
             $date->modify('+1 month');
         }
+        $date = new \Datetime($event->start_date);
+        $start = new \Datetime($event->start_date);
+        $date->modify('-12 month');
+        do{
+            $quantity_datas[$date->format('Ymd')] = Booking::find()
+                ->where(['LIKE', 'created_at', $date->format('Y-m-d')])
+                ->andWhere(['=', 'event_id', $event->id])
+                ->count();
+            $date->modify('+1 day');
+        }while($date < $start);
 
-        return $this->render('index', ['searchModel' => $searchModel, 'provider' => $provider, 'event' => $event, 'amount_datas' => $amount_datas, 'quantity_datas' => $quantity_datas]);
+        // Computing paid / not paid
+        $total_query_row = Booking::find()
+                ->where(['=', 'event_id', $event->id])
+                ->select('SUM(total_price) AS total')->asArray()->one();
+        $total = $total_query_row['total'];
+        $paid_query_row = Payment::find()
+                ->joinWith('booking', false)
+                ->where(['=', 'booking.event_id', $event->id])
+                ->select('SUM(payment.amount) AS total')->asArray()->one();
+        $paid = (int)$paid_query_row['total'];
+        $not_paid = $total - $paid;
+
+        return $this->render('stats', ['event' => $event, 'amount_datas' => $amount_datas, 'quantity_datas' => $quantity_datas, 'paid' => $paid, 'not_paid' => $not_paid]);
     }
 
     /**
@@ -201,7 +232,7 @@ class BookingController extends Controller
         }
 
         $objWriter = new Xlsx($objPHPExcel);
-        $tmpfile = tempnam(sys_get_temp_dir(), "export");
+        $tmpfile = tempnam(ini_get('upload_tmp_dir'), "export");
         $objWriter->save( $tmpfile );
 
         fpassthru( fopen($tmpfile, 'rb') );

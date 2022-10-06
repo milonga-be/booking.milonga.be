@@ -74,7 +74,9 @@ $this->params['breadcrumbs'] = [
         [
             'label' => Yii::t('booking', 'Balance H/F'),
             'value' => function ($data) {
-                return $data->countLeaders().' / '.$data->countFollowers();
+                if($data->couple_activity)
+                    return $data->countLeaders().' / '.$data->countFollowers();
+                return '';
             }
         ],
         [

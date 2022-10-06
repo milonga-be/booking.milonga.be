@@ -188,7 +188,7 @@ class Activity extends ActiveRecord
      * Get the number of participants
      */
     public function countParticipants(){
-        return sizeof($this->participations);
+        return (int)($this->getParticipations()->select('SUM(quantity) AS count')->asArray()->one())['count'];
     }
 
     /**

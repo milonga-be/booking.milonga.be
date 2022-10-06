@@ -12,7 +12,7 @@ $this->title = Yii::t('booking', 'Registration Complete').' - '.$event->title;
 		</h3>
 		<p>
 			<?= Yii::t('booking', 'Your booking reference is : ') ?>
-			<strong><?= $model->uuid ?></strong>
+			<strong><?= $model->reference ?></strong>
 		</p>
 		<h3><?= Yii::t('booking', 'Personal informations') ?></h3>
 		<table class="table table-striped"> 

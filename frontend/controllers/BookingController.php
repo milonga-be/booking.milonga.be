@@ -13,6 +13,7 @@ use common\models\Activity;
 use common\models\Reduction;
 use common\models\Booking;
 use common\models\Participation;
+use common\models\Role;
 use frontend\models\BookingForm;
 use common\components\PriceManager;
 
@@ -21,6 +22,15 @@ use common\components\PriceManager;
  */
 class BookingController extends Controller
 {
+
+	/**
+	 * Shows the booking form for the next event
+	 * @return mixed
+	 */
+	public function actionIndex(){
+		$event = Event::find()->orderBy('start_date DESC')->one();
+		return $this->actionCreate($event->uuid);
+	}
 
 	/**
 	 * The subscription form for the event
@@ -47,20 +57,37 @@ class BookingController extends Controller
 		$event = $this->findModel($event_uuid);
 		$model = new BookingForm();
 		$model->setScenario(BookingForm::SCENARIO_CONFIRMATION);
+			
 		$priceManager = new PriceManager($event);
 
 		if($model->load(Yii::$app->request->post()) && $model->validate()){
-			// Creating the booking
+
+			// Creating the booking for the main person
 			$booking = new Booking();
 			$booking->event_id = $event->id;
 			$booking->firstname = $model->firstname;
 			$booking->lastname = $model->lastname;
 			$booking->email = $model->email;
 			$booking->confirmed = 1;
+
+			// Create the booking for the partner
+			$partner_booking = null;
+			if($model->has_partner == 'yes'){
+				$partner_booking = new Booking();
+				$partner_booking->event_id = $event->id;
+				$partner_booking->firstname = $model->partner_firstname;
+				$partner_booking->lastname = $model->partner_lastname;
+				$partner_booking->email = $model->partner_email;
+				$partner_booking->confirmed = 1;
+			}
 			if($booking->save()){
+				if(isset($partner_booking))
+					$partner_booking->save();
 				// Adding the selected activities
 				foreach($model->participations as $unconfirmed_participation){
+
 					$activity = $unconfirmed_participation->activity;
+					// Create the participation for the main person
 					$participation = new Participation();
 					$participation->activity_id = $activity->id;
 					$participation->booking_id = $booking->id;
@@ -68,26 +95,49 @@ class BookingController extends Controller
 					$participation->role = $model->role;
 					$participation->has_partner = ($model->has_partner == 'yes');
 					$participation->save();
+
 					if($activity->couple_activity == 1 && $model->has_partner == 'yes'){
+
 						$partner = new Partner();
 						$partner->firstname = $model->partner_firstname;
 						$partner->lastname = $model->partner_lastname;
 						$partner->participation_id = $participation->id;
-						if($model->role == 'leader')
-							$partner->role = 'follower';
-						else if($model->role == 'follower')
-							$partner->role = 'leader';
+						$partner->role = Role::invertRole($model->role);
+						$partner->save();
+
+						// Create the participation in the partner booking
+						$partner_participation = new Participation();
+						$partner_participation->activity_id = $activity->id;
+						$partner_participation->booking_id = $partner_booking->id;
+						$partner_participation->quantity = $unconfirmed_participation->quantity;
+						$partner_participation->role = Role::invertRole($model->role);
+						$partner_participation->has_partner = ($model->has_partner == 'yes');
+						$partner_participation->save();
+
+						// Create also a partner who is the main booking person
+						$partner = new Partner();
+						$partner->firstname = $model->firstname;
+						$partner->lastname = $model->lastname;
+						$partner->participation_id = $partner_participation->id;
+						$partner->role = $model->role;
 						$partner->save();
 					}
+
 				}
+				if(isset($partner_booking)){
+					$booking->partner_booking_id = $partner_booking->id;
+					$partner_booking->partner_booking_id = $booking->id;
+				}
+				// Computing final price
 				$booking->saveFinalPrice();
+				if(isset($partner_booking))
+					$partner_booking->saveFinalPrice();
 				
-				Yii::$app->mailer->compose('@common/mail/booking-confirmed', ['booking' => $booking, 'priceManager' => $priceManager])
-		            ->setFrom('booking@brusselstangofestival.be')
-		            ->setTo($booking->email)
-		            ->setBcc('info@brusselstangofestival.be')
-		            ->setSubject('New Reservation Confirmed')
-		            ->send();
+				// Send a confirmation email
+				$booking->sendEmailSummary();
+				if(isset($partner_booking))
+					$partner_booking->sendEmailSummary();
+
 				return $this->redirect(['booking/confirmed', 'uuid' => $booking->uuid, 'priceManager' => $priceManager]);
 			}
 			
