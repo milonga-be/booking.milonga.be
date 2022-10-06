@@ -124,10 +124,34 @@ class Booking extends ActiveRecord
     public function sendEmailSummary(){
         $priceManager = new PriceManager($this->event);
         return Yii::$app->mailer->compose('@common/mail/booking-confirmed', ['booking' => $this, 'priceManager' => $priceManager])
-                    ->setFrom('booking@brusselstangofestival.be')
+                    ->setFrom(Yii::$app->params['publicEmail'])
                     ->setTo($this->email)
-                    ->setBcc('info@brusselstangofestival.be')
+                    ->setBcc(Yii::$app->params['publicEmail'])
                     ->setSubject(Yii::t('booking', 'Reservation Summary'))
+                    ->send();
+    }
+
+    /**
+     * Send the cancelling email
+     */
+    public function sendEmailCancelled(){
+        return Yii::$app->mailer->compose('@common/mail/booking-cancelled', ['booking' => $this])
+                    ->setFrom(Yii::$app->params['publicEmail'])
+                    ->setTo($this->email)
+                    ->setBcc(Yii::$app->params['publicEmail'])
+                    ->setSubject(Yii::t('booking', 'Reservation Cancelled'))
+                    ->send();
+    }
+
+    /**
+     * Send the cancelling email
+     */
+    public function sendEmailPayment(){
+        return Yii::$app->mailer->compose('@common/mail/booking-payment', ['booking' => $this])
+                    ->setFrom(Yii::$app->params['publicEmail'])
+                    ->setTo($this->email)
+                    ->setBcc(Yii::$app->params['publicEmail'])
+                    ->setSubject(Yii::t('booking', 'Reservation Payment Status'))
                     ->send();
     }
 

@@ -27,7 +27,7 @@ class BookingController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['index', 'view', 'create', 'update', 'delete', 'export-payments', 'stats', 'send-email-summary'],
+                        'actions' => ['index', 'view', 'create', 'update', 'delete', 'export-payments', 'stats', 'send-email-summary', 'cancel'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -170,6 +170,22 @@ class BookingController extends Controller
     {
         $model = Booking::findOne(['uuid' => $uuid]);
         $event = $model->event;
+        $model->delete();
+
+        $this->redirect(['booking/index', 'event_uuid' => $event->uuid]);
+    }
+
+    /**
+     * Cancel a reservation
+     *
+     * @return string
+     */
+    public function actionCancel($uuid, $email)
+    {
+        $model = Booking::findOne(['uuid' => $uuid]);
+        $event = $model->event;
+        if($email)
+            $model->sendEmailCancelled();
         $model->delete();
 
         $this->redirect(['booking/index', 'event_uuid' => $event->uuid]);
