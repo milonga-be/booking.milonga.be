@@ -31,7 +31,7 @@ $this->params['breadcrumbs'] = [
                 <?= Yii::t('booking', 'Actions')?> <span class="caret"></span>
             </button>
             <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="<?= Url::to(['booking/send-email-summary', 'uuid' => $model->uuid ]) ?>">Send Summary</a></li>
+                <li><a class="dropdown-item" href="<?= Url::to(['booking/send-email-summary', 'uuid' => $model->uuid ]) ?>">Send Invoice</a></li>
                 <li><a class="dropdown-item" href="<?= Url::to(['booking/cancel', 'uuid' => $model->uuid, 'email' => 1 ]) ?>">Cancel &amp; Email</a></li>
                 <li><a class="dropdown-item" href="<?= Url::to(['booking/cancel', 'uuid' => $model->uuid, 'email' => 0 ]) ?>">Cancel Silently</a></li>
             </ul>

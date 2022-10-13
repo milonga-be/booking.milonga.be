@@ -14,8 +14,11 @@ Progress Hotel : http://www.progresshotel.be
 Hotel Siru : http://www.hotelsiru.com
 
 In order to receive a discount, don't forget to mention the code tango2023"))?><br><br>
-	<?= Yii::t('booking', 'You can find the reservation summary below :') ?>
+	<?= Yii::t('booking', 'You can find the reservation summary here below.') ?>
 </p>
+<hr>
+<h2><?= Yii::t('booking', 'Invoice BTF {ref}', ['ref' => $booking->reference]) ?></h2>
+<hr>
 <?php
 foreach($booking->activityGroups as $activityGroup){
 	echo '<h3>'.$activityGroup->title.'</h3>';
@@ -57,8 +60,9 @@ foreach($booking->activityGroups as $activityGroup){
 	</tr>
 	<?php }?>
 </table>
+<hr>
 <p>
-	<?= Yii::t('booking', 'The amount must be paid on the following bank account : ')?><br>
+	<strong><?= Yii::t('booking', 'The amount must be paid on the following bank account : ')?></strong><br>
 IBAN : BE59 0014 4018 1026<br>
 BIC : GEBABEBB<br>
 Alma del Sur ASBL-VZW<br>

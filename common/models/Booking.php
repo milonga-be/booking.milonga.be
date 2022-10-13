@@ -127,7 +127,7 @@ class Booking extends ActiveRecord
                     ->setFrom(Yii::$app->params['publicEmail'])
                     ->setTo($this->email)
                     ->setBcc(Yii::$app->params['publicEmail'])
-                    ->setSubject(Yii::t('booking', 'Reservation Summary'))
+                    ->setSubject(Yii::t('booking', 'Invoice BTF {ref}', ['ref' => $this->reference]))
                     ->send();
     }
 
