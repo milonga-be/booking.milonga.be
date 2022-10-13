@@ -146,12 +146,12 @@ class Booking extends ActiveRecord
     /**
      * Send the cancelling email
      */
-    public function sendEmailPayment(){
+    public function sendEmailPaymentComplete(){
         return Yii::$app->mailer->compose('@common/mail/booking-payment', ['booking' => $this])
                     ->setFrom(Yii::$app->params['publicEmail'])
                     ->setTo($this->email)
                     ->setBcc(Yii::$app->params['publicEmail'])
-                    ->setSubject(Yii::t('booking', 'Reservation Payment Status'))
+                    ->setSubject(Yii::t('booking', 'Payment Complete'))
                     ->send();
     }
 
@@ -198,6 +198,14 @@ class Booking extends ActiveRecord
             $paid+= $payment->amount;
         }
         return $paid;
+    }
+
+    /**
+     * Is the payment complete
+     * @return boolean
+     */
+    public function isPaymentComplete(){
+        return ($this->paid >= $this->total_price);
     }
 
     /**

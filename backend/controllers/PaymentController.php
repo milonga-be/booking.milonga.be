@@ -44,6 +44,8 @@ class PaymentController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             $model->booking_id = $booking->id;
             if($model->save()){
+                if($booking->isPaymentComplete())
+                    $booking->sendEmailPaymentComplete();
                 // Redirect to the list page
                 $this->redirect(['/booking/view', 'uuid' => $booking->uuid]);
                 return;
