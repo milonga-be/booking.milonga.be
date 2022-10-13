@@ -158,12 +158,12 @@ class Booking extends ActiveRecord
     /**
      * Send an email to remind to pay
      */
-    public function sendEmailPaymentReminder(){
+    public function sendEmailPaymentReminder($last = false){
         return Yii::$app->mailer->compose('@common/mail/booking-payment-reminder', ['booking' => $this])
                     ->setFrom(Yii::$app->params['publicEmail'])
                     ->setTo($this->email)
                     ->setBcc(Yii::$app->params['publicEmail'])
-                    ->setSubject(Yii::t('booking', 'Payment Reminder'))
+                    ->setSubject($last?Yii::t('booking', 'Last Reminder'):Yii::t('booking', 'Payment Reminder'))
                     ->send();
     }
 
