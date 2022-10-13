@@ -255,7 +255,7 @@ class BookingController extends Controller
 
             // Price
             $cellName = 'D'.$lineNr;
-            $sheet->setCellValue($cellName, $booking->paid);
+            $sheet->setCellValue($cellName, $booking->total_paid);
 
             $lineNr++;
         }

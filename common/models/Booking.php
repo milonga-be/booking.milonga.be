@@ -144,7 +144,7 @@ class Booking extends ActiveRecord
     }
 
     /**
-     * Send the cancelling email
+     * Send an email when payment is completed
      */
     public function sendEmailPaymentComplete(){
         return Yii::$app->mailer->compose('@common/mail/booking-payment', ['booking' => $this])
@@ -152,6 +152,18 @@ class Booking extends ActiveRecord
                     ->setTo($this->email)
                     ->setBcc(Yii::$app->params['publicEmail'])
                     ->setSubject(Yii::t('booking', 'Payment Complete'))
+                    ->send();
+    }
+
+    /**
+     * Send an email to remind to pay
+     */
+    public function sendEmailPaymentReminder(){
+        return Yii::$app->mailer->compose('@common/mail/booking-payment-reminder', ['booking' => $this])
+                    ->setFrom(Yii::$app->params['publicEmail'])
+                    ->setTo($this->email)
+                    ->setBcc(Yii::$app->params['publicEmail'])
+                    ->setSubject(Yii::t('booking', 'Payment Reminder'))
                     ->send();
     }
 
@@ -191,7 +203,7 @@ class Booking extends ActiveRecord
     /**
      * Get the amount already paid
      */
-    public function getPaid(){
+    public function computeTotalPaid(){
         $paid = 0;
         $payments = $this->payments;
         foreach($payments as $payment){
@@ -205,13 +217,21 @@ class Booking extends ActiveRecord
      * @return boolean
      */
     public function isPaymentComplete(){
-        return ($this->paid >= $this->total_price);
+        return ($this->total_paid >= $this->total_price);
     }
 
     /**
      * Get a payment status : paid / total price
      */
     public function getPaymentStatus(){
-        return $this->getPaid().'/'.(int)$this->total_price.'€';
+        return $this->total_paid.'/'.(int)$this->total_price.'€';
+    }
+
+    /**
+     * Get the amount still to pay
+     * @return float
+     */
+    public function getAmountDue(){
+        return $this->total_price - $this->total_paid;
     }
 }

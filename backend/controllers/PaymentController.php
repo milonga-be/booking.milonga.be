@@ -44,6 +44,8 @@ class PaymentController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             $model->booking_id = $booking->id;
             if($model->save()){
+                $booking->total_paid = $booking->computeTotalPaid();
+                $booking->save();
                 if($booking->isPaymentComplete())
                     $booking->sendEmailPaymentComplete();
                 // Redirect to the list page
@@ -65,6 +67,9 @@ class PaymentController extends Controller
         $model = Payment::findOne(['uuid' => $uuid]);
         $booking = $model->booking;
         $model->delete();
+        // Recompute the total paid
+        $booking->total_paid = $booking->computeTotalPaid();
+        $booking->save();
 
         $this->redirect(['booking/view', 'uuid' => $booking->uuid]);
     }

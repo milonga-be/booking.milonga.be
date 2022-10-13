@@ -46,7 +46,7 @@ $this->params['breadcrumbs'] = [
         'lastname', 
         'email',
         'total_price:currency',
-        'paid:currency',
+        'total_paid:currency',
         [
             'label' => Yii::t('booking', 'Partner'),
             'format' => 'raw',
