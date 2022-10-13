@@ -81,17 +81,20 @@ $form = ActiveForm::begin([
 			<?= $form->field($model, 'partner_firstname')?>
 			<?= $form->field($model, 'partner_lastname')?>
 			<?= $form->field($model, 'partner_email')?>
+			<p class="">
+				<em><?= Yii::t('booking', 'Your partner will receive a personal invoice on her/his e-mail address.') ?></em>
+			</p>
 		</div>
 	</div>
 	<? endif ?>
 </div>
+<hr>
 <div class="row">
 	<div class="col-md-6 text-left">
-		
+		<a href="<?= Url::to(['booking/create', 'event_uuid' => $event->uuid])?>" class="btn btn-default btn-lg"><?= Yii::t('booking', 'Back')?></a>
 	</div>
 	<div class="col-md-6 text-right">
-		<a href="<?= Url::to(['booking/create', 'event_uuid' => $event->uuid])?>" class="btn btn-danger"><?= Yii::t('booking', 'Back')?></a>
-		<button class="btn btn-primary"><?= Yii::t('booking', 'Send')?></button>
+		<button class="btn btn-primary btn-lg"><?= Yii::t('booking', 'Confirm')?></button>
 	</div>
 </div>
 <?php

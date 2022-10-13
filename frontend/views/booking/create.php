@@ -132,7 +132,7 @@ foreach ($event->activityGroups as $group) {?>
 }
 ?>
 <div class="text-right">
-	<button class="btn btn-primary"><?= Yii::t('booking', 'Submit')?></button>
+	<button class="btn btn-primary btn-lg"><?= Yii::t('booking', 'Validate')?></button>
 </div>
 <?php
 ActiveForm::end();
