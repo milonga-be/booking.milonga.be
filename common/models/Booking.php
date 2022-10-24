@@ -105,6 +105,11 @@ class Booking extends ActiveRecord
                 }
             }
         }
+        if(isset($this->partnerBooking)){
+            $partnerBooking = $this->partnerBooking;
+            $this->unlink('partnerBooking', $partnerBooking);
+            $partnerBooking->delete();
+        }
         return true;
     }
 
