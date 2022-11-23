@@ -8,9 +8,9 @@
 	<?= Yii::t('booking', 'The amount due is {amount}', ['amount' => '<strong>'.Yii::$app->formatter->asCurrency($booking->getAmountDue()).'</strong>']) ?>
 <p>
 	<strong><?= Yii::t('booking', 'This must be paid on the following bank account : ')?></strong><br>
-IBAN : BE59 0014 4018 1026<br>
-BIC : GEBABEBB<br>
-Alma del Sur ASBL-VZW<br>
+IBAN : BE69 0689 4697 7378<br>
+BIC : GKCCBEBB<br>
+asbl Alma del Tango Vzw<br>
 Rue Michel Zwaab 18<br>
 1080 - Brussels
 </p>

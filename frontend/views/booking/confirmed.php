@@ -72,9 +72,9 @@ $this->title = Yii::t('booking', 'Registration Complete').' - '.$event->title;
 			<div class="col-md-8">
 				<p>
 				<?= Yii::t('booking', 'The amount must be paid on the following bank account : ') ?><br>
-				<?= Yii::t('booking', 'IBAN : BE59 0014 4018 1026') ?><br>
-				<?= Yii::t('booking', 'BIC : GEBABEBB') ?><br>
-				<?= Yii::t('booking', 'Alma del Sur ASBL-VZW') ?><br>
+				<?= Yii::t('booking', 'IBAN : BE69 0689 4697 7378') ?><br>
+				<?= Yii::t('booking', 'BIC : GKCCBEBB') ?><br>
+				<?= Yii::t('booking', 'asbl Alma del Tango Vzw') ?><br>
 				<?= Yii::t('booking', 'Rue Michel Zwaab 18') ?><br>
 				<?= Yii::t('booking', '1080 - Brussels') ?><br>
 				</p>
