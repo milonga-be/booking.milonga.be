@@ -172,6 +172,16 @@ h2, h3{
 .table-activities > tbody > tr > td{
     padding:12px;
 }
+@media only screen and (max-width: 480px) {
+    .table-activities > tbody > tr > td{
+        padding:4px;
+    }
+}
+@media only screen and (max-width: 320px) {
+    .table-activities > tbody > tr > td{
+        padding:0px;
+    }
+}
 .table-activities > tbody > tr > td.activity{
     cursor: pointer;
 }
