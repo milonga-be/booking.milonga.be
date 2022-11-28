@@ -69,7 +69,7 @@ foreach ($event->activityGroups as $group) {?>
 				<table class="table table-striped table-activities">
 					<thead>
 						<tr>
-							<th><?= Yii::t('booking', 'Day') ?></th>
+							<th class="hidden-xs hidden-s"><?= Yii::t('booking', 'Day') ?></th>
 							<th><?= Yii::t('booking', 'Time') ?></th>
 							<?php foreach ($event->teachers as $teacher) {?>
 							<th><?= $teacher->name ?></th>
@@ -82,8 +82,12 @@ foreach ($event->activityGroups as $group) {?>
 							?>
 							<?php foreach ($day as $hour => $teachers) {?>
 							<tr>
-								<td class="day"><strong><?= $first_day?(new \Datetime($date))->format('D M j'):'' ?></strong></td>
-								<td><?= $hour ?></td>
+								<td class="hidden-xs hidden-s day"><strong><?= $first_day?(new \Datetime($date))->format('D M j'):'' ?></strong></td>
+								<td class="hidden-xs hidden-s"><?= $hour ?></td>
+								<td class="visible-xs visible-s">
+									<? if($first_day):?><strong><?= (new \Datetime($date))->format('D')?></strong><br><?endif;?>
+									<?= $hour ?>
+								</td>
 								<?php foreach ($teachers as $teacher_name => $activity) {?>
 								<td class="activity <?= $activity && $activity->isFull()?'full':'' ?>"><?php
 									if(isset($activity)){
