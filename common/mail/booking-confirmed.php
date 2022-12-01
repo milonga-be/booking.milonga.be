@@ -13,7 +13,7 @@ Hôtel des colonies : http://www.hotel-des-colonies.com
 Progress Hotel : http://www.progresshotel.be
 Hotel Siru : http://www.hotelsiru.com
 
-In order to receive a discount, don't forget to mention the code tango2023"))?><br><br>
+In order to receive a discount, don't forget to mention the code Tango2023"))?><br><br>
 	<?= Yii::t('booking', 'You can find the reservation summary here below.') ?>
 </p>
 <hr>

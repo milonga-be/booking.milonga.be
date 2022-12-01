@@ -41,7 +41,27 @@ class BookingController extends Controller
 		$event = $this->findModel($event_uuid);
 		$model = new BookingForm();
 		$priceManager = new PriceManager($event);
-		if($model->load(Yii::$app->request->post()) && $model->validate()){
+		$post = Yii::$app->request->post();
+		// Checking that an activity is selected
+		$selected_activites = false;
+		if(isset($post['BookingForm']['activities_with_quantities'])){
+			foreach($post['BookingForm']['activities_with_quantities'] as $activity_config){
+				list($activity_uuid, $quantity) = explode(':', $activity_config);
+				if($quantity > 0){
+					$selected_activites = true;
+					break;
+				}
+			}
+		}
+		if(isset($post['BookingForm']['activities_uuids'])){
+			foreach($post['BookingForm']['activities_uuids'] as $value){
+				if($value){
+					$selected_activites = true;
+					break;
+				}
+			}
+		}
+		if($selected_activites && $model->load($post) && $model->validate()){
 			return $this->render('summary', ['model' => $model, 'event' => $event, 'priceManager' => $priceManager]);
 		}
 
