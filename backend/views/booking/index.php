@@ -19,10 +19,13 @@ $this->params['breadcrumbs'] = [
 ];
 ?>
 <div class="row">
-	<div class="col-md-9">
+	<div class="col-md-4">
 		<h1><?= $this->title ?></h1>
 	</div>
-	<div class="col-md-3 text-right">
+    <div class="col-md-4 text-center">
+        <h1><?= Yii::t('booking', 'Total : ') ?><?= Yii::$app->formatter->asCurrency($total) ?></h1>
+    </div>
+	<div class="col-md-4 text-right">
         <a class="btn btn-md btn-default" href="<?= Url::to(['/booking/stats', 'event_uuid' => $event->uuid])?>"><?= Yii::t('booking', 'Statistics')?></a> 
         <a class="btn btn-md btn-default" href="<?= Url::to(['/booking/create', 'event_uuid' => $event->uuid])?>"><?= Yii::t('booking', 'New')?></a>
 	</div>

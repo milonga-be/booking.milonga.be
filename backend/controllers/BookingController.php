@@ -60,7 +60,14 @@ class BookingController extends Controller
         $searchModel->event_id = $event->id;
         $provider = $searchModel->search(Yii::$app->request->queryParams);
 
-        return $this->render('index', ['searchModel' => $searchModel, 'provider' => $provider, 'event' => $event]);
+        // Computing total Price
+        // Computing paid / not paid
+        $total_query_row = Booking::find()
+                ->where(['=', 'event_id', $event->id])
+                ->select('SUM(total_price) AS total')->asArray()->one();
+        $total = $total_query_row['total'];
+
+        return $this->render('index', ['searchModel' => $searchModel, 'provider' => $provider, 'event' => $event, 'total' => $total]);
     }
 
     /**
