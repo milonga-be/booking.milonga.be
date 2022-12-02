@@ -86,7 +86,9 @@ $form = ActiveForm::begin([
 			</p>
 		</div>
 	</div>
-	<? endif ?>
+	<? else: ?>
+		<input type="hidden" name="BookingForm[has_partner]" value="no">
+	<? endif; ?>
 </div>
 <hr>
 <div class="row">

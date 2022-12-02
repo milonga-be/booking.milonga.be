@@ -131,7 +131,7 @@ class Booking extends ActiveRecord
         return Yii::$app->mailer->compose('@common/mail/booking-confirmed', ['booking' => $this, 'priceManager' => $priceManager])
                     ->setFrom(Yii::$app->params['publicEmail'])
                     ->setTo($this->email)
-                    ->setBcc(Yii::$app->params['publicEmail'])
+                    ->setBcc([Yii::$app->params['publicEmail'], 'bopazmino@gmail.com'])
                     ->setSubject(Yii::t('booking', 'Invoice BTF {ref}', ['ref' => $this->reference]))
                     ->send();
     }
