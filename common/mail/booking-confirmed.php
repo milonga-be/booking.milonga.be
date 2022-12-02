@@ -27,7 +27,7 @@ foreach($booking->activityGroups as $activityGroup){
 		$activity = $participation->activity;
 		if($activity->activityGroup->id == $activityGroup->id){
 			echo '<tr>';
-			echo '<td width="15%">'.Yii::$app->formatter->asDatetime($activity->datetime).'</td>';
+			echo '<td width="15%">'.(isset($activity->datetime)?Yii::$app->formatter->asDatetime($activity->datetime):'-').'</td>';
 			echo '<td width="60%">'.$activity->getSummary(75).'</td>';
 			echo '<td style="text-align:right;">'.$participation->getPriceSummary().'</td>';
 			echo '</tr>';
