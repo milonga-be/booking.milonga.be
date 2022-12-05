@@ -10,9 +10,11 @@ use yii\db\Expression;
 
 class BookingSearch extends Booking{
 
+    var $name_search;
+
 	public function rules(){
 		return [
-			[['email', 'name'], 'safe']
+			[['email', 'name_search', 'id'], 'safe']
 		];
 	}
 
@@ -56,8 +58,11 @@ class BookingSearch extends Booking{
         if(!empty($this->email)){
             $query->andWhere(['LIKE', 'email', $this->email]);
         }
-        if(!empty($this->name)){
-            $query->andWhere(['LIKE', 'CONCAT(firstname, lastname)', $this->name]);
+        if(!empty($this->name_search)){
+            $query->andWhere(['LIKE', 'CONCAT(firstname, lastname)', $this->name_search]);
+        }
+        if(!empty($this->id)){
+            $query->andWhere(['LIKE', 'id', $this->id]);
         }
         
       

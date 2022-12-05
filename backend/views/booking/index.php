@@ -42,7 +42,11 @@ $this->params['breadcrumbs'] = [
             'value' => 'reference',
             'label' => Yii::t('booking', 'Ref.')
         ],
-        'name',
+        [
+            'attribute' => 'name_search',
+            'label' => Yii::t('booking', 'Name'),
+            'value' => 'name'
+        ],
     	[
     		'attribute' => 'email',
     		'format' => 'raw',
