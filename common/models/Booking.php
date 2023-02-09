@@ -36,6 +36,7 @@ class Booking extends ActiveRecord
         return [
             [['firstname', 'lastname', 'email'], 'required'],
             [['total_price'], 'number'],
+            [['promocode'], 'string'],
         ];
     }
 
@@ -118,7 +119,7 @@ class Booking extends ActiveRecord
      */
     public function saveFinalPrice(){
         $priceManager = new PriceManager($this->event);
-        $this->total_price = $priceManager->computeFinalPrice($this->participations);
+        $this->total_price = $priceManager->computeFinalPrice($this);
         return $this->save();
     }
 

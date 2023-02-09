@@ -35,6 +35,7 @@ class ReductionRule extends ActiveRecord
     public function rules(){
         return [
             [['value', 'type', 'lower_limit', 'higher_limit', 'activity_group_id'], 'required'],
+            [['activity_id'], 'integer'],
         ];
     }
 

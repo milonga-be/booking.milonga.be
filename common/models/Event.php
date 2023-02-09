@@ -180,11 +180,19 @@ class Event extends ActiveRecord
     }
 
     /**
-     * Get the list of activities for an event
+     * Get the list of activity groups for an event
      * @return array
      */
     public function getActivityGroupsList(){
         return ArrayHelper::map(ActivityGroup::find()->where(['event_id' => $this->id])->all(), 'id', 'title');
+    }
+
+    /**
+     * Get the list of activities for an event
+     * @return array
+     */
+    public function getActivityList(){
+        return ArrayHelper::map(Activity::find()->where(['event_id' => $this->id])->all(), 'id', 'title');
     }
 
 }

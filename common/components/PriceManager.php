@@ -18,15 +18,18 @@ class PriceManager{
 	 * @param  array $participations The selected activities with the quantities
 	 * @return boolean
 	 */
-	public function getValidReductions($participations){
+	public function getValidReductions($model){
+		$participations = $model->participations;
 		$reductions = $this->event->reductions;
 		$activitiesCounts = [];
+		$activities = [];
 		// Counting the activities per group to check if reductions are valid
 		foreach($participations as $participation){
 			$activity = $participation->activity;
 			if(!isset($activitiesCounts[$activity->activityGroup->id]))
 				$activitiesCounts[$activity->activityGroup->id] = 0;
 			$activitiesCounts[$activity->activityGroup->id]++;
+			$activities[$activity->id] = true;
 		}
 		// Building the array with the valid reductions
 		$validReductions = [];
@@ -51,7 +54,13 @@ class PriceManager{
 					$isValid = false;
 					break;
 				}
+				if(isset($rule->activity_id) && !isset($activities[$rule->activity_id])){
+					$isValid = false;
+					break;
+				}
 			}
+			if(!empty($reduction->promocode) && $model->promocode != $reduction->promocode)
+				$isValid = false;
 			if($isValid)
 				$validReductions[$reduction->id] = $reduction;
 		}
@@ -73,9 +82,10 @@ class PriceManager{
 	 * @param  array $participations list of selected activities with the quantities
 	 * @return float
 	 */
-	public function computeFinalPrice($participations){
+	public function computeFinalPrice($model){
+		$participations = $model->participations;
 		$reduced_price = 0;
-		$validReductions = $this->getValidReductions($participations);
+		$validReductions = $this->getValidReductions($model);
 
 		// Filtering the rules on the activityGroup
 		$activityGroupsReductionRule = [];

@@ -5,8 +5,14 @@
     <div class="col-md-4">
         <?= $form->field($model, 'higher_limit')?>
     </div>
+    
+</div>
+<div class="row">
     <div class="col-md-4">
         <?= $form->field($model, 'activity_group_id')->dropDownlist($event->getActivityGroupsList())?>
+    </div>
+    <div class="col-md-4">
+        <?= $form->field($model, 'activity_id')->dropDownlist($event->getActivityList(), ['prompt'=>Yii::t('booking', '--')])?>
     </div>
 </div>
 <div class="row">

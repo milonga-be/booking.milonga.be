@@ -39,7 +39,7 @@ foreach($booking->activityGroups as $activityGroup){
 ?>
 <table width="100%">
 	<?php 
-	$validReductions = $priceManager->getValidReductions($booking->participations);
+	$validReductions = $priceManager->getValidReductions($booking);
 	?>
 	<tr>
 		<td width="75%" colspan="2"><strong><?=  Yii::t('booking', sizeof($validReductions)?'Total without reductions':'Total')?></strong></td>
@@ -56,7 +56,7 @@ foreach($booking->activityGroups as $activityGroup){
 	<?php if(sizeof($validReductions)){ ?>
 	<tr>
 		<td style="font-weight: bold;" colspan="2"><h2 style="margin-top: 0;"><?=  Yii::t('booking', 'Total with reductions')?></h2></td>
-		<td style="font-weight: bold;text-align:right;" ><h2 style="margin-top: 0;"><?= Yii::$app->formatter->asCurrency($priceManager->computeFinalPrice($booking->participations))?></h2></td>
+		<td style="font-weight: bold;text-align:right;" ><h2 style="margin-top: 0;"><?= Yii::$app->formatter->asCurrency($priceManager->computeFinalPrice($booking))?></h2></td>
 	</tr>
 	<?php }?>
 </table>

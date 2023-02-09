@@ -135,6 +135,12 @@ foreach ($event->activityGroups as $group) {?>
 <?php
 }
 ?>
+<h4><?= Yii::t('booking', 'You have a promocode ? Enter it here. Leave empty if not.')?></h4>
+<div class="row bg-muted promocode">
+	<div class="col-md-4">
+		<?= $form->field($model, 'promocode')->label(false)?>
+	</div>
+</div>
 <div class="text-right">
 	<button class="btn btn-primary btn-lg"><?= Yii::t('booking', 'Validate')?></button>
 </div>

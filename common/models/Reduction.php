@@ -33,6 +33,7 @@ class Reduction extends ActiveRecord
         return [
             [['name'], 'required'],
             [['validity_start', 'validity_end'], 'datetime', 'format' => 'php:Y-m-d'],
+            [['promocode'], 'string'],
         ];
     }
 

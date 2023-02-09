@@ -89,6 +89,7 @@ class BookingController extends Controller
 			$booking->lastname = $model->lastname;
 			$booking->email = $model->email;
 			$booking->confirmed = 1;
+			$booking->promocode = $model->promocode;
 
 			// Create the booking for the partner
 			$partner_booking = null;
@@ -99,6 +100,7 @@ class BookingController extends Controller
 				$partner_booking->lastname = $model->partner_lastname;
 				$partner_booking->email = $model->partner_email;
 				$partner_booking->confirmed = 1;
+				$partner_booking->promocode = $model->promocode;
 			}
 			if($booking->save()){
 				if(isset($partner_booking))
@@ -116,7 +118,7 @@ class BookingController extends Controller
 					$participation->has_partner = ($model->has_partner == 'yes');
 					$participation->save();
 
-					if($activity->couple_activity == 1 && $model->has_partner == 'yes'){
+					if(/*$activity->couple_activity == 1 && */$model->has_partner == 'yes'){
 
 						$partner = new Partner();
 						$partner->firstname = $model->partner_firstname;
@@ -129,7 +131,7 @@ class BookingController extends Controller
 						$partner_participation = new Participation();
 						$partner_participation->activity_id = $activity->id;
 						$partner_participation->booking_id = $partner_booking->id;
-						$partner_participation->quantity = $unconfirmed_participation->quantity;
+						$partner_participation->quantity = 1;/*$unconfirmed_participation->quantity;*/
 						$partner_participation->role = Role::invertRole($model->role);
 						$partner_participation->has_partner = ($model->has_partner == 'yes');
 						$partner_participation->save();

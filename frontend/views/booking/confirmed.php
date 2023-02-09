@@ -50,7 +50,7 @@ $this->title = Yii::t('booking', 'Registration Complete').' - '.$event->title;
 				<td class="subtotal"><?= Yii::$app->formatter->asCurrency($priceManager->computeUnreducedPrice($model->participations))?></td>
 			</tr>
 			<?php
-			$validReductions = $priceManager->getValidReductions($model->participations);
+			$validReductions = $priceManager->getValidReductions($model);
 			foreach($validReductions as $reduction){?>
 			<tr>
 				<td class="reduction_label" colspan="3"><?=  $reduction->name ?></td>
@@ -60,7 +60,7 @@ $this->title = Yii::t('booking', 'Registration Complete').' - '.$event->title;
 			<?php if(sizeof($validReductions)){ ?>
 			<tr>
 				<td class="total_label" colspan="3"><?=  Yii::t('booking', 'Total with reductions')?></td>
-				<td class="total"><?= Yii::$app->formatter->asCurrency($priceManager->computeFinalPrice($model->participations))?></td>
+				<td class="total"><?= Yii::$app->formatter->asCurrency($priceManager->computeFinalPrice($model))?></td>
 			</tr>
 			<?php }?>
 		</table>

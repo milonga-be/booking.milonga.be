@@ -14,6 +14,7 @@ class BookingForm extends Model
 {
 	var $activities_uuids = array();
     var $activities_with_quantities = array();
+    var $promocode;
 
     var $firstname;
     var $lastname;
@@ -56,6 +57,7 @@ class BookingForm extends Model
             [['email', 'partner_email'], 'email'],
             [['role'], 'in', 'range' => ['leader', 'follower']],
             [['has_partner'], 'in', 'range' => ['yes', 'no']],
+            [['promocode'], 'string'],
         ];
     }
 
@@ -70,8 +72,8 @@ class BookingForm extends Model
      */
     public function scenarios(){
         return [
-            self::SCENARIO_DEFAULT => ['activities_uuids', 'activities_with_quantities'],
-            self::SCENARIO_CONFIRMATION => ['activities_with_quantities', 'firstname', 'lastname', 'email', 'role', 'has_partner', 'partner_lastname', 'partner_firstname', 'partner_email'],
+            self::SCENARIO_DEFAULT => ['activities_uuids', 'activities_with_quantities', 'promocode'],
+            self::SCENARIO_CONFIRMATION => ['activities_with_quantities', 'firstname', 'lastname', 'email', 'role', 'has_partner', 'partner_lastname', 'partner_firstname', 'partner_email', 'promocode'],
         ];
     }
 

@@ -43,7 +43,7 @@ $form = ActiveForm::begin([
 				<td class="price"><?= $participation->getPriceSummary() ?></td>
 			</tr>
 		<?php }
-		$validReductions = $priceManager->getValidReductions($model->participations);
+		$validReductions = $priceManager->getValidReductions($model);
 		?>
 		<tr>
 			<td class="subtotal_label" colspan="3"><?=  Yii::t('booking', sizeof($validReductions)?'Total without reductions':'Total')?></td>
@@ -60,7 +60,7 @@ $form = ActiveForm::begin([
 		<?php if(sizeof($validReductions)){ ?>
 		<tr>
 			<td class="total_label" colspan="3"><?=  Yii::t('booking', 'Total with reductions')?></td>
-			<td class="total"><?= Yii::$app->formatter->asCurrency($priceManager->computeFinalPrice($model->participations))?></td>
+			<td class="total"><?= Yii::$app->formatter->asCurrency($priceManager->computeFinalPrice($model))?></td>
 		</tr>
 		<?php }?>
 	</tbody>
@@ -91,6 +91,7 @@ $form = ActiveForm::begin([
 	<? endif; ?>
 </div>
 <hr>
+<input type="hidden" name="BookingForm[promocode]" value="<?= $model->promocode ?>">
 <div class="row">
 	<div class="col-md-6 text-left">
 		<a href="<?= Url::to(['booking/create', 'event_uuid' => $event->uuid])?>" class="btn btn-default btn-lg"><?= Yii::t('booking', 'Back')?></a>
