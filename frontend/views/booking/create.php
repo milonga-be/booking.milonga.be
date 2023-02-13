@@ -31,6 +31,9 @@ $form = ActiveForm::begin([
 		<p><?= nl2br(Yii::t('booking', 'Booking Column 2 Text'))?></p>
 	</div>
 </div>
+<h4 class="text-warning">
+	<?= Yii::t('booking', 'Please select the workshop(s) and the pass(es) you wish to reserve, and scroll down to confirm you Reservation') ?>
+</h4>
 <?php
 foreach ($event->activityGroups as $group) {?>
 	<h2><?= $group->title ?></h2>
@@ -141,6 +144,9 @@ foreach ($event->activityGroups as $group) {?>
 		<?= $form->field($model, 'promocode')->label(false)?>
 	</div>
 </div>
+<p class="text-right">
+	<?= Yii::t('booking', 'You will be presented a summary of your Reservation at the next step before final confirmation') ?>
+</p>
 <div class="text-right">
 	<button class="btn btn-primary btn-lg"><?= Yii::t('booking', 'Validate')?></button>
 </div>
