@@ -139,7 +139,7 @@ foreach ($event->activityGroups as $group) {?>
 }
 ?>
 <h4><?= Yii::t('booking', 'You have a promocode ? Enter it here. Leave empty if not.')?></h4>
-<div class="row bg-muted promocode">
+<div class="row bg-info promocode">
 	<div class="col-md-4">
 		<?= $form->field($model, 'promocode')->label(false)?>
 	</div>
