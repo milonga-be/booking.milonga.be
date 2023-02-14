@@ -132,7 +132,7 @@ class Booking extends ActiveRecord
         return Yii::$app->mailer->compose('@common/mail/booking-confirmed', ['booking' => $this, 'priceManager' => $priceManager])
                     ->setFrom(Yii::$app->params['publicEmail'])
                     ->setTo($this->email)
-                    ->setBcc([Yii::$app->params['publicEmail'], 'bopazmino@gmail.com'])
+                    ->setBcc([Yii::$app->params['publicEmail'], Yii::$app->params['adminEmail']])
                     ->setSubject(Yii::t('booking', 'Invoice BTF {ref}', ['ref' => $this->reference]))
                     ->send();
     }
@@ -144,7 +144,7 @@ class Booking extends ActiveRecord
         return Yii::$app->mailer->compose('@common/mail/booking-cancelled', ['booking' => $this])
                     ->setFrom(Yii::$app->params['publicEmail'])
                     ->setTo($this->email)
-                    ->setBcc(Yii::$app->params['publicEmail'])
+                    ->setBcc([Yii::$app->params['publicEmail'], Yii::$app->params['adminEmail']])
                     ->setSubject(Yii::t('booking', 'Reservation Cancelled'))
                     ->send();
     }
@@ -156,7 +156,7 @@ class Booking extends ActiveRecord
         return Yii::$app->mailer->compose('@common/mail/booking-payment', ['booking' => $this])
                     ->setFrom(Yii::$app->params['publicEmail'])
                     ->setTo($this->email)
-                    ->setBcc(Yii::$app->params['publicEmail'])
+                    ->setBcc([Yii::$app->params['publicEmail'], Yii::$app->params['adminEmail']])
                     ->setSubject(Yii::t('booking', 'Payment Complete'))
                     ->send();
     }
@@ -168,7 +168,7 @@ class Booking extends ActiveRecord
         return Yii::$app->mailer->compose('@common/mail/booking-payment-reminder', ['booking' => $this])
                     ->setFrom(Yii::$app->params['publicEmail'])
                     ->setTo($this->email)
-                    ->setBcc(Yii::$app->params['publicEmail'])
+                    ->setBcc([Yii::$app->params['publicEmail'], Yii::$app->params['adminEmail']])
                     ->setSubject($last?Yii::t('booking', 'Last Reminder'):Yii::t('booking', 'Payment Reminder'))
                     ->send();
     }
