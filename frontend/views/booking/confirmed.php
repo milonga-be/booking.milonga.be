@@ -8,11 +8,21 @@ $this->title = Yii::t('booking', 'Registration Complete').' - '.$event->title;
 	<?= $this->render('_banner', ['event' => $event]) ?>
     <div class="container">
 		<h3>
-			<?= Yii::t('booking', 'Your booking is complete !') ?>
+			<?= Yii::t('booking', 'Your reservation is complete !') ?>
 		</h3>
 		<p>
-			<?= Yii::t('booking', 'Your booking reference is : ') ?>
+			<?= Yii::t('booking', 'Your reference is : ') ?>
 			<strong><?= $model->reference ?></strong>
+		</p>
+		<p>
+			<?= Yii::t('booking', 'Please write it down, it will be necessary for all further communication with us.')?>
+		</p>
+		<p>
+			<?= Yii::t('booking', 'You will receive a copy of your Reservation in your mailbox. Don\'t forget to check your spam !')?>
+		</p>
+		<p>
+			<?= Yii::t('booking', 'Any questions, modifications can be communicated at : ')?>
+			<a href="mailto:<?= Yii::$app->params['adminEmail']?>"><?= Yii::$app->params['publicEmail']?></a>
 		</p>
 		<h3><?= Yii::t('booking', 'Personal informations') ?></h3>
 		<table class="table table-striped"> 
