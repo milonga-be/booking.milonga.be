@@ -12,13 +12,15 @@ $this->title = Yii::t('booking', 'Registration Complete').' - '.$event->title;
 		</h3>
 		<p>
 			<?= Yii::t('booking', 'Your reference is : ') ?>
-			<strong><?= $model->reference ?></strong>
-		</p>
-		<p>
+			<strong><?= $model->reference ?></strong>&nbsp;
 			<?= Yii::t('booking', 'Please write it down, it will be necessary for all further communication with us.')?>
 		</p>
 		<p>
 			<?= Yii::t('booking', 'You will receive a copy of your Reservation in your mailbox. Don\'t forget to check your spam !')?>
+			<?php if(isset($model->partnerBooking)): ?>
+				<br>
+				<?= Yii::t('booking', 'Your partner also received his/her own copy of the reservation, with the following reference : ')?><strong><?= $model->partnerBooking->reference ?></strong>
+			<?php endif ?>
 		</p>
 		<p>
 			<?= Yii::t('booking', 'Any questions, modifications can be communicated at : ')?>

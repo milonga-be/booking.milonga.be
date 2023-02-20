@@ -54,7 +54,7 @@ class PriceManager{
 					$isValid = false;
 					break;
 				}
-				if(isset($rule->activity_id) && !isset($activities[$rule->activity_id])){
+				if(isset($rule->activity_id) && !empty($rule->activity_id) && !isset($activities[$rule->activity_id])){
 					$isValid = false;
 					break;
 				}
