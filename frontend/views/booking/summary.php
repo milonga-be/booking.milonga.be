@@ -35,7 +35,7 @@ $form = ActiveForm::begin([
 			?>
 			<tr>
 				<td>
-					<?= $activity->title ?>
+					<?= $activity->getSummary(75) ?>
 					<?= $form->field($model, 'activities_with_quantities[]')->hiddenInput(['value' => $activity->uuid.':'.$participation->quantity])->label(false) ?>
 				</td>
 				<td><?= $activity->activityGroup->title ?></td>
@@ -82,7 +82,7 @@ $form = ActiveForm::begin([
 			<?= $form->field($model, 'partner_lastname')?>
 			<?= $form->field($model, 'partner_email')?>
 			<p class="">
-				<em><?= Yii::t('booking', 'Your partner will receive a personal invoice on her/his e-mail address.') ?></em>
+				<em><?= Yii::t('booking', 'Your partner will receive a personal invoice on her/his e-mail address. No need to make another reservation ! ') ?></em>
 			</p>
 		</div>
 	</div>

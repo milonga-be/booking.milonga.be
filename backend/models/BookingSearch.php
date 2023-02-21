@@ -62,7 +62,7 @@ class BookingSearch extends Booking{
             $query->andWhere(['LIKE', 'CONCAT(firstname, lastname)', $this->name_search]);
         }
         if(!empty($this->id)){
-            $query->andWhere(['LIKE', 'id', $this->id]);
+            $query->andWhere(['LIKE', 'LPAD(id, 5, "0")', $this->id]);
         }
         
       
