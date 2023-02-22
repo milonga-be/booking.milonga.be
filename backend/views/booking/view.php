@@ -31,9 +31,16 @@ $this->params['breadcrumbs'] = [
                 <?= Yii::t('booking', 'Actions')?> <span class="caret"></span>
             </button>
             <ul class="dropdown-menu">
+                <?php
+                if(isset($model->partnerBooking)){
+                    $confirm = 'onclick="return confirm(\''.Yii::t('booking', 'Do you really want to delete this reservation {ref1} and the one of the partner {ref2} ?', ['ref1' => $model->getReference(), 'ref2' => $model->partnerBooking->getReference()]).'\')"';
+                }else{
+                    $confirm = 'onclick="return confirm(\''.Yii::t('booking', 'Do you really want to delete this reservation ?').'\')"';
+                }
+                ?>
                 <li><a class="dropdown-item" href="<?= Url::to(['booking/send-email-summary', 'uuid' => $model->uuid ]) ?>">Send Invoice</a></li>
-                <li><a class="dropdown-item" href="<?= Url::to(['booking/cancel', 'uuid' => $model->uuid, 'email' => 1 ]) ?>">Cancel &amp; Email</a></li>
-                <li><a class="dropdown-item" href="<?= Url::to(['booking/cancel', 'uuid' => $model->uuid, 'email' => 0 ]) ?>">Cancel Silently</a></li>
+                <li><a <?= $confirm?> class="dropdown-item" href="<?= Url::to(['booking/cancel', 'uuid' => $model->uuid, 'email' => 1 ]) ?>">Cancel &amp; Email</a></li>
+                <li><a <?= $confirm?> class="dropdown-item" href="<?= Url::to(['booking/cancel', 'uuid' => $model->uuid, 'email' => 0 ]) ?>">Cancel Silently</a></li>
             </ul>
         </div>
     </div>
@@ -48,11 +55,11 @@ $this->params['breadcrumbs'] = [
         'total_price:currency',
         'total_paid:currency',
         [
-            'label' => Yii::t('booking', 'Partner'),
+            'label' => Yii::t('booking', 'Partner Reservation'),
             'format' => 'raw',
             'value' => function($data){
                 if(isset($data->partnerBooking))
-                    return Html::a($data->partnerBooking->name, ['booking/view', 'uuid' => $data->partnerBooking->uuid]);
+                    return Html::a($data->partnerBooking->name.' ('.$data->partnerBooking->getReference().')', ['booking/view', 'uuid' => $data->partnerBooking->uuid]);
                 return null;
             },
         ]
