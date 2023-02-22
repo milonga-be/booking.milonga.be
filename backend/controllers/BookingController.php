@@ -64,6 +64,7 @@ class BookingController extends Controller
         // Computing paid / not paid
         $total_query_row = Booking::find()
                 ->where(['=', 'event_id', $event->id])
+                ->andWhere(['confirmed' => 1])
                 ->select('SUM(total_price) AS total')->asArray()->one();
         $total = $total_query_row['total'];
 
@@ -87,6 +88,7 @@ class BookingController extends Controller
             $total_query_row = Booking::find()
                 ->where(['LIKE', 'created_at', $date->format('Y-m-')])
                 ->andWhere(['=', 'event_id', $event->id])
+                ->andWhere(['confirmed' => 1])
                 ->select('SUM(total_price) AS total')->asArray()->one();
             $amount_datas[$date->format('M')] = $total_query_row['total'];
             $date->modify('+1 month');
@@ -98,6 +100,7 @@ class BookingController extends Controller
             $quantity_datas[$date->format('Ymd')] = Booking::find()
                 ->where(['LIKE', 'created_at', $date->format('Y-m-d')])
                 ->andWhere(['=', 'event_id', $event->id])
+                ->andWhere(['confirmed' => 1])
                 ->count();
             $date->modify('+1 day');
         }while($date < $start);
@@ -105,11 +108,13 @@ class BookingController extends Controller
         // Computing paid / not paid
         $total_query_row = Booking::find()
                 ->where(['=', 'event_id', $event->id])
+                ->andWhere(['confirmed' => 1])
                 ->select('SUM(total_price) AS total')->asArray()->one();
         $total = $total_query_row['total'];
         $paid_query_row = Payment::find()
                 ->joinWith('booking', false)
                 ->where(['=', 'booking.event_id', $event->id])
+                ->andWhere(['booking.confirmed' => 1])
                 ->select('SUM(payment.amount) AS total')->asArray()->one();
         $paid = (int)$paid_query_row['total'];
         $not_paid = $total - $paid;
@@ -177,7 +182,7 @@ class BookingController extends Controller
     {
         $model = Booking::findOne(['uuid' => $uuid]);
         $event = $model->event;
-        $model->delete();
+        $model->softDelete();
 
         $this->redirect(['booking/index', 'event_uuid' => $event->uuid]);
     }
@@ -191,9 +196,13 @@ class BookingController extends Controller
     {
         $model = Booking::findOne(['uuid' => $uuid]);
         $event = $model->event;
-        if($email)
+        if($email){
+            if(isset($model->partnerBooking)){
+                $model->partnerBooking->sendEmailCancelled();
+            }
             $model->sendEmailCancelled();
-        $model->delete();
+        }
+        $model->softDelete();
 
         $this->redirect(['booking/index', 'event_uuid' => $event->uuid]);
     }
@@ -247,7 +256,7 @@ class BookingController extends Controller
         }
         $event = Event::findOne(['uuid' => $event_uuid]);
         $lineNr++;
-        foreach($event->bookings as $booking){
+        foreach($event->confirmedBookings as $booking){
             // Lastname
             $cellName = 'A'.$lineNr;
             $sheet->setCellValue($cellName, $booking->lastname);

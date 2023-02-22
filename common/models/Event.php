@@ -172,6 +172,14 @@ class Event extends ActiveRecord
     }
 
     /**
+     * Describe the relation between an event and its confirmed bookings
+     * @return ActiveQuery
+     */
+    public function getConfirmedBookings(){
+        return $this->hasMany(Booking::className(), ['event_id' => 'id'])->where(['confirmed' => 1]);
+    }
+
+    /**
      * Describe the relation between an event and its reductions
      * @return array
      */

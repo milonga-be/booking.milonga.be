@@ -17,7 +17,7 @@ class PaymentController extends Controller
 	 * @return void
 	 */
 	public function actionReminder(){
-		$bookings = Booking::find()->where('total_paid < total_price')->all();
+		$bookings = Booking::find()->where('total_paid < total_price')->andWhere(['confirmed' => 1])->all();
 		foreach($bookings as $booking){
 			if(!$booking->event->closed)
 				$booking->sendEmailPaymentReminder();
@@ -35,7 +35,7 @@ class PaymentController extends Controller
 		$closing_event = Event::findOne(['start_date' => $start_date_in3_days->format('Y-m-d')]);
 		if($closing_event){
 			// Send last reminder
-			$bookings = Booking::find()->where(['event_id' => $closing_event->id])->andWhere('total_paid < total_price')->all();
+			$bookings = Booking::find()->where(['event_id' => $closing_event->id, 'confirmed' => 1])->andWhere('total_paid < total_price')->all();
 			foreach($bookings as $booking){
 				$booking->sendEmailPaymentReminder(true);
 			}

@@ -146,20 +146,29 @@ class ActivityController extends Controller
         $sheet = $objPHPExcel->getActiveSheet();
 
         $headings = array(
-            ['title' => Yii::t('booking', 'Participant'), 'width' => 50], 
-            ['title' => Yii::t('booking', 'Partner'), 'width' => 50], 
-            ['title' => Yii::t('booking', 'Payment'), 'width' => 50], 
+            ['title' => Yii::t('booking', 'Participant'), 'width' => 30], 
+            ['title' => Yii::t('booking', 'Partner'), 'width' => 30], 
+            ['title' => Yii::t('booking', 'Payment'), 'width' => 30], 
         );
 
         $event = Event::findOne(['uuid' => $event_uuid]);
         foreach($event->activities as $activity){
+            $lineNr = 1;
+            // Adding a summary of the activity
+            $cellName = 'A'.$lineNr;
+            $sheet->setCellValue($cellName, $activity->title);
+            $cellName = 'B'.$lineNr;
+            $sheet->setCellValue($cellName, (isset($activity->teacher)?$activity->teacher->name:''));
+            $cellName = 'C'.$lineNr;
+            $sheet->setCellValue($cellName, $activity->countParticipants().' participants');
+
             $sheet_title = '';
             // $sheet_title = substr($activity->activityGroup->title, 0, 2);
             // $sheet_title.=' ';
-            if(isset($activity->teacher))
-                $sheet_title.=' '.$activity->teacher->name;
-            else
-                $sheet_title.=' '.$activity->title;
+            // if(isset($activity->teacher))
+            //     $sheet_title.=' '.$activity->teacher->name;
+            // else
+            $sheet_title.=' '.$activity->title;
             if(isset($activity->datetime)){
                 $sheet_title.=' '.(new \Datetime($activity->datetime))->format('D G.i');
             }
@@ -171,7 +180,7 @@ class ActivityController extends Controller
             $sheet->setTitle($title);
 
             $cellNr = 0;
-            $lineNr = 1;
+            $lineNr = 3;
             $rowNumber = 1;
             foreach ($headings as $heading) {
                 $header = $heading['title'];
@@ -189,7 +198,7 @@ class ActivityController extends Controller
                 $cellNr++;
             }
             $lineNr++;
-            foreach($activity->participations as $participation){
+            foreach($activity->confirmedParticipations as $participation){
                 // Participant
                 $cellName = 'A'.$lineNr;
                 $sheet->setCellValue($cellName, $participation->booking->name);
@@ -207,11 +216,6 @@ class ActivityController extends Controller
                 $lineNr++;
             }
             $lineNr++;
-            // Adding a summary of the activity
-            $cellName = 'A'.$lineNr;
-            $sheet->setCellValue($cellName, $activity->title);
-            $cellName = 'B'.$lineNr;
-            $sheet->setCellValue($cellName, $activity->countParticipants().' participants');
 
             $sheet = $objPHPExcel->createSheet();
         }

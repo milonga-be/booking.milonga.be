@@ -115,6 +115,19 @@ class Booking extends ActiveRecord
     }
 
     /**
+     * Does a soft delete instead of a hard one
+     * @return boolean
+     */
+    public function softDelete(){
+        if(isset($this->partnerBooking)){
+            $this->partnerBooking->confirmed = 0;
+            $this->partnerBooking->save();
+        }
+        $this->confirmed = 0;
+        return $this->save();
+    }
+
+    /**
      * Recompute and save the final price
      */
     public function saveFinalPrice(){
@@ -230,7 +243,7 @@ class Booking extends ActiveRecord
      * Get a payment status : paid / total price
      */
     public function getPaymentStatus(){
-        return $this->total_paid.'/'.(int)$this->total_price.'€';
+        return (int)$this->total_paid.'/'.(int)$this->total_price.'€';
     }
 
     /**

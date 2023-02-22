@@ -188,21 +188,26 @@ class Activity extends ActiveRecord
      * Get the number of participants
      */
     public function countParticipants(){
-        return (int)($this->getParticipations()->select('SUM(quantity) AS count')->asArray()->one())['count'];
+        $total = 0;
+        foreach($this->confirmedParticipations as $participation){
+            $total+=$participation->quantity;
+        }
+        return $total;
+        // return (int)($this->getConfirmedParticipations()->select('SUM(quantity) AS count')->asArray()->all()[0]['count']);
     }
 
     /**
      * Get the number of leaders
      */
     public function countLeaders(){
-        return $this->getParticipations()->where(['role' => 'leader'])->count();
+        return $this->getConfirmedParticipations()->andWhere(['role' => 'leader'])->count();
     }
 
     /**
      * Get the number of followers
      */
     public function countFollowers(){
-        return $this->getParticipations()->where(['role' => 'follower'])->count();
+        return $this->getConfirmedParticipations()->andWhere(['role' => 'follower'])->count();
     }
 
     /**
