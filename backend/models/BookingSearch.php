@@ -14,7 +14,7 @@ class BookingSearch extends Booking{
 
 	public function rules(){
 		return [
-			[['email', 'name_search', 'id'], 'safe']
+			[['email', 'name_search', 'id', 'total_price'], 'safe']
 		];
 	}
 
@@ -54,6 +54,9 @@ class BookingSearch extends Booking{
 
         if(!empty($this->event_id)){
             $query->andWhere(['=', 'event_id', $this->event_id]);
+        }
+        if(!empty($this->total_price)){
+            $query->andWhere(['=', 'total_price', $this->total_price]);
         }
         if(!empty($this->email)){
             $query->andWhere(['LIKE', 'email', $this->email]);
