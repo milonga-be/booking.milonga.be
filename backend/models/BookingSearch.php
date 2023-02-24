@@ -32,7 +32,7 @@ class BookingSearch extends Booking{
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
 			'sort'		=> [				
-				'defaultOrder'	=> ['created_at' => SORT_DESC,]
+				'defaultOrder'	=> ['id' => SORT_DESC,]
 			],
             'pagination' => [
                 'pageSize' => 10,
@@ -59,7 +59,10 @@ class BookingSearch extends Booking{
             $query->andWhere(['LIKE', 'email', $this->email]);
         }
         if(!empty($this->name_search)){
-            $query->andWhere(['LIKE', 'CONCAT(firstname, lastname)', $this->name_search]);
+            $query->andWhere(['OR',
+                ['LIKE', 'LOWER(CONCAT(firstname," ", lastname))', strtolower($this->name_search)],
+                ['LIKE', 'LOWER(CONCAT(lastname," ", firstname))', strtolower($this->name_search)]
+            ]);
         }
         if(!empty($this->id)){
             $query->andWhere(['LIKE', 'LPAD(id, 5, "0")', $this->id]);
