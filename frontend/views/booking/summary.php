@@ -97,7 +97,7 @@ $form = ActiveForm::begin([
 		<a href="<?= Url::to(['booking/create', 'event_uuid' => $event->uuid])?>" class="btn btn-default btn-lg"><?= Yii::t('booking', 'Back')?></a>
 	</div>
 	<div class="col-md-6 text-right">
-		<button class="btn btn-primary btn-lg"><?= Yii::t('booking', 'Confirm')?></button>
+		<button id="confirm" class="btn btn-primary btn-lg"><?= Yii::t('booking', 'Confirm')?></button>
 	</div>
 </div>
 <?php
@@ -114,6 +114,10 @@ $this->registerJs(
 	});
 	$("input[name=\'BookingForm[has_partner]\'][value=yes]").on("click", function(){
 		$("#partner-form").removeClass("hidden");
+	});
+
+	$("#registration").on("submit", function(e){
+		$("#confirm").attr("disabled", true);
 	});
 '
 );
