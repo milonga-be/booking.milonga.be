@@ -11,6 +11,7 @@ use yii\db\Expression;
 class BookingSearch extends Booking{
 
     var $name_search;
+    var $confirmed = 1;
 
 	public function rules(){
 		return [
@@ -27,7 +28,7 @@ class BookingSearch extends Booking{
      */
     public function search( $params )
     {
-        $query = self::find()->where(['confirmed' => 1]);
+        $query = self::find()->where(['confirmed' => $this->confirmed]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

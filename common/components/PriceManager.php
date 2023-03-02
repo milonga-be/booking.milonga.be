@@ -35,7 +35,10 @@ class PriceManager{
 		$validReductions = [];
 		foreach($reductions as $reduction){
 			$isValid = true;
-			$today = date('Y-m-d');
+			if(isset($model->created_at))
+				$today = substr($model->created_at,0,10);
+			else
+				$today = date('Y-m-d');
 			if(($today > $reduction->validity_end && !empty($reduction->validity_end)) || ($today < $reduction->validity_start && !empty($reduction->validity_start))){
 				$isValid = false;
 				continue;

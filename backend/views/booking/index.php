@@ -18,12 +18,12 @@ $this->params['breadcrumbs'] = [
     ]
 ];
 ?>
-<div class="row">
+<?= $this->render('_tabs', ['event' => $event, 'selected' => 'index']) ?>
+<div class="row mt-2 mb-2">
 	<div class="col-md-4">
-		<h1><?= $this->title ?></h1>
+		<h1><?= Yii::t('booking', 'Total : ') ?><?= Yii::$app->formatter->asCurrency($total) ?></h1>
 	</div>
     <div class="col-md-4 text-center">
-        <h1><?= Yii::t('booking', 'Total : ') ?><?= Yii::$app->formatter->asCurrency($total) ?></h1>
     </div>
 	<div class="col-md-4 text-right">
         <a class="btn btn-md btn-default" href="<?= Url::to(['/booking/stats', 'event_uuid' => $event->uuid])?>"><?= Yii::t('booking', 'Statistics')?></a> 

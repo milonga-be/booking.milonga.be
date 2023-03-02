@@ -9,6 +9,7 @@ use common\models\Booking;
 use common\models\Event;
 use common\models\Payment;
 use backend\models\BookingSearch;
+use backend\models\CancelledBookingSearch;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
@@ -27,7 +28,7 @@ class BookingController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['index', 'view', 'create', 'update', 'delete', 'export-payments', 'stats', 'send-email-summary', 'cancel'],
+                        'actions' => ['index', 'view', 'create', 'update', 'delete', 'export-payments', 'stats', 'send-email-summary', 'cancel', 'cancelled-list'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -69,6 +70,21 @@ class BookingController extends Controller
         $total = $total_query_row['total'];
 
         return $this->render('index', ['searchModel' => $searchModel, 'provider' => $provider, 'event' => $event, 'total' => $total]);
+    }
+
+    /**
+     * Displays the cancelled booking.
+     *
+     * @return string
+     */
+    public function actionCancelledList($event_uuid)
+    {
+        $event = Event::findOne(['uuid' => $event_uuid]);
+        $searchModel = new CancelledBookingSearch();
+        $searchModel->event_id = $event->id;
+        $provider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('cancelled-list', ['searchModel' => $searchModel, 'provider' => $provider, 'event' => $event]);
     }
 
     /**
