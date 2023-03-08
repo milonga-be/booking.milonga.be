@@ -63,7 +63,8 @@ $this->params['breadcrumbs'] = [
                     return Html::a($data->partnerBooking->name.' ('.$data->partnerBooking->getReference().')', ['booking/view', 'uuid' => $data->partnerBooking->uuid]);
                 return null;
             },
-        ]
+        ],
+        'source'
     ],
 ])?>
 <p class="text-right">
@@ -170,9 +171,10 @@ $paymentsProvider = new ArrayDataProvider([
             'attribute' => 'amount',
             'format' => 'raw',
             'value' => function($data){
-                return Html::a(Yii::$app->formatter->asCurrency($data->amount), ['/payment/view', 'uuid' => $data->uuid]);
+                return Html::a(Yii::$app->formatter->asCurrency($data->amount), ['/payment/update', 'uuid' => $data->uuid]);
             },
         ],
+        'type',
         [
             'attribute' => 'Delete',
             'format' => 'raw',

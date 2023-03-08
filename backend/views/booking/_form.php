@@ -10,7 +10,11 @@ use kartik\number\NumberControl;
 		<?= $form->field($model, 'lastname') ?>
 	</div>
 </div>
-<?= $form->field($model, 'email')?>
+<div class="row">
+    <div class="col-md-6">
+        <?= $form->field($model, 'email')?>
+    </div>
+</div>
 <?= $form->field($model, 'total_price')->widget(NumberControl::classname(), [
     'maskedInputOptions' => [
         'prefix' => '',
@@ -22,3 +26,4 @@ use kartik\number\NumberControl;
         'digits' => 2
     ],
 ])?>
+<?= $form->field($model, 'source') ?>

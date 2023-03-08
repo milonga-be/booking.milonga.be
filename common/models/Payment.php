@@ -12,6 +12,10 @@ use mootensai\behaviors\UUIDBehavior;
  */
 class Payment extends ActiveRecord
 {
+
+    const TYPE_TRANSFER = 'transfer';
+    const TYPE_CASH = 'cash';
+
 	public static function tableName()
     {
         return 'payment';
@@ -34,6 +38,7 @@ class Payment extends ActiveRecord
         return [
             [['amount'], 'required'],
             [['amount'], 'number'],
+            [['type'], 'in', 'range' => ['transfer', 'cash']],
         ];
     }
 
@@ -43,5 +48,16 @@ class Payment extends ActiveRecord
      */
     public function getBooking(){
         return $this->hasOne(Booking::className(), ['id' => 'booking_id']);
+    }
+
+    /**
+     * Get the different types of reduction
+     * @return array
+     */
+    public function getTypesList(){
+        return [
+            self::TYPE_TRANSFER => Yii::t('booking', 'Transfer'),
+            self::TYPE_CASH => Yii::t('booking', 'Cash'),
+        ];
     }
 }

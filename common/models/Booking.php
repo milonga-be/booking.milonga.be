@@ -34,9 +34,10 @@ class Booking extends ActiveRecord
 
     public function rules(){
         return [
-            [['firstname', 'lastname', 'email'], 'required'],
+            [['firstname', 'lastname'/*, 'email'*/], 'required'],
             [['total_price'], 'number'],
-            [['promocode'], 'string'],
+            [['promocode', 'source'], 'string'],
+            [['email'], 'email'],
         ];
     }
 
@@ -141,6 +142,8 @@ class Booking extends ActiveRecord
      * @return boolean
      */
     public function sendEmailSummary(){
+        if(empty($this->email))
+            return false;
         $priceManager = new PriceManager($this->event);
         return Yii::$app->mailer->compose('@common/mail/booking-confirmed', ['booking' => $this, 'priceManager' => $priceManager])
                     ->setFrom(Yii::$app->params['publicEmail'])
@@ -154,6 +157,8 @@ class Booking extends ActiveRecord
      * Send the cancelling email
      */
     public function sendEmailCancelled(){
+        if(empty($this->email))
+            return false;
         return Yii::$app->mailer->compose('@common/mail/booking-cancelled', ['booking' => $this])
                     ->setFrom(Yii::$app->params['publicEmail'])
                     ->setTo($this->email)
@@ -166,6 +171,8 @@ class Booking extends ActiveRecord
      * Send an email when payment is completed
      */
     public function sendEmailPaymentComplete(){
+        if(empty($this->email))
+            return false;
         return Yii::$app->mailer->compose('@common/mail/booking-payment', ['booking' => $this])
                     ->setFrom(Yii::$app->params['publicEmail'])
                     ->setTo($this->email)
@@ -178,6 +185,8 @@ class Booking extends ActiveRecord
      * Send an email to remind to pay
      */
     public function sendEmailPaymentReminder($last = false){
+        if(empty($this->email))
+            return false;
         return Yii::$app->mailer->compose('@common/mail/booking-payment-reminder', ['booking' => $this])
                     ->setFrom(Yii::$app->params['publicEmail'])
                     ->setTo($this->email)
