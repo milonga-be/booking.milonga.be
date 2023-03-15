@@ -5,7 +5,7 @@ use yii\widgets\DetailView;
 use yii\grid\GridView;
 use yii\data\ArrayDataProvider;
 
-$this->title = $model->name;
+$this->title = $model->name.' ('.$model->getReference().')';
 $this->params['breadcrumbs'] = [
     [
         'label' => $model->event->title,

@@ -36,6 +36,7 @@ class Booking extends ActiveRecord
         return [
             [['firstname', 'lastname'/*, 'email'*/], 'required'],
             [['total_price'], 'number'],
+            [['total_price'], 'default', 'value' => 0],
             [['promocode', 'source'], 'string'],
             [['email'], 'email'],
         ];
