@@ -17,7 +17,9 @@ class PaymentController extends Controller
 	 * @return void
 	 */
 	public function actionReminder(){
-		$bookings = Booking::find()->where('total_paid < total_price')->andWhere(['confirmed' => 1])->all();
+		$datetime = new \Datetime();
+		$datetime->modify('-10 days');
+		$bookings = Booking::find()->where('total_paid < total_price')->andWhere(['<', 'created_at', $datetime->format('Y-m-d H:i:s')])->andWhere(['confirmed' => 1])->all();
 		foreach($bookings as $booking){
 			if(!$booking->event->closed)
 				$booking->sendEmailPaymentReminder();
