@@ -51,7 +51,7 @@ $this->params['breadcrumbs'] = [
             'label' => Yii::t('booking', 'Title'),
     		'format' => 'raw',
     		'value' => function($data){
-    			return Html::a($data->summary, ['/activity/view', 'uuid' => $data->uuid], ['title' => $data->title]);
+    			return Html::a((strlen($data->title) > 30)?(substr($data->title,0, 30).'...'):$data->title, ['/activity/view', 'uuid' => $data->uuid], ['title' => $data->title]);
     		},
     	],
         [

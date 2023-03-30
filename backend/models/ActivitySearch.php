@@ -34,7 +34,7 @@ class ActivitySearch extends Activity{
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
 			'sort'		=> [				
-				'defaultOrder'	=> ['datetime' => SORT_DESC, 'created_at' => SORT_DESC]
+				'defaultOrder'	=> ['title' => SORT_ASC]
 			],
             'pagination' => [
                 'pageSize' => 10,
