@@ -45,7 +45,7 @@ $activitiesProvider = new ArrayDataProvider([
 </div>
 <?= GridView::widget([
     'dataProvider' => $activitiesProvider,
-    'showHeader'=> false,
+    'showHeader'=> true,
     'layout' => '{items}{pager}',
     'tableOptions' => ['class' => 'table table-hover  table-striped'],
     'formatter' => ['class' => 'yii\i18n\Formatter', 'nullDisplay' => ''],
@@ -57,6 +57,13 @@ $activitiesProvider = new ArrayDataProvider([
     			return Html::a($data->title, ['/activity/view', 'uuid' => $data->uuid]);
     		},
     	],
+        [
+            'attribute' => 'countParticipants',
+            'label' => Yii::t('booking', 'Nr Participants'),
+            'value' => function ($data) {
+                return $data->countParticipants();
+            }
+        ],
         // [
         //     'attribute' => 'partner.name',
         //     'format' => 'raw',

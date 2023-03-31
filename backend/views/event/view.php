@@ -47,7 +47,7 @@ $this->params['breadcrumbs'] = [
 		    		'attribute' => 'title',
 		    		'format' => 'raw',
 		    		'value' => function($data){
-		    			return Html::a($data->summary, ['/activity/view', 'uuid' => $data->uuid]);
+		    			return Html::a((strlen($data->title) > 50)?(substr($data->title,0, 50).'...'):$data->title, ['/activity/view', 'uuid' => $data->uuid]);
 		    		},
 		    	],
 		        // [
