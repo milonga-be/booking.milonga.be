@@ -92,11 +92,20 @@ $participationsProvider = new ArrayDataProvider([
 </div>
 <?= GridView::widget([
     'dataProvider' => $participationsProvider,
-    'showHeader'=> false,
+    'showHeader'=> true,
     'layout' => '{items}{pager}',
     'tableOptions' => ['class' => 'table table-hover  table-striped'],
     'formatter' => ['class' => 'yii\i18n\Formatter', 'nullDisplay' => ''],
     'columns' => [
+        [
+            'attribute' => 'booking.paymentStatus',
+            'format' => 'raw',
+            'value' => function($data){
+                if($data->booking->isPaymentComplete()){
+                    return Yii::t('booking', 'Paid');
+                }
+            },
+        ],
     	[
     		'attribute' => 'booking.name',
     		'format' => 'raw',
