@@ -16,7 +16,9 @@ $form = ActiveForm::begin([
 ?>
 <?php if($event->closed): ?>
 	<h3><?= Yii::t('booking', 'Reservations are closed, enjoy your Festival ! ') ?></h3>
-	<hr>
+	<p>
+		<?= nl2br(Yii::t('booking', 'Text when reservations are closed : {website}', ['website' => '<a href="https://www.brusselstangofestival.com/">https://www.brusselstangofestival.com/</a>'])) ?>
+	</p>
 <?php else: ?>
 <h4>
 	<?= nl2br(Yii::t('booking', 'Booking Intro Text'))?>
