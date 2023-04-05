@@ -261,6 +261,9 @@ class Booking extends ActiveRecord
      * @return float
      */
     public function getAmountDue(){
-        return $this->total_price - $this->total_paid;
+        if($this->total_price - $this->total_paid > 0)
+            return $this->total_price - $this->total_paid;
+        else
+            return 0;
     }
 }

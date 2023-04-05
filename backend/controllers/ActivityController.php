@@ -7,6 +7,7 @@ use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use common\models\Event;
 use common\models\Activity;
+use common\models\Booking;
 use common\models\ActivityGroup;
 use backend\models\ActivitySearch;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -148,76 +149,100 @@ class ActivityController extends Controller
         $headings = array(
             ['title' => Yii::t('booking', 'Participant'), 'width' => 30], 
             ['title' => Yii::t('booking', 'Partner'), 'width' => 30], 
-            ['title' => Yii::t('booking', 'Payment'), 'width' => 30], 
+            ['title' => Yii::t('booking', 'Total'), 'width' => 20], 
+            ['title' => Yii::t('booking', 'Remaining'), 'width' => 20], 
         );
 
         $event = Event::findOne(['uuid' => $event_uuid]);
         foreach($event->activities as $activity){
-            $lineNr = 1;
-            // Adding a summary of the activity
-            $cellName = 'A'.$lineNr;
-            $sheet->setCellValue($cellName, $activity->title);
-            $cellName = 'B'.$lineNr;
-            $sheet->setCellValue($cellName, (isset($activity->teacher)?$activity->teacher->name:''));
-            $cellName = 'C'.$lineNr;
-            $sheet->setCellValue($cellName, $activity->countParticipants().' participants');
-
-            $sheet_title = '';
-            // $sheet_title = substr($activity->activityGroup->title, 0, 2);
-            // $sheet_title.=' ';
-            // if(isset($activity->teacher))
-            //     $sheet_title.=' '.$activity->teacher->name;
-            // else
-            $sheet_title.=' '.$activity->title;
-            if(isset($activity->datetime)){
-                $sheet_title.=' '.(new \Datetime($activity->datetime))->format('D G.i');
-            }
-            $invalidCharacters = $sheet->getInvalidCharacters();
-            $title = str_replace($invalidCharacters, '', $sheet_title);
-            if(strlen($title) > 31){
-                $title = substr($title, 0, 31);
-            }
-            $sheet->setTitle($title);
-
-            $cellNr = 0;
-            $lineNr = 3;
-            $rowNumber = 1;
-            foreach ($headings as $heading) {
-                $header = $heading['title'];
-                if($header == 'Partner' && !$activity->couple_activity)
-                    $header = '';
-                $letter = chr($cellNr + 65);
-                $cellName = $letter.$lineNr;
-                $sheet->setCellValue($cellName, $header);
-                // Forcing the width of the columns
-                if(isset($heading['width'])){
-                    $sheet->getColumnDimension($letter)->setWidth($heading['width']);
-                }
-                // In bold
-                $sheet->getStyle( $cellName )->getFont()->setBold(true);
-                $cellNr++;
-            }
-            $lineNr++;
-            foreach($activity->confirmedParticipations as $participation){
-                // Participant
+            if($activity->activityGroup->title == 'Workshop'){
+                $lineNr = 1;
+                // Adding a summary of the activity
                 $cellName = 'A'.$lineNr;
-                $sheet->setCellValue($cellName, $participation->booking->name);
-            
-                // Partner
-                $cellName = 'B'.$lineNr;
-                if(isset($participation->partner))
-                    $sheet->setCellValue($cellName, $participation->partner->name);
-                else if($participation->quantity > 1)
-                    $sheet->setCellValue($cellName, 'x '.$participation->quantity);
-
-                // Payment
-                $cellName = 'C'.$lineNr;
-                $sheet->setCellValue($cellName, $participation->booking->getPaymentStatus());
+                if(isset($activity->datetime)){
+                    $sheet->setCellValue($cellName, (new \Datetime($activity->datetime))->format('l F j - G:i'));
+                }
                 $lineNr++;
-            }
-            $lineNr++;
+                $cellName = 'A'.$lineNr;
+                $sheet->setCellValue($cellName, $activity->title);
+                
+                $cellName = 'B'.$lineNr;
+                $sheet->setCellValue($cellName, (isset($activity->teacher)?$activity->teacher->name:''));
+                $cellName = 'C'.$lineNr;
+                $sheet->setCellValue($cellName, $activity->countParticipants().' participants');
 
-            $sheet = $objPHPExcel->createSheet();
+                $sheet_title = '';
+                // $sheet_title = substr($activity->activityGroup->title, 0, 2);
+                // $sheet_title.=' ';
+                // if(isset($activity->teacher))
+                //     $sheet_title.=' '.$activity->teacher->name;
+                // else
+                $sheet_title.=' '.$activity->title;
+                if(isset($activity->datetime)){
+                    $sheet_title.=' '.(new \Datetime($activity->datetime))->format('D G.i');
+                }
+                $invalidCharacters = $sheet->getInvalidCharacters();
+                $title = str_replace($invalidCharacters, '', $sheet_title);
+                if(strlen($title) > 31){
+                    $title = substr($title, 0, 31);
+                }
+                $sheet->setTitle($title);
+
+                $cellNr = 0;
+                $lineNr = 4;
+                $rowNumber = 1;
+                foreach ($headings as $heading) {
+                    $header = $heading['title'];
+                    if($header == 'Partner' && !$activity->couple_activity)
+                        $header = '';
+                    $letter = chr($cellNr + 65);
+                    $cellName = $letter.$lineNr;
+                    $sheet->setCellValue($cellName, $header);
+                    // Forcing the width of the columns
+                    if(isset($heading['width'])){
+                        $sheet->getColumnDimension($letter)->setWidth($heading['width']);
+                    }
+                    // In bold
+                    $sheet->getStyle( $cellName )->getFont()->setBold(true);
+                    $cellNr++;
+                }
+                $lineNr++;
+                foreach($activity->confirmedParticipations as $participation){
+                    // Participant
+                    $cellName = 'A'.$lineNr;
+                    $sheet->setCellValue($cellName, $participation->booking->name);
+                
+                    // Partner
+                    $cellName = 'B'.$lineNr;
+                    if(isset($participation->partner))
+                        $sheet->setCellValue($cellName, $participation->partner->name);
+                    else if($participation->quantity > 1)
+                        $sheet->setCellValue($cellName, 'x '.$participation->quantity);
+
+                    // Total
+                    $total_price = 0;
+                    $total_paid = 0;
+                    $amountDue = 0;
+                    $refs = [];
+                    $bookings = Booking::find()->where(['email' => $participation->booking->email])->andWhere(['confirmed' => 1])->andWhere(['event_id' => $event->id])->all();
+                    foreach($bookings as $booking){
+                        $refs[] = $booking->reference;
+                        $total_price+=$booking->total_price;
+                        $total_paid+=$booking->total_paid;
+                        $amountDue+=$booking->amountDue;
+                    }
+                    $cellName = 'C'.$lineNr;
+                    $sheet->setCellValue($cellName, $total_price);
+
+                    // Remaining
+                    $cellName = 'D'.$lineNr;
+                    $sheet->setCellValue($cellName, $amountDue);
+                    $lineNr++;
+                }
+                $lineNr++;
+
+                $sheet = $objPHPExcel->createSheet();
+            }
         }
 
         $objWriter = new Xlsx($objPHPExcel);

@@ -102,13 +102,26 @@ $participationsProvider = new ArrayDataProvider([
     'layout' => '{items}{pager}',
     'tableOptions' => ['class' => 'table table-hover  table-striped'],
     'columns' => [
+        [
+            'attribute' => 'activity.teacher.name',
+            'format' => 'raw',
+            'value' => function($data){
+                if(isset($data->activity->teacher))
+                    return Html::a((strlen($data->activity->teacher->name) > 50)?(substr($data->activity->teacher->name,0, 50).'...'):$data->activity->teacher->name, ['/activity/view', 'uuid' => $data->activity->uuid]);
+            },
+        ],
     	[
     		'attribute' => 'activity.title',
     		'format' => 'raw',
     		'value' => function($data){
-    			return Html::a($data->activity->title, ['/activity/view', 'uuid' => $data->activity->uuid]);
+    			return Html::a((strlen($data->activity->title) > 50)?(substr($data->activity->title,0, 50).'...'):$data->activity->title, ['/activity/view', 'uuid' => $data->activity->uuid]);
     		},
     	],
+        [
+            'attribute' => 'activity.datetime',
+            'label' => Yii::t('booking', 'Date'),
+            'format' => 'datetime'
+        ],
         [
             'attribute' => 'quantity'
         ],

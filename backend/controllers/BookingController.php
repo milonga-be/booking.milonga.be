@@ -250,10 +250,12 @@ class BookingController extends Controller
         $lineNr = 1;
         $rowNumber = 1;
         $headings = array(
-            ['title' => Yii::t('booking', 'Lastname'), 'width' => 30], 
-            ['title' => Yii::t('booking', 'Firstname'), 'width' => 30], 
-            ['title' => Yii::t('booking', 'Amount to pay'), 'width' => 20], 
-            ['title' => Yii::t('booking', 'Total Paid'), 'width' => 20]
+            ['title' => Yii::t('booking', 'Lastname'), 'width' => 20], 
+            ['title' => Yii::t('booking', 'Firstname'), 'width' => 20], 
+            ['title' => Yii::t('booking', 'Total'), 'width' => 10], 
+            ['title' => Yii::t('booking', 'Paid'), 'width' => 10],
+            ['title' => Yii::t('booking', 'Remaining'), 'width' => 10],
+            // ['title' => Yii::t('booking', 'Ref'), 'width' => 15], 
         );
         // First building the columns titles
         $cellNr = 0;
@@ -272,7 +274,21 @@ class BookingController extends Controller
         }
         $event = Event::findOne(['uuid' => $event_uuid]);
         $lineNr++;
-        foreach($event->confirmedBookings as $booking){
+        // $bookings = $event->getConfirmedBookings()->orderBy('lastname,firstname')->all();
+        $emails = Booking::find()->where(['confirmed' => 1])->andWhere(['event_id' => $event->id])->select('DISTINCT(email)')->orderBy('lastname,firstname')->asArray()->all();
+        foreach($emails as $line){
+            $email = $line['email'];
+            $bookings = Booking::find()->where(['email' => $email])->andWhere(['confirmed' => 1])->andWhere(['event_id' => $event->id])->all();
+            $total_price = 0;
+            $total_paid = 0;
+            $amountDue = 0;
+            $refs = [];
+            foreach($bookings as $booking){
+                $refs[] = $booking->reference;
+                $total_price+=$booking->total_price;
+                $total_paid+=$booking->total_paid;
+                $amountDue+=$booking->amountDue;
+            }
             // Lastname
             $cellName = 'A'.$lineNr;
             $sheet->setCellValue($cellName, $booking->lastname);
@@ -281,16 +297,26 @@ class BookingController extends Controller
             $cellName = 'B'.$lineNr;
             $sheet->setCellValue($cellName, $booking->firstname);
 
-            // Price
+            // Total
             $cellName = 'C'.$lineNr;
-            $sheet->setCellValue($cellName, $booking->total_price);
+            $sheet->setCellValue($cellName, $total_price);
 
-            // Price
+            // Paid
             $cellName = 'D'.$lineNr;
-            $sheet->setCellValue($cellName, $booking->total_paid);
+            $sheet->setCellValue($cellName, $total_paid);
+
+            // Remaining
+            $cellName = 'E'.$lineNr;
+            $sheet->setCellValue($cellName, $amountDue);
+
+            // Refs
+            // $cellName = 'F'.$lineNr;
+            // $sheet->setCellValue($cellName, implode(',', $refs));
 
             $lineNr++;
+            
         }
+        
 
         $objWriter = new Xlsx($objPHPExcel);
         $tmpfile = tempnam(ini_get('upload_tmp_dir'), "export");
