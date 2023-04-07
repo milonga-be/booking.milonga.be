@@ -162,7 +162,7 @@ class BookingController extends Controller
             $model->event_id = $event->id;
             if($model->save()){
                 // Redirect to the list page
-                $this->redirect(['/booking/index', 'event_uuid' => $event->uuid]);
+                $this->redirect(['/booking/view','uuid' => $model->uuid, 'event_uuid' => $event->uuid]);
                 return;
             }
         }
@@ -275,46 +275,69 @@ class BookingController extends Controller
         $event = Event::findOne(['uuid' => $event_uuid]);
         $lineNr++;
         // $bookings = $event->getConfirmedBookings()->orderBy('lastname,firstname')->all();
-        $emails = Booking::find()->where(['confirmed' => 1])->andWhere(['event_id' => $event->id])->select('DISTINCT(email)')->orderBy('lastname,firstname')->asArray()->all();
+        $emails = Booking::find()->where(['confirmed' => 1])->andWhere(['event_id' => $event->id])->andWhere('email != ""')->select('DISTINCT(email)')->orderBy('lastname,firstname')->asArray()->all();
+        $lines = [];
         foreach($emails as $line){
             $email = $line['email'];
             $bookings = Booking::find()->where(['email' => $email])->andWhere(['confirmed' => 1])->andWhere(['event_id' => $event->id])->all();
             $total_price = 0;
             $total_paid = 0;
-            $amountDue = 0;
-            $refs = [];
+
             foreach($bookings as $booking){
-                $refs[] = $booking->reference;
                 $total_price+=$booking->total_price;
                 $total_paid+=$booking->total_paid;
-                $amountDue+=$booking->amountDue;
             }
+            
+            $lines[] = [
+                'lastname' => $bookings[0]->lastname,
+                'firstname' => $bookings[0]->firstname,
+                'total_price' => $total_price,
+                'total_paid' => $total_paid,
+                'amountDue' => ($total_price - $total_paid > 0 )?($total_price - $total_paid):0,
+            ];
+            
+        }
+        $no_emails_bookings = Booking::find()->where(['confirmed' => 1])->andWhere(['event_id' => $event->id])->andWhere('email = ""')->orderBy('lastname,firstname')->all();
+        foreach($no_emails_bookings as $booking){
+            $lines[] = [
+                'lastname' => $booking->lastname,
+                'firstname' => $booking->firstname,
+                'total_price' => $booking->total_price,
+                'total_paid' => $booking->total_paid,
+                'amountDue' => $booking->amountDue,
+            ];
+        }
+        uasort($lines, function($a, $b){
+            if($a['lastname'] == $b['lastname']){
+                return ($a['firstname'] < $b['firstname'])? -1 : 1;
+            }
+            return ($a['lastname'] < $b['lastname']) ? -1 : 1;
+        });
+        foreach($lines as $line){
             // Lastname
             $cellName = 'A'.$lineNr;
-            $sheet->setCellValue($cellName, $booking->lastname);
+            $sheet->setCellValue($cellName, $line['lastname']);
         
             // Firstname
             $cellName = 'B'.$lineNr;
-            $sheet->setCellValue($cellName, $booking->firstname);
+            $sheet->setCellValue($cellName, $line['firstname']);
 
             // Total
             $cellName = 'C'.$lineNr;
-            $sheet->setCellValue($cellName, $total_price);
+            $sheet->setCellValue($cellName, $line['total_price']);
 
             // Paid
             $cellName = 'D'.$lineNr;
-            $sheet->setCellValue($cellName, $total_paid);
+            $sheet->setCellValue($cellName, $line['total_paid']);
 
             // Remaining
             $cellName = 'E'.$lineNr;
-            $sheet->setCellValue($cellName, $amountDue);
+            $sheet->setCellValue($cellName, $line['amountDue']);
 
             // Refs
             // $cellName = 'F'.$lineNr;
             // $sheet->setCellValue($cellName, implode(',', $refs));
-
             $lineNr++;
-            
         }
         
 

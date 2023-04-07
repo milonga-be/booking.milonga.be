@@ -154,7 +154,8 @@ class ActivityController extends Controller
         );
 
         $event = Event::findOne(['uuid' => $event_uuid]);
-        foreach($event->activities as $activity){
+        $activities = $event->getActivities()->orderBy('teacher_id, datetime')->all();
+        foreach($activities as $activity){
             if($activity->activityGroup->title == 'Workshop'){
                 $lineNr = 1;
                 // Adding a summary of the activity

@@ -69,7 +69,7 @@ $this->params['breadcrumbs'] = [
             'format' => 'raw',
             'value' => function ($data) {
                 if(isset($data->partnerBooking)){
-                    return '<a onclick="return confirm(\''.Yii::t('booking', 'Do you really want to delete this reservation {ref1} and the one of the partner {ref2} ?', ['ref1' => $data->getReference(), 'ref2' => $data->partnerBooking->getReference()]).'\')" class="text-danger" href="'.Url::to(['booking/delete', 'uuid' => $data->uuid]).'">x</a>';
+                    return '<a onclick="return confirm(\''.Yii::t('booking', 'Do you really want to delete this reservation {ref1} ? If necessary also delete the one of the partner {ref2} ?', ['ref1' => $data->getReference(), 'ref2' => $data->partnerBooking->getReference()]).'\')" class="text-danger" href="'.Url::to(['booking/delete', 'uuid' => $data->uuid]).'">x</a>';
                 }else{
                     return '<a onclick="return confirm(\''.Yii::t('booking', 'Do you really want to delete this reservation ?').'\')" class="text-danger" href="'.Url::to(['booking/delete', 'uuid' => $data->uuid]).'">x</a>';
                 }

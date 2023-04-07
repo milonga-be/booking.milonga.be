@@ -50,6 +50,11 @@ $activitiesProvider = new ArrayDataProvider([
     'tableOptions' => ['class' => 'table table-hover  table-striped'],
     'formatter' => ['class' => 'yii\i18n\Formatter', 'nullDisplay' => ''],
     'columns' => [
+        [
+            'attribute' => 'datetime',
+            'label' => Yii::t('booking', 'Date'),
+            'format' => 'datetime'
+        ],
     	[
     		'attribute' => 'title',
     		'format' => 'raw',
