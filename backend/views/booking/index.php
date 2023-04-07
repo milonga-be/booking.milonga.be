@@ -57,7 +57,13 @@ $this->params['breadcrumbs'] = [
     			return Html::a($data->email, ['/booking/view', 'uuid' => $data->uuid]);
     		},
     	],
-        'total_price:currency',
+        [
+            'attribute' => 'total_price',
+            'format' => 'raw',
+            'value' => function($data){
+                return Yii::$app->formatter->asCurrency($data->total_price).(($data->isPaymentComplete())?' <span class="glyphicon glyphicon-ok-circle text-success"></span>':'');
+            }
+        ],
         [
             'attribute' => 'created_at',
             'format' => ['date', 'php:d M, H:i'],
@@ -69,7 +75,7 @@ $this->params['breadcrumbs'] = [
             'format' => 'raw',
             'value' => function ($data) {
                 if(isset($data->partnerBooking)){
-                    return '<a onclick="return confirm(\''.Yii::t('booking', 'Do you really want to delete this reservation {ref1} ? If necessary also delete the one of the partner {ref2} ?', ['ref1' => $data->getReference(), 'ref2' => $data->partnerBooking->getReference()]).'\')" class="text-danger" href="'.Url::to(['booking/delete', 'uuid' => $data->uuid]).'">x</a>';
+                    return '<a onclick="return confirm(\''.Yii::t('booking', 'Do you really want to delete this reservation {ref1} ? If necessary also delete the one of the partner {ref2} !', ['ref1' => $data->getReference(), 'ref2' => $data->partnerBooking->getReference()]).'\')" class="text-danger" href="'.Url::to(['booking/delete', 'uuid' => $data->uuid]).'">x</a>';
                 }else{
                     return '<a onclick="return confirm(\''.Yii::t('booking', 'Do you really want to delete this reservation ?').'\')" class="text-danger" href="'.Url::to(['booking/delete', 'uuid' => $data->uuid]).'">x</a>';
                 }

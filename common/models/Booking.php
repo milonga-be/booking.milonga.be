@@ -90,6 +90,14 @@ class Booking extends ActiveRecord
         return $this->hasOne(Booking::className(), ['id' => 'partner_booking_id']);
     }
 
+    /**
+     * Describe the relation between a booking and the booking made with the same email
+     * @return ActiveQuery
+     */
+    public function getOtherReservations(){
+        return Booking::find()->where(['email' => $this->email])->andWhere('email != ""')->all();
+    }
+
     public function beforeDelete(){
         if (!parent::beforeDelete()) {
             return false;
@@ -122,10 +130,11 @@ class Booking extends ActiveRecord
      */
     public function softDelete(){
         if(isset($this->partnerBooking)){
-            $this->partnerBooking->confirmed = 0;
+            $this->partnerBooking->partner_booking_id = null;
             $this->partnerBooking->save();
         }
         $this->confirmed = 0;
+        $this->partner_booking_id = null;
         return $this->save();
     }
 

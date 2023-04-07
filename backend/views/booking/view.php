@@ -33,7 +33,7 @@ $this->params['breadcrumbs'] = [
             <ul class="dropdown-menu">
                 <?php
                 if(isset($model->partnerBooking)){
-                    $confirm = 'onclick="return confirm(\''.Yii::t('booking', 'Do you really want to delete this reservation {ref1} and the one of the partner {ref2} ?', ['ref1' => $model->getReference(), 'ref2' => $model->partnerBooking->getReference()]).'\')"';
+                    $confirm = 'onclick="return confirm(\''.Yii::t('booking', 'Do you really want to delete this reservation {ref1} ? If necessary also delete the one of the partner {ref2} !', ['ref1' => $model->getReference(), 'ref2' => $model->partnerBooking->getReference()]).'\')"';
                 }else{
                     $confirm = 'onclick="return confirm(\''.Yii::t('booking', 'Do you really want to delete this reservation ?').'\')"';
                 }
@@ -194,6 +194,47 @@ $paymentsProvider = new ArrayDataProvider([
             'value' => function ($data) {                      
                 return '<a class="text-danger" href="'.Url::to(['payment/delete', 'uuid' =>$data->uuid]).'">x</a>';
             },
+        ],
+    ]
+ ])
+?>
+<div class="row">
+    <div class="col-md-10">
+        <h2><?= Yii::t('booking', 'Other Reservations')?></h2>
+    </div>
+</div>
+<?php
+$otherReservationsProvider = new ArrayDataProvider([
+    'allModels' => $model->otherReservations,
+    'pagination' => false,
+]);
+?>
+<?= GridView::widget([
+    'dataProvider' => $otherReservationsProvider,
+    'showHeader'=> false,
+    'layout' => '{items}{pager}',
+    'tableOptions' => ['class' => 'table table-hover  table-striped'],
+    'columns' => [
+        [
+            'attribute' => 'id',
+            'format' => 'raw',
+            'value' => function($data){
+                return Html::a($data->reference, ['/booking/view', 'uuid' => $data->uuid]);
+            },
+            'label' => Yii::t('booking', 'Ref.')
+        ],
+        [
+            'attribute' => 'total_price',
+            'format' => 'raw',
+            'value' => function($data){
+                return Yii::$app->formatter->asCurrency($data->total_price).(($data->isPaymentComplete())?' <span class="glyphicon glyphicon-ok-circle text-success"></span>':'');
+            }
+        ],
+        [
+            'attribute' => 'created_at',
+            'format' => ['date', 'php:d M, H:i'],
+            'contentOptions' => ['class' => 'hide-xs text-muted'],
+            'headerOptions' => ['class' => 'hide-xs']
         ],
     ]
  ])
