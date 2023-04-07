@@ -95,7 +95,7 @@ class Booking extends ActiveRecord
      * @return ActiveQuery
      */
     public function getOtherReservations(){
-        return Booking::find()->where(['email' => $this->email])->andWhere('email != ""')->all();
+        return Booking::find()->where(['email' => $this->email])->andWhere('email != ""')->andWhere(['!=', 'id', $this->id])->all();
     }
 
     public function beforeDelete(){

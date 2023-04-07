@@ -224,6 +224,14 @@ $otherReservationsProvider = new ArrayDataProvider([
             'label' => Yii::t('booking', 'Ref.')
         ],
         [
+            'attribute' => 'name_search',
+            'format' => 'raw',
+            'label' => Yii::t('booking', 'Name'),
+            'value' => function($data){
+                return Html::a($data->name, ['/booking/view', 'uuid' => $data->uuid]);
+            },
+        ],
+        [
             'attribute' => 'total_price',
             'format' => 'raw',
             'value' => function($data){

@@ -308,10 +308,10 @@ class BookingController extends Controller
             ];
         }
         uasort($lines, function($a, $b){
-            if($a['lastname'] == $b['lastname']){
-                return ($a['firstname'] < $b['firstname'])? -1 : 1;
+            if(strtolower($a['lastname']) == strtolower($b['lastname'])){
+                return (strtolower($a['firstname']) < strtolower($b['firstname']))? -1 : 1;
             }
-            return ($a['lastname'] < $b['lastname']) ? -1 : 1;
+            return (strtolower($a['lastname']) < strtolower($b['lastname'])) ? -1 : 1;
         });
         foreach($lines as $line){
             // Lastname
