@@ -95,7 +95,7 @@ class Booking extends ActiveRecord
      * @return ActiveQuery
      */
     public function getOtherReservations(){
-        return Booking::find()->where(['email' => $this->email])->andWhere('email != ""')->andWhere(['!=', 'id', $this->id])->all();
+        return Booking::find()->where(['email' => $this->email])->andWhere('email != ""')->andWhere(['!=', 'id', $this->id])->andWhere(['confirmed' => 1])->all();
     }
 
     public function beforeDelete(){
@@ -135,6 +135,15 @@ class Booking extends ActiveRecord
         }
         $this->confirmed = 0;
         $this->partner_booking_id = null;
+        return $this->save();
+    }
+
+    /**
+     * Restore a cancelled reservation
+     * @return boolean
+     */
+    public function restore(){
+        $this->confirmed = 1;
         return $this->save();
     }
 
@@ -235,7 +244,9 @@ class Booking extends ActiveRecord
     public function getActivitiesList(){
         $workshops = Activity::find()->where(['event_id' => $this->event_id])->andWhere(['NOT IN', 'activity.id', ArrayHelper::getColumn($this->activities, 'id')])->andWhere(['=', 'activity.couple_activity', 1])->asArray()->all();
         $others = Activity::find()->where(['event_id' => $this->event_id])->andWhere(['=', 'activity.couple_activity', 0])->asArray()->all();
-        return ArrayHelper::map( array_merge($workshops, $others), 'uuid', 'title');
+        $all = ArrayHelper::map( array_merge($workshops, $others), 'uuid', 'title');
+        asort($all);
+        return $all;
     }
 
     /**

@@ -28,7 +28,7 @@ class BookingController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['index', 'view', 'create', 'update', 'delete', 'export-payments', 'stats', 'send-email-summary', 'cancel', 'cancelled-list'],
+                        'actions' => ['index', 'view', 'create', 'update', 'delete', 'export-payments', 'stats', 'send-email-summary', 'cancel', 'cancelled-list', 'restore'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -221,6 +221,20 @@ class BookingController extends Controller
         $model->softDelete();
 
         $this->redirect(['booking/index', 'event_uuid' => $event->uuid]);
+    }
+
+    /**
+     * Cancel a reservation
+     *
+     * @return string
+     */
+    public function actionRestore($uuid)
+    {
+        $model = Booking::findOne(['uuid' => $uuid]);
+        $event = $model->event;
+        $model->restore();
+
+        $this->redirect(['booking/view', 'uuid' => $uuid, 'event_uuid' => $event->uuid]);
     }
 
     /**

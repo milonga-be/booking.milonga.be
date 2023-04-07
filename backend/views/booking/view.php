@@ -38,9 +38,13 @@ $this->params['breadcrumbs'] = [
                     $confirm = 'onclick="return confirm(\''.Yii::t('booking', 'Do you really want to delete this reservation ?').'\')"';
                 }
                 ?>
+                <?php if(!$model->confirmed){ ?>
+                    <li><a class="dropdown-item" href="<?= Url::to(['booking/restore', 'uuid' => $model->uuid ]) ?>"><?= Yii::t('booking', 'Restore')?></a></li>
+                <?php }else{ ?>
                 <li><a class="dropdown-item" href="<?= Url::to(['booking/send-email-summary', 'uuid' => $model->uuid ]) ?>">Send Invoice</a></li>
                 <li><a <?= $confirm?> class="dropdown-item" href="<?= Url::to(['booking/cancel', 'uuid' => $model->uuid, 'email' => 1 ]) ?>">Cancel &amp; Email</a></li>
                 <li><a <?= $confirm?> class="dropdown-item" href="<?= Url::to(['booking/cancel', 'uuid' => $model->uuid, 'email' => 0 ]) ?>">Cancel Silently</a></li>
+                <?php } ?>
             </ul>
         </div>
     </div>
@@ -86,7 +90,7 @@ $participationsProvider = new ArrayDataProvider([
 			<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     			<?= Yii::t('booking', 'Add')?> <span class="caret"></span>
   			</button>
-			<ul class="dropdown-menu">
+			<ul class="dropdown-menu dropdown-menu-right">
 				<?php $activities = $model->getActivitiesList(); ?>
 				<?php foreach ($activities as $uuid => $title) {
 					echo '<li><a href="'.Url::to(['participation/create', 'booking_uuid' => $model->uuid, 'activity_uuid' => $uuid]).'">'.$title.'</a></li>';
