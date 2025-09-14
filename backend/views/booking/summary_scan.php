@@ -9,7 +9,6 @@ use yii\data\ArrayDataProvider;
     <?php if ($model): ?>
         <h3><?= $model->name.' ('.$model->getReference().')' ?></h3>
         
-        <h4>Activities:</h4>
         <?php
             $dataProvider = new ArrayDataProvider([
                 'allModels' => $model->participations,
@@ -36,12 +35,20 @@ use yii\data\ArrayDataProvider;
                         },
                     ],
                     [
+                        'attribute' => 'quantity',
+                        'label' => 'Quantity',
+                        'value' => function ($data) {
+                            return (($data->quantity > 1)?$data->times_registered.'/'.$data->quantity.' ':$data->quantity);
+                        },
+                    ],
+                    [
                         'label' => 'Registered',
                         'format' => 'raw',
                         'value' => function ($data) {
-                            return Html::checkbox('registered', $data->registered, [
-                                'disabled' => true,
-                            ]);
+                            $icon = $data->registered ? 'check' : 'unchecked';
+                            $class = $data->registered ? 'text-success' : 'text-muted';
+                            
+                            return '<span class="glyphicon glyphicon-'.$icon.' '.$class.'" aria-hidden="true"></span>';
                         },
                         'contentOptions' => ['style' => 'text-align:center'],
                     ],

@@ -205,17 +205,24 @@ class BookingController extends Controller
             return ['status' => 'error', 'message' => Yii::t('booking', 'Not registered for the selected activity/activities.')];
         }
 
-        // Find the first UNREGISTERED participation
-        $participationToRegister = (clone $participationsQuery)->andWhere(['participation.registered' => false])->one();
+        // Find the first participation that needs more registrations
+        $participationToRegister = (clone $participationsQuery)->andWhere('times_registered < quantity')->one();
 
         if ($participationToRegister) {
-            $participationToRegister->registered = true;
+            $participationToRegister->times_registered++;
+            if ($participationToRegister->times_registered >= $participationToRegister->quantity) {
+                $participationToRegister->registered = true;
+            }
             $participationToRegister->save(false);
 
             $message = Yii::t('booking', '{name} has been successfully registered for {activity}.', [
                 'name' => $booking->name,
                 'activity' => $participationToRegister->activity->title
             ]);
+            if ($participationToRegister->registered) {
+                $message .= ' ' . Yii::t('booking', 'Registration complete for this activity.');
+            }
+
             return ['status' => 'success', 'message' => $message];
         }
 

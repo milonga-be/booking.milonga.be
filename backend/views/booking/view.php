@@ -161,7 +161,11 @@ $participationsProvider = new ArrayDataProvider([
             'format' => 'datetime'
         ],
         [
-            'attribute' => 'quantity'
+            'attribute' => 'quantity',
+            'label' => 'Quantity',
+            'value' => function ($data) {
+                return (($data->quantity > 1)?$data->times_registered.'/'.$data->quantity.' ':$data->quantity);
+            },
         ],
         [
             'attribute' => 'role',

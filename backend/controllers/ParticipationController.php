@@ -154,6 +154,10 @@ class ParticipationController extends Controller
         $model = Participation::findOne(['uuid' => $uuid]);
         if ($model) {
             $model->registered = !$model->registered;
+            if($model->registered)
+                $model->times_registered = $model->quantity;
+            else
+                $model->times_registered = 0;
             $model->save(false);
         }
         return $this->redirect(Yii::$app->request->referrer ?: ['booking/view', 'uuid' => $model->booking->uuid]);
