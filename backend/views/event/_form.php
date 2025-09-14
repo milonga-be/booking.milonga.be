@@ -14,6 +14,7 @@ echo $form->field($model, 'start_date')->widget(DatePicker::classname(), $datepi
 echo $form->field($model, 'end_date')->widget(DatePicker::classname(), $datepicker_options);
 echo $form->field($model, 'closed')->checkbox();
 echo $form->field($model, 'bannerFile')->fileInput(['class' => 'form-control']);
+echo $form->field($model, 'payment_instructions')->textarea(['rows' => 6]);
 if($model->banner){
     echo '<p>';
     echo '  <img class="banner-preview" src="'.\Yii::getAlias('@web').'/../../frontend/web/uploads/'.$model->banner.'">';

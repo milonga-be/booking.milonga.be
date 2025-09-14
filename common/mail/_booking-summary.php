@@ -4,7 +4,7 @@ use common\components\PriceManager;
 $priceManager = new PriceManager($booking->event);
 
 ?>
-<h2><?= Yii::t('booking', 'Invoice BTF {ref}', ['ref' => $booking->reference]) ?></h2>
+<h2><?= Yii::t('booking', 'Invoice {ref}', ['ref' => $booking->reference]) ?></h2>
 <hr>
 <?php
 foreach($booking->activityGroups as $activityGroup){

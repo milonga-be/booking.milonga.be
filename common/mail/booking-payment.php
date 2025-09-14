@@ -8,5 +8,5 @@
 <p>
 	<?= Yii::t('booking', 'Thanks a lot !') ?>
 	<br>
-	<?= Yii::t('booking', 'The BTF Team') ?>
+	<?= Yii::t('booking', 'The {title} Team', ['title' => $booking->event->title]) ?>
 </p>

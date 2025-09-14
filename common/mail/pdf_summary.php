@@ -98,14 +98,9 @@ use yii\helpers\Html;
     <h2>Total Price</h2>
     <p><?= Yii::$app->formatter->asCurrency($booking->total_price) ?></p>
 
-    <!--h2>Payment Information</h2>
     <p>
-        The amount must be paid on the following bank account:<br>
-        IBAN: BE69 0689 4697 7378<br>
-        BIC: GKCCBEBB<br>
-        asbl Alma del Tango Vzw<br>Rue Michel Zwaab 18<br>
-        1080 - Brussels
-    </p-->
+       <?= nl2br($booking->event->payment_instructions) ?>
+    </p>
 
     <p>
         For any questions or modifications, please contact us at:
