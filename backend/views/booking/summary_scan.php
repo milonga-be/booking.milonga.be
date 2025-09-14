@@ -7,7 +7,7 @@ use yii\data\ArrayDataProvider;
 
 <div class="booking-summary">
     <?php if ($model): ?>
-        <h3><?= $model->name.' ('.$model->getReference().')' ?></h3>
+        <h3><?= $model->name.' ('.Html::a($model->getReference(), ['/booking/view', 'uuid' => $model->uuid]).')' ?></h3>
         
         <?php
             $dataProvider = new ArrayDataProvider([
@@ -30,8 +30,9 @@ use yii\data\ArrayDataProvider;
                     [
                         'attribute' => 'activity.title',
                         'label' => 'Title',
+                        'format' => 'raw',
                         'value' => function ($data) {
-                            return $data->activity->title;
+                            return Html::a($data->activity->title, ['/activity/view', 'uuid' => $data->activity->uuid]);;
                         },
                     ],
                     [

@@ -163,7 +163,7 @@ $this->registerJs(
                 <div class="checkbox">
                     <label>
                         <?= Html::checkbox('selected_activities[]', false, ['value' => $activity->uuid]) ?>
-                        <?= $activity->datetime ? Html::encode(Yii::$app->formatter->asDatetime($activity->datetime, 'php:D j M H:i')) . ' - ' : '' ?> <?= Html::encode($activity->title) ?>
+                        <?= $activity->datetime ? Html::encode(Yii::$app->formatter->asDatetime($activity->datetime, 'php:D j M H:i')) . ' - ' : '' ?> <?= Html::encode($activity->getSummary(75)) ?>
                     </label>
                 </div>
             <?php endforeach; ?>

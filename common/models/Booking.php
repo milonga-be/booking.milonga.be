@@ -9,6 +9,11 @@ use common\components\UTCDatetimeBehavior;
 use mootensai\behaviors\UUIDBehavior;
 use common\components\PriceManager;
 
+use Endroid\QrCode\Builder\Builder;
+use Endroid\QrCode\Encoding\Encoding;
+use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelLow;
+use Endroid\QrCode\Writer\PngWriter;
+
 /**
  * Login form
  */
@@ -163,14 +168,53 @@ class Booking extends ActiveRecord
     public function sendEmailSummary(){
         if(empty($this->email))
             return false;
+
+        // Generate QR code
+        $qrCodeResult = Builder::create()
+            ->writer(new PngWriter())
+            ->data($this->uuid)
+            ->encoding(new Encoding('UTF-8'))
+            ->errorCorrectionLevel(new ErrorCorrectionLevelLow())
+            ->size(150)
+            ->margin(5)
+            ->build();
+        $qrCodeDataUri = $qrCodeResult->getDataUri();
+
+        // Generate PDF
+        $pdf = Yii::$app->view->renderFile('@common/mail/pdf_summary.php', [
+            'booking' => $this,
+            'priceManager' => new PriceManager($this->event),
+            'qrCodeDataUri' => $qrCodeDataUri,
+        ]);
+
+        $pdfFilePath = Yii::getAlias('@runtime/tmp_qr_') . $this->uuid . '.pdf';
+
+        $mpdf = new \Mpdf\Mpdf([
+            'mode' => 'utf-8',
+            'format' => 'A4',
+            'orientation' => 'P',
+            'tempDir' => Yii::getAlias('@runtime/tmp_qr_'), // Set temporary directory for mPDF
+        ]);
+
+
+        $mpdf->WriteHTML($pdf);
+        $mpdf->Output($pdfFilePath, 'F');
+
         $priceManager = new PriceManager($this->event);
-        return Yii::$app->mailer->compose('@common/mail/booking-confirmed', ['booking' => $this, 'priceManager' => $priceManager])
+
+        $result = Yii::$app->mailer->compose('@common/mail/booking-confirmed', ['booking' => $this, 'priceManager' => $priceManager])
                     ->setFrom(Yii::$app->params['publicEmail'])
                     ->setTo($this->email)
                     ->setBcc([Yii::$app->params['publicEmail'], Yii::$app->params['adminEmail']])
-                    ->setSubject(Yii::t('booking', 'Invoice BTF {ref}', ['ref' => $this->reference]))
+                    ->setSubject(Yii::t('booking', 'Invoice {ref}', ['ref' => $this->reference]))
+                    ->attach($pdfFilePath)
                     ->send();
+
+        // unlink($pdfFilePath); // remove temp file
+
+        return $result;
     }
+
 
     /**
      * Send the cancelling email
