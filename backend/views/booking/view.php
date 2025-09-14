@@ -76,7 +76,7 @@ $qrCodeDataUri = $qrCodeResult->getDataUri();
                 'email',
                 'total_price:currency',
                 'total_paid:currency',
-                [
+                /*[
                     'label' => Yii::t('booking', 'Partner Reservation'),
                     'format' => 'raw',
                     'value' => function($data){
@@ -84,7 +84,7 @@ $qrCodeDataUri = $qrCodeResult->getDataUri();
                             return Html::a($data->partnerBooking->name.' ('.$data->partnerBooking->getReference().')', ['booking/view', 'uuid' => $data->partnerBooking->uuid]);
                         return null;
                     },
-                ],
+                ],*/
                 'source'
             ],
         ])?>
@@ -92,8 +92,9 @@ $qrCodeDataUri = $qrCodeResult->getDataUri();
             <a href="<?= Url::to(['booking/update', 'uuid' => $model->uuid]) ?>" class="btn btn-md btn-default"><?= Yii::t('booking', 'Update') ?></a>
         </p>
     </div>
-    <div class="col-md-3 text-center">
+    <div class="col-md-3 text-center" style="padding-top:25px;">
         <img src="<?= $qrCodeDataUri ?>" alt="QR Code">
+        <h3><?= $model->getReference() ?></h3>
     </div>
 </div>
 <?php

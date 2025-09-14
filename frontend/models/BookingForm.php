@@ -128,11 +128,11 @@ class BookingForm extends Model
      * @return boolean
      */
     public function enablePartnerForm(){
-        foreach($this->activities as $activity){
+        /*foreach($this->activities as $activity){
             if($activity->couple_activity){
                 return true;
             }
-        }
+        }*/
         return false;
     }
 }

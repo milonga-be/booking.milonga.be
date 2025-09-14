@@ -152,7 +152,8 @@ $this->registerJs(
 ?>
 <div class="row mt-2 mb-2">
     <div class="col-md-6">
-        <div id="qr-reader" style="width: 500px; margin: 0 auto; min-height: 250px;"></div><div id="scan-result" style="width: 500px; margin: 15px auto; text-align: center; min-height: 50px;"></div>
+        <div id="qr-reader" style="margin: 0 auto; min-height: 250px;"></div>
+        <div id="scan-result" style="margin: 15px auto; text-align: center; min-height: 50px;"></div>
     </div>
     <div class="col-md-6" id="booking-summary"></div>
 	<div class="col-md-12">

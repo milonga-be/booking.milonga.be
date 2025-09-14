@@ -10,6 +10,7 @@ $datepicker_options = [
 ];
 
 echo $form->field($model, 'title');
+echo $form->field($model, 'email');
 echo $form->field($model, 'start_date')->widget(DatePicker::classname(), $datepicker_options);
 echo $form->field($model, 'end_date')->widget(DatePicker::classname(), $datepicker_options);
 echo $form->field($model, 'closed')->checkbox();

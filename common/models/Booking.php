@@ -203,9 +203,9 @@ class Booking extends ActiveRecord
         $priceManager = new PriceManager($this->event);
 
         $result = Yii::$app->mailer->compose('@common/mail/booking-confirmed', ['booking' => $this, 'priceManager' => $priceManager])
-                    ->setFrom(Yii::$app->params['publicEmail'])
+                    ->setFrom($this->event->email)
                     ->setTo($this->email)
-                    ->setBcc([Yii::$app->params['publicEmail'], Yii::$app->params['adminEmail']])
+                    ->setBcc([$this->event->email, Yii::$app->params['adminEmail']])
                     ->setSubject(Yii::t('booking', 'Invoice {ref}', ['ref' => $this->reference]))
                     ->attach($pdfFilePath)
                     ->send();
@@ -223,9 +223,9 @@ class Booking extends ActiveRecord
         if(empty($this->email))
             return false;
         return Yii::$app->mailer->compose('@common/mail/booking-cancelled', ['booking' => $this])
-                    ->setFrom(Yii::$app->params['publicEmail'])
+                    ->setFrom($this->event->email)
                     ->setTo($this->email)
-                    ->setBcc([Yii::$app->params['publicEmail'], Yii::$app->params['adminEmail']])
+                    ->setBcc([$this->event->email, Yii::$app->params['adminEmail']])
                     ->setSubject(Yii::t('booking', 'Reservation Cancelled'))
                     ->send();
     }
@@ -237,9 +237,9 @@ class Booking extends ActiveRecord
         if(empty($this->email))
             return false;
         return Yii::$app->mailer->compose('@common/mail/booking-payment', ['booking' => $this])
-                    ->setFrom(Yii::$app->params['publicEmail'])
+                    ->setFrom($this->event->email)
                     ->setTo($this->email)
-                    ->setBcc([Yii::$app->params['publicEmail'], Yii::$app->params['adminEmail']])
+                    ->setBcc([$this->event->email, Yii::$app->params['adminEmail']])
                     ->setSubject(Yii::t('booking', 'Payment Complete'))
                     ->send();
     }
@@ -251,9 +251,9 @@ class Booking extends ActiveRecord
         if(empty($this->email))
             return false;
         return Yii::$app->mailer->compose('@common/mail/booking-payment-reminder', ['booking' => $this])
-                    ->setFrom(Yii::$app->params['publicEmail'])
+                    ->setFrom($this->event->email)
                     ->setTo($this->email)
-                    ->setBcc([Yii::$app->params['publicEmail'], Yii::$app->params['adminEmail']])
+                    ->setBcc([$this->event->email, Yii::$app->params['adminEmail']])
                     ->setSubject($last?Yii::t('booking', 'Last Reminder'):Yii::t('booking', 'Payment Reminder'))
                     ->send();
     }

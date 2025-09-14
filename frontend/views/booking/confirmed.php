@@ -24,7 +24,7 @@ $this->title = Yii::t('booking', 'Registration Complete').' - '.$event->title;
 		</p>
 		<p>
 			<?= Yii::t('booking', 'Any questions, modifications can be communicated at : ')?>
-			<a href="mailto:<?= Yii::$app->params['adminEmail']?>"><?= Yii::$app->params['publicEmail']?></a>
+			<a href="mailto:<?= $event->email ?>"><?= $event->email ?></a>
 		</p>
 		<h3><?= Yii::t('booking', 'Personal informations') ?></h3>
 		<table class="table table-striped"> 
@@ -83,12 +83,7 @@ $this->title = Yii::t('booking', 'Registration Complete').' - '.$event->title;
 		<div class="row">
 			<div class="col-md-8">
 				<p>
-				<?= Yii::t('booking', 'The amount must be paid on the following bank account : ') ?><br>
-				<?= Yii::t('booking', 'IBAN : BE69 0689 4697 7378') ?><br>
-				<?= Yii::t('booking', 'BIC : GKCCBEBB') ?><br>
-				<?= Yii::t('booking', 'asbl Alma del Tango Vzw') ?><br>
-				<?= Yii::t('booking', 'Rue Michel Zwaab 18') ?><br>
-				<?= Yii::t('booking', '1080 - Brussels') ?><br>
+					<?= nl2br($model->event->payment_instructions) ?>
 				</p>
 			</div>
 			<div class="text-right col-md-4">

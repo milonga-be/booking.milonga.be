@@ -104,7 +104,7 @@ use yii\helpers\Html;
 
     <p>
         For any questions or modifications, please contact us at:
-        <a href="mailto:<?= Yii::$app->params['adminEmail'] ?>"><?= Yii::$app->params['publicEmail'] ?></a>
+        <a href="mailto:<?= $booking->event->email ?>"><?= $booking->event->email ?></a>
     </p>
 </div>
 

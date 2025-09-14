@@ -26,6 +26,8 @@ use yii\data\ArrayDataProvider;
                         'value' => function ($data) {
                             return $data->activity->datetime;
                         },
+                        'contentOptions' => ['class' => 'hidden-sm hidden-xs'],
+                        'headerOptions' => ['class' => 'hidden-sm hidden-xs'],
                     ],
                     [
                         'attribute' => 'activity.title',
@@ -41,6 +43,7 @@ use yii\data\ArrayDataProvider;
                         'value' => function ($data) {
                             return (($data->quantity > 1)?$data->times_registered.'/'.$data->quantity.' ':$data->quantity);
                         },
+                        'headerOptions' => ['class' => 'hidden-sm hidden-xs'],
                     ],
                     [
                         'label' => 'Registered',
@@ -52,6 +55,7 @@ use yii\data\ArrayDataProvider;
                             return '<span class="glyphicon glyphicon-'.$icon.' '.$class.'" aria-hidden="true"></span>';
                         },
                         'contentOptions' => ['style' => 'text-align:center'],
+                        'headerOptions' => ['class' => 'hidden-sm hidden-xs'],
                     ],
                 ],
             ]);
