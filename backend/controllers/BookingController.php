@@ -197,6 +197,10 @@ class BookingController extends Controller
             return ['status' => 'error', 'message' => Yii::t('booking', 'Booking not found.')];
         }
 
+        if (!$booking->isPaymentComplete()) {
+            return ['status' => 'error', 'message' => Yii::t('booking', 'Payment is not complete for this booking.')];
+        }
+
         $participationsQuery = $booking->getParticipations()
             ->joinWith('activity')
             ->where(['in', 'activity.uuid', $activityUuids]);
