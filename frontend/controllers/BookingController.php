@@ -69,6 +69,46 @@ class BookingController extends Controller
 	}
 
 	/**
+	 * The form to modify a booking for an event
+	 * @param  string Unique Id of the booking
+	 * @return mixed
+	 */
+	public function actionUpdate($booking_uuid){
+		$booking = Booking::findOne(['uuid' => $booking_uuid]);
+		if(!isset($booking))
+			throw new NotFoundHttpException('Booking not found');
+		$event = $booking->event;
+		$model = new BookingForm();
+		$post = Yii::$app->request->post();
+		if(is_array($post) && sizeof($post) > 0 && $model->load($post) && $model->validate()){
+			$priceManager = new PriceManager($event);
+			$model->firstname = $booking->firstname;
+			$model->lastname = $booking->lastname;
+			$model->email = $booking->email;
+			if(isset($booking->partnerBooking)){
+				$model->has_partner = 'yes';
+				$model->partner_firstname = $booking->partnerBooking->firstname;
+				$model->partner_lastname = $booking->partnerBooking->lastname;
+				$model->partner_email = $booking->partnerBooking->email;
+			}else{
+				$model->has_partner = 'no';
+			}
+			return $this->render('summary', ['model' => $model, 'event' => $event, 'priceManager' => $priceManager]);
+		}else{
+			foreach($booking->participations as $participation){
+				if($participation->activity->couple_activity)
+					$model->activities_uuids[] = $participation->activity->uuid;
+				else
+					$model->activities_with_quantities[] = $participation->activity->uuid.':'.$participation->quantity;
+			}
+			/*var_dump($model);
+			die();*/
+		}
+
+		return $this->render('create',['event' => $event, 'model' => $model]);
+	}
+
+	/**
 	 * The confirmation form for an event and a specific booking
 	 * @param  string $event_uuid   Event Unique Id
 	 * @return mixed

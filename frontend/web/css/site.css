@@ -266,6 +266,10 @@ td.full label{
   outline: none;
   padding: 10px;
 }
+.quantity .input-group .quantity-field.active{
+    background-color: orange;
+    color:white;
+}
 .bg-muted{
     background-color: #f9f9f9;
 }

@@ -26,7 +26,7 @@ class ParticipationController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['index', 'view', 'create', 'update', 'delete'],
+                        'actions' => ['index', 'view', 'create', 'update', 'delete', 'toggle-registered'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -142,5 +142,20 @@ class ParticipationController extends Controller
         $booking->saveFinalPrice();
 
         $this->redirect(['booking/view', 'uuid' => $booking->uuid]);
+    }
+
+    /**
+     * Toggle the registered status of a participation
+     *
+     * @return string
+     */
+    public function actionToggleRegistered($uuid)
+    {
+        $model = Participation::findOne(['uuid' => $uuid]);
+        if ($model) {
+            $model->registered = !$model->registered;
+            $model->save(false);
+        }
+        return $this->redirect(Yii::$app->request->referrer ?: ['booking/view', 'uuid' => $model->booking->uuid]);
     }
 }

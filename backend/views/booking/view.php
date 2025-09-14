@@ -4,6 +4,10 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 use yii\grid\GridView;
 use yii\data\ArrayDataProvider;
+use Endroid\QrCode\Builder\Builder;
+use Endroid\QrCode\Encoding\Encoding;
+use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelLow;
+use Endroid\QrCode\Writer\PngWriter;
 
 $this->title = $model->name.' ('.$model->getReference().')';
 $this->params['breadcrumbs'] = [
@@ -20,6 +24,17 @@ $this->params['breadcrumbs'] = [
         'url' => ['booking/view', 'uuid' => $model->uuid]
     ]
 ];
+
+$qrCodeResult = Builder::create()
+    ->writer(new PngWriter())
+    ->data($model->uuid)
+    ->encoding(new Encoding('UTF-8'))
+    ->errorCorrectionLevel(new ErrorCorrectionLevelLow())
+    ->size(150)
+    ->margin(5)
+    ->build();
+$qrCodeDataUri = $qrCodeResult->getDataUri();
+
 ?>
 <div class="row">
     <div class="col-md-10">
@@ -49,31 +64,38 @@ $this->params['breadcrumbs'] = [
         </div>
     </div>
 </div>
-<?= DetailView::widget([
-    'model' => $model,
-    'attributes' => [
-        'created_at:datetime',
-        'reference', 
-        'firstname', 
-        'lastname', 
-        'email',
-        'total_price:currency',
-        'total_paid:currency',
-        [
-            'label' => Yii::t('booking', 'Partner Reservation'),
-            'format' => 'raw',
-            'value' => function($data){
-                if(isset($data->partnerBooking))
-                    return Html::a($data->partnerBooking->name.' ('.$data->partnerBooking->getReference().')', ['booking/view', 'uuid' => $data->partnerBooking->uuid]);
-                return null;
-            },
-        ],
-        'source'
-    ],
-])?>
-<p class="text-right">
-    <a href="<?= Url::to(['booking/update', 'uuid' => $model->uuid]) ?>" class="btn btn-md btn-default"><?= Yii::t('booking', 'Update') ?></a>
-</p>
+<div class="row">
+    <div class="col-md-9">
+        <?= DetailView::widget([
+            'model' => $model,
+            'attributes' => [
+                'created_at:datetime',
+                'reference', 
+                'firstname', 
+                'lastname', 
+                'email',
+                'total_price:currency',
+                'total_paid:currency',
+                [
+                    'label' => Yii::t('booking', 'Partner Reservation'),
+                    'format' => 'raw',
+                    'value' => function($data){
+                        if(isset($data->partnerBooking))
+                            return Html::a($data->partnerBooking->name.' ('.$data->partnerBooking->getReference().')', ['booking/view', 'uuid' => $data->partnerBooking->uuid]);
+                        return null;
+                    },
+                ],
+                'source'
+            ],
+        ])?>
+        <p class="text-right">
+            <a href="<?= Url::to(['booking/update', 'uuid' => $model->uuid]) ?>" class="btn btn-md btn-default"><?= Yii::t('booking', 'Update') ?></a>
+        </p>
+    </div>
+    <div class="col-md-3 text-center">
+        <img src="<?= $qrCodeDataUri ?>" alt="QR Code">
+    </div>
+</div>
 <?php
 $participationsProvider = new ArrayDataProvider([
     'allModels' => $model->participations,
@@ -106,6 +128,18 @@ $participationsProvider = new ArrayDataProvider([
     'layout' => '{items}{pager}',
     'tableOptions' => ['class' => 'table table-hover  table-striped'],
     'columns' => [
+        [
+            'label' => Yii::t('booking', 'Registered'),
+            'format' => 'raw',
+            'headerOptions' => ['class' => 'text-center'],
+            'contentOptions' => ['class' => 'text-center'],
+            'value' => function($data) {
+                $icon = $data->registered ? 'check' : 'unchecked';
+                $class = $data->registered ? 'text-success' : 'text-muted';
+                $url = Url::to(['participation/toggle-registered', 'uuid' => $data->uuid]);
+                return Html::a('<span class="glyphicon glyphicon-'.$icon.'"></span>', $url, ['class' => $class]);
+            }
+        ],
         [
             'attribute' => 'activity.teacher.name',
             'format' => 'raw',

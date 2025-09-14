@@ -26,6 +26,7 @@ $this->params['breadcrumbs'] = [
     <div class="col-md-4 text-center">
     </div>
 	<div class="col-md-4 text-right">
+        <a class="btn btn-md btn-default" href="<?= Url::to(['/booking/scan', 'event_uuid' => $event->uuid])?>"><?= Yii::t('booking', 'Scan')?></a>
         <a class="btn btn-md btn-default" href="<?= Url::to(['/booking/stats', 'event_uuid' => $event->uuid])?>"><?= Yii::t('booking', 'Statistics')?></a> 
         <a class="btn btn-md btn-default" href="<?= Url::to(['/booking/create', 'event_uuid' => $event->uuid])?>"><?= Yii::t('booking', 'New')?></a>
 	</div>

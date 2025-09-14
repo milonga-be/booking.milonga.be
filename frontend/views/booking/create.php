@@ -94,7 +94,7 @@ foreach ($event->activityGroups as $group) {?>
 									<?= $hour ?>
 								</td>
 								<?php foreach ($teachers as $teacher_name => $activity) {?>
-								<td class="activity <?= $activity && $activity->isFull()?'full':'' ?>"><?php
+								<td class="activity <?= $activity && in_array($activity->uuid, $model->activities_uuids)?'checked':'' ?> <?= $activity && $activity->isFull()?'full':'' ?>"><?php
 									if(isset($activity)){
 										echo $form->field($model, 'activities_uuids[]')->checkbox(['label' => (!empty($activity->dance)?$activity->readableDance.' - ':'').$activity->title, 'value' => $activity->uuid, 'checked' => in_array($activity->uuid, $model->activities_uuids), 'disabled' => $activity->isFull()]);
 										if($activity->isFull()){
@@ -123,11 +123,21 @@ foreach ($event->activityGroups as $group) {?>
 						echo '<strong class="text-danger">'.Yii::t('booking', 'FULL').'</strong>';
 					}
 					echo '</td>';
+					$activity_uuid = $activity->uuid;
+					$activity_in_model = 
+						array_filter($model->activities_with_quantities, 
+								function($item) use ($activity_uuid) {
+									return substr($item, 0, strlen($activity_uuid)) == $activity_uuid;
+								}
+						);
+					$is_registered = sizeof($activity_in_model);
+					$quantity = $is_registered?explode(':', $activity_in_model[0])[1]:0;
 					echo '<td class="quantity">
 							<div class="input-group">
 								<input id="'.$activity->uuid.'" type="hidden" data-uuid="'.$activity->uuid.'" name="BookingForm[activities_with_quantities][]" value="'.$activity->uuid.':0"/>
+									<!-- '.$is_registered.' -->
   								<input type="button" value="-" class="button-minus" data-field="quantity_'.$activity->uuid.'">
-  								<input type="text" step="1" max="" value="0" data-uuid="'.$activity->uuid.'" name="quantity_'.$activity->uuid.'" class="quantity-field">
+  								<input type="text" step="1" max="" value="'.$quantity.'" data-uuid="'.$activity->uuid.'" name="quantity_'.$activity->uuid.'" class="quantity-field '.($is_registered?'active':'').'">
   								<input type="button" value="+" class="button-plus" data-field="quantity_'.$activity->uuid.'">
 							</div>
 						</td>';
@@ -179,8 +189,10 @@ function incrementValue(e) {
 
   if (!isNaN(currentVal)) {
     field.val(currentVal + 1);
+    field.addClass('active');
   } else {
     field.val(0);
+    field.removeClass('active');
   }
   var uuid = field.data('uuid');
   $('#'+uuid+'').val(uuid+':'+field.val());
@@ -195,8 +207,10 @@ function decrementValue(e) {
 
   if (!isNaN(currentVal) && currentVal > 0) {
     field.val(currentVal - 1);
+    field.addClass('active');
   } else {
     field.val(0);
+    field.removeClass('active');
   }
   var uuid = field.data('uuid');
   $('#'+uuid+'').val(uuid+':'+field.val());

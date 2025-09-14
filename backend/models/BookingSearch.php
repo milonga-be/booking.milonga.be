@@ -65,8 +65,8 @@ class BookingSearch extends Booking{
         if(!empty($this->name_search)){
             $q = str_replace(' ', '%', strtolower($this->name_search));
             $query->andWhere(['OR',
-                'LOWER(CONCAT(firstname," ", lastname)) LIKE "%'.$q.'%"',
-                'LOWER(CONCAT(lastname," ", firstname)) LIKE "%'.$q.'%"'
+                'LOWER(CONCAT(firstname," ", lastname)) LIKE "%'.strtolower($q).'%"',
+                'LOWER(CONCAT(lastname," ", firstname)) LIKE "%'.strtolower($q).'%"'
             ]);
         }
         if(!empty($this->id)){

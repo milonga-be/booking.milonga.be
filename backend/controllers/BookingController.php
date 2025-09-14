@@ -9,6 +9,7 @@ use common\models\Booking;
 use common\models\Event;
 use common\models\Payment;
 use backend\models\BookingSearch;
+use common\models\Participation;
 use backend\models\CancelledBookingSearch;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -28,7 +29,7 @@ class BookingController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['index', 'view', 'create', 'update', 'delete', 'export-payments', 'stats', 'send-email-summary', 'cancel', 'cancelled-list', 'restore'],
+                        'actions' => ['index', 'view', 'create', 'update', 'delete', 'export-payments', 'stats', 'send-email-summary', 'cancel', 'cancelled-list', 'restore', 'scan', 'check-participation', 'summary'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -149,6 +150,78 @@ class BookingController extends Controller
         return $this->render('view', ['model' => $model]);
     }
 
+    /**
+     * Displays booking scan page.
+     *
+     * @param string $event_uuid
+     * @return string
+     */
+    public function actionScan($event_uuid)
+    {
+        $event = Event::findOne(['uuid' => $event_uuid]);
+        return $this->render('scan', ['event' => $event]);
+    }
+
+    public function actionSummary($uuid)
+    {
+        $this->layout = false;
+        $model = Booking::findOne(['uuid' => $uuid]);
+
+        if ($model) {
+            return $this->render('summary_scan', ['model' => $model]);
+        } else {
+            return '<div class="alert alert-danger">Booking not found.</div>';
+        }
+    }
+
+
+    /**
+     * Checks if a booking has participation in selected activities.
+     * Used via AJAX from the scan page.
+     * @return \yii\web\Response
+     * @throws \yii\web\BadRequestHttpException
+     */
+    public function actionCheckParticipation()
+    {
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        $request = Yii::$app->request;
+        if (!$request->isAjax) {
+            throw new \yii\web\BadRequestHttpException();
+        }
+
+        $bookingUuid = $request->post('booking_uuid');
+        $activityUuids = $request->post('activity_uuids', []);
+
+        $booking = Booking::findOne(['uuid' => $bookingUuid]);
+        if (!$booking) {
+            return ['status' => 'error', 'message' => Yii::t('booking', 'Booking not found.')];
+        }
+
+        $participationsQuery = $booking->getParticipations()
+            ->joinWith('activity')
+            ->where(['in', 'activity.uuid', $activityUuids]);
+
+        if ($participationsQuery->count() == 0) {
+            return ['status' => 'error', 'message' => Yii::t('booking', 'Not registered for the selected activity/activities.')];
+        }
+
+        // Find the first UNREGISTERED participation
+        $participationToRegister = (clone $participationsQuery)->andWhere(['participation.registered' => false])->one();
+
+        if ($participationToRegister) {
+            $participationToRegister->registered = true;
+            $participationToRegister->save(false);
+
+            $message = Yii::t('booking', '{name} has been successfully registered for {activity}.', [
+                'name' => $booking->name,
+                'activity' => $participationToRegister->activity->title
+            ]);
+            return ['status' => 'success', 'message' => $message];
+        }
+
+        $message = Yii::t('booking', 'All participations for {name} are already registered for the selected activities.', ['name' => $booking->name]);
+        return ['status' => 'error', 'message' => $message];
+    }
     /**
      * Create a new model
      *
