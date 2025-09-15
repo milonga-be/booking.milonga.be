@@ -4,7 +4,8 @@ body {
     background-color:#efefef; 
 }
 *{
-    font-family:'Open Sans';
+    font-family:'Montserrat';
+    font-weight: 300;
 }
 .navbar-brand{
     font-size: 14px;

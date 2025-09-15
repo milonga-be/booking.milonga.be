@@ -4,7 +4,8 @@ body {
     font-size:14px
 }
 *{
-    font-family:'Open Sans';
+    font-family:'Montserrat';
+    font-weight: 300;
 }
 .site-header {
     /*background: url(http://brusselstangofestival.com/wp-content/uploads/2018/12/cropped-bandeau-site-BTF2019-3.jpg) no-repeat scroll top;*/
@@ -36,7 +37,7 @@ body {
     padding: 20px 15px 20px;
 }
 .title{
-    background-color: #f7f5e7;
+    background-color: #f8f8f8;
 }
 .footer {
     height: 60px;

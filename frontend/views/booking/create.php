@@ -33,12 +33,12 @@ $form = ActiveForm::begin([
 		<p><?= nl2br(Yii::t('booking', 'Booking Column 2 Text'))?></p>
 	</div>
 </div-->
-<h4 class="">
+<h5 class="">
 	<?= Yii::t('booking', 'Please select the workshop(s) and the pass(es) you wish to reserve, and scroll down to confirm you Reservation') ?>
-</h4>
+</h5>
 <?php
 foreach ($event->activityGroups as $group) {?>
-	<h2><?= $group->title ?></h2>
+	<h2 style="margin-top: 30px;"><?= $group->title ?></h2>
 	<?php
 		switch ($group->display) {
 			case 'grid':
