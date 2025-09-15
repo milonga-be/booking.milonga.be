@@ -26,6 +26,7 @@ $this->params['breadcrumbs'] = [
     'attributes' => [
         'title', 
         'email', 
+        'website', 
         'start_date:date', // creation date formatted as datetime
         'end_date:date', // creation date formatted as datetime
     ],

@@ -17,13 +17,13 @@ $form = ActiveForm::begin([
 <?php if($event->closed): ?>
 	<h3><?= Yii::t('booking', 'Reservations are closed, enjoy your Festival ! ') ?></h3>
 	<p>
-		<?= nl2br(Yii::t('booking', 'Text when reservations are closed : {website}', ['website' => '<a href="https://brusselstangofestival.com/reservation/practical/">https://www.brusselstangofestival.com/</a>'])) ?>
+		<?= nl2br(Yii::t('booking', 'Text when reservations are closed : {website}', ['website' => '<a href="'.$event->website.'">'.$event->website.'</a>'])) ?>
 	</p>
 <?php else: ?>
-<h4>
-	<?= nl2br(Yii::t('booking', 'Booking Intro Text'))?>
-</h4>
-<div class="row bg-info">
+<p>
+	<?= nl2br($event->description)?>
+</p>
+<!--div class="row bg-info">
 	<div class="col-md-6">
 		<h4><?= Yii::t('booking', 'Booking Column 1 Title')?></h4>
 		<p><?= nl2br(Yii::t('booking', 'Booking Column 1 Text'))?></p>
@@ -32,7 +32,7 @@ $form = ActiveForm::begin([
 		<h4><?= Yii::t('booking', 'Booking Column 2 Title')?></h4>
 		<p><?= nl2br(Yii::t('booking', 'Booking Column 2 Text'))?></p>
 	</div>
-</div>
+</div-->
 <h4 class="">
 	<?= Yii::t('booking', 'Please select the workshop(s) and the pass(es) you wish to reserve, and scroll down to confirm you Reservation') ?>
 </h4>
