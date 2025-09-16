@@ -268,7 +268,7 @@ function decrementValue(e) {
   var field = parent.find('input[name=\"' + fieldName + '\"]');
   var currentVal = parseInt(field.val(), 10);
 
-  if (!isNaN(currentVal) && currentVal > 0) {
+  if (!isNaN(currentVal) && currentVal > 1) {
     field.val(currentVal - 1);
     field.addClass('active');
   } else {
