@@ -36,7 +36,7 @@ $form = ActiveForm::begin([
 			<tr>
 				<td>
 					<?= $activity->getSummary(75) ?>
-					<?= $form->field($model, 'activities_with_quantities[]')->hiddenInput(['value' => $activity->uuid.':'.$participation->quantity])->label(false) ?>
+					<?= $form->field($model, 'activities['.$activity->uuid.']')->hiddenInput(['value' => $participation->quantity])->label(false) ?>
 				</td>
 				<td><?= $activity->activityGroup->title ?></td>
 				<td><?= Yii::$app->formatter->asDatetime($activity->datetime) ?></td>

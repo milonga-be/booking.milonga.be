@@ -12,8 +12,7 @@ use frontend\models\UnconfirmedParticipation;
  */
 class BookingForm extends Model
 {
-	var $activities_uuids = array();
-    var $activities_with_quantities = array();
+    var $activities = array();
     var $promocode;
 
     var $firstname;
@@ -36,7 +35,7 @@ class BookingForm extends Model
     {
         return [
             // name, email, subject and body are required
-            [['activities_uuids', 'activities_with_quantities'], 'required'],
+            [['activities'], 'required'],
             [['firstname', 'lastname', 'email', 'role'], 'required', 'on' => self::SCENARIO_CONFIRMATION],
             [['has_partner'], 'required', 
                 'when' => 
@@ -52,7 +51,7 @@ class BookingForm extends Model
                     },
                 'on' => self::SCENARIO_CONFIRMATION
             ],
-            [['activities_uuids'], 'each', 'rule' => ['string']],
+            // [['activities'], 'each', 'rule' => ['integer']],
             [['firstname', 'lastname', 'role', 'partner_firstname', 'partner_lastname'], 'string'],
             [['email', 'partner_email'], 'email'],
             [['role'], 'in', 'range' => ['leader', 'follower']],
@@ -72,8 +71,8 @@ class BookingForm extends Model
      */
     public function scenarios(){
         return [
-            self::SCENARIO_DEFAULT => ['activities_uuids', 'activities_with_quantities', 'promocode'],
-            self::SCENARIO_CONFIRMATION => ['activities_with_quantities', 'firstname', 'lastname', 'email', 'role', 'has_partner', 'partner_lastname', 'partner_firstname', 'partner_email', 'promocode'],
+            self::SCENARIO_DEFAULT => ['activities', 'promocode'],
+            self::SCENARIO_CONFIRMATION => ['activities', 'firstname', 'lastname', 'email', 'role', 'has_partner', 'partner_lastname', 'partner_firstname', 'partner_email', 'promocode'],
         ];
     }
 
@@ -81,21 +80,15 @@ class BookingForm extends Model
      * Returns a list of activities based on the activities uuids 
      * @return array
      */
-    public function getActivities(){
+    /*public function getActivities(){
         $activities = array();
-        foreach ($this->activities_uuids as $activity_uuid) {
-            if($activity_uuid){
-                $activities[] = Activity::findOne(['uuid' => $activity_uuid]);
-            }
-        }
-        foreach ($this->activities_with_quantities as $value) {
-            list($activity_uuid,$quantity) = explode(':', $value);
+        foreach ($this->activities as $activity_uuid => $quantity) {
             if($activity_uuid && $quantity){
                 $activities[] = Activity::findOne(['uuid' => $activity_uuid]);
             }
         }
         return $activities;
-    }
+    }*/
 
     /**
      * Returns a list of unconfirmed participations based on the activities uuids and the quantities
@@ -103,17 +96,8 @@ class BookingForm extends Model
      */
     public function getParticipations(){
         $participations = array();
-        foreach ($this->activities_uuids as $activity_uuid) {
-            if($activity_uuid){
-                $participation = new UnconfirmedParticipation();
-                $participation->activity_uuid = $activity_uuid;
-                $participation->quantity = 1;
-                $participations[] = $participation;
-            }
-        }
-        foreach ($this->activities_with_quantities as $value) {
-            list($activity_uuid,$quantity) = explode(':', $value);
-            if($activity_uuid && $quantity){
+        foreach ($this->activities as $activity_uuid => $quantity) {
+            if($activity_uuid && $quantity > 0){
                 $participation = new UnconfirmedParticipation();
                 $participation->activity_uuid = $activity_uuid;
                 $participation->quantity = $quantity;

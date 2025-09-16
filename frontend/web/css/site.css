@@ -164,7 +164,7 @@ h2, h3{
 .activity_group_table{
     font-size:0.9em;
 }
-.field-bookingform-activities_uuids input[type=checkbox]{
+.table-activities input[type=checkbox]{
     display:none;
 }
 .table-activities th{
@@ -284,4 +284,24 @@ td.full label{
 }
 h4.text-warning{
     color:orange;
+}
+.summary-sidebar {
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    position: -webkit-sticky;
+    position: sticky;
+    top: 20px;
+}
+.summary-sidebar ul {
+    padding-left: 15px;
+}
+.summary-reductions-list {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed #ccc;
+}
+.summary-reductions-list .reduction {
+    color: limegreen;
 }

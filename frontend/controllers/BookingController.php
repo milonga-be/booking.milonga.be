@@ -44,18 +44,9 @@ class BookingController extends Controller
 		$post = Yii::$app->request->post();
 		// Checking that an activity is selected
 		$selected_activites = false;
-		if(isset($post['BookingForm']['activities_with_quantities'])){
-			foreach($post['BookingForm']['activities_with_quantities'] as $activity_config){
-				list($activity_uuid, $quantity) = explode(':', $activity_config);
+		if(isset($post['BookingForm']['activities'])){
+			foreach($post['BookingForm']['activities'] as $activity_uuid => $quantity){
 				if($quantity > 0){
-					$selected_activites = true;
-					break;
-				}
-			}
-		}
-		if(isset($post['BookingForm']['activities_uuids'])){
-			foreach($post['BookingForm']['activities_uuids'] as $value){
-				if($value){
 					$selected_activites = true;
 					break;
 				}
@@ -69,11 +60,55 @@ class BookingController extends Controller
 	}
 
 	/**
+	 * Calculate price with reductions via AJAX
+	 * @param  string $event_uuid The event identifier
+	 * @return json
+	 */
+	public function actionAjaxCalculatePrice($event_uuid)
+	{
+		Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+		$event = $this->findModel($event_uuid);
+		$model = new BookingForm();
+		$priceManager = new PriceManager($event);
+
+		if ($model->load(Yii::$app->request->post())) {
+			$participations = $model->getParticipations();
+			$unreducedPrice = $priceManager->computeUnreducedPrice($participations);
+			$finalPrice = $priceManager->computeFinalPrice($model);
+			$validReductions = $priceManager->getValidReductions($model);
+
+			$reductionsSummary = [];
+			foreach ($validReductions as $reduction) {
+				// The summary can be an array in some cases
+				if(is_array($reduction->summary))
+					$reduction->summary = implode('<br>', $reduction->summary);
+
+				$reductionsSummary[] = [
+					'name' => $reduction->name,
+					'summary' => $reduction->summary,
+				];
+			}
+
+			return [
+				'activitiesHtml' => $this->renderPartial('_summary_activities', [
+					'participations' => $participations,
+				]),
+				'unreducedPrice' => $unreducedPrice,
+				'finalPrice' => $finalPrice,
+				'reductions' => $reductionsSummary,
+			];
+		}
+
+		return ['error' => 'Invalid data'];
+	}
+
+	/**
 	 * The form to modify a booking for an event
 	 * @param  string Unique Id of the booking
 	 * @return mixed
 	 */
-	public function actionUpdate($booking_uuid){
+	/*public function actionUpdate($booking_uuid){
 		$booking = Booking::findOne(['uuid' => $booking_uuid]);
 		if(!isset($booking))
 			throw new NotFoundHttpException('Booking not found');
@@ -101,12 +136,10 @@ class BookingController extends Controller
 				else
 					$model->activities_with_quantities[] = $participation->activity->uuid.':'.$participation->quantity;
 			}
-			/*var_dump($model);
-			die();*/
 		}
 
 		return $this->render('create',['event' => $event, 'model' => $model]);
-	}
+	}*/
 
 	/**
 	 * The confirmation form for an event and a specific booking

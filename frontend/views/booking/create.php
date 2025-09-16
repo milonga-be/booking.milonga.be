@@ -1,16 +1,22 @@
 <?php
 use yii\widgets\ActiveForm;
 use yii\helpers\Url;
+use yii\helpers\Html;
 
 $this->title = Yii::t('booking', 'Registration').' - '.$event->title;
+$ajaxUrl = Url::to(['/booking/ajax-calculate-price', 'event_uuid' => $event->uuid]);
 ?>
 <div class="wrap">
 	<?= $this->render('_banner', ['event' => $event]) ?>
 
     <div class="container">
+		<div class="row">
+			<div class="col-md-8">
 <?php
 $form = ActiveForm::begin([
-	'options' => [],
+	'id' => 'booking-form',
+	'enableClientValidation' => false,
+	'options' => ['autocomplete' => 'off']
 	// 'action' => Url::to(['/booking/registration-summary', 'event_uuid' => $event->uuid])
 ]);
 ?>
@@ -23,16 +29,6 @@ $form = ActiveForm::begin([
 <p>
 	<?= nl2br($event->description)?>
 </p>
-<!--div class="row bg-info">
-	<div class="col-md-6">
-		<h4><?= Yii::t('booking', 'Booking Column 1 Title')?></h4>
-		<p><?= nl2br(Yii::t('booking', 'Booking Column 1 Text'))?></p>
-	</div>
-	<div class="col-md-6">
-		<h4><?= Yii::t('booking', 'Booking Column 2 Title')?></h4>
-		<p><?= nl2br(Yii::t('booking', 'Booking Column 2 Text'))?></p>
-	</div>
-</div-->
 <h5 class="">
 	<?= Yii::t('booking', 'Please select the workshop(s) and the pass(es) you wish to reserve, and scroll down to confirm you Reservation') ?>
 </h5>
@@ -94,9 +90,13 @@ foreach ($event->activityGroups as $group) {?>
 									<?= $hour ?>
 								</td>
 								<?php foreach ($teachers as $teacher_name => $activity) {?>
-								<td class="activity <?= $activity && in_array($activity->uuid, $model->activities_uuids)?'checked':'' ?> <?= $activity && $activity->isFull()?'full':'' ?>"><?php
+								<td class="activity <?= $activity && in_array($activity->uuid, $model->activities)?'checked':'' ?> <?= $activity && $activity->isFull()?'full':'' ?>" <?php if($activity): ?>data-uuid="<?= $activity->uuid ?>" data-price="<?= $activity->price ?>" data-title="<?= Html::encode((!empty($activity->dance)?$activity->readableDance.' - ':'').$activity->title) ?>"<?php endif; ?>><?php
 									if(isset($activity)){
-										echo $form->field($model, 'activities_uuids[]')->checkbox(['label' => (!empty($activity->dance)?$activity->readableDance.' - ':'').$activity->title, 'value' => $activity->uuid, 'checked' => in_array($activity->uuid, $model->activities_uuids), 'disabled' => $activity->isFull()]);
+										echo '<div class="form-group">';
+										//echo $form->field($model, 'activities['.$activity->uuid.']')->checkbox(['label' => (!empty($activity->dance)?$activity->readableDance.' - ':'').$activity->title, 'value' => 1, 'checked' => false, 'disabled' => $activity->isFull(), 'data-price' => $activity->price]);
+										echo '<input type="hidden" value="0" data-price="'.$activity->price.'" data-uuid="'.$activity->uuid.'" name="BookingForm[activities]['.$activity->uuid.']">';
+										echo '<label>'. (!empty($activity->dance)?$activity->readableDance.' - ':'').$activity->title.'</label>';
+										echo '</div>';
 										if($activity->isFull()){
 											echo '<strong class="text-danger">'.Yii::t('booking', 'FULL').'</strong>';
 										}
@@ -116,7 +116,7 @@ foreach ($event->activityGroups as $group) {?>
 			default: 
 				echo '<table class="table table-striped table-activities">';
 				foreach ($group->activities as $activity) {
-					echo '<tr><td class="'.($activity && $activity->isFull()?'full':'').'">';
+					echo '<tr data-price="'.$activity->price.'" data-title="'.Html::encode($activity->title).'"><td class="'.($activity && $activity->isFull()?'full':'').'">';
 					// echo $form->field($model, 'activities_uuids[]')->checkbox(['label' => isset($activity->datetime)?'<strong>'.(new \Datetime($activity->datetime))->format('D M j').'</strong> - '.$activity->title:$activity->title, 'value' => $activity->uuid, 'checked' => in_array($activity->uuid, $model->activities_uuids), 'disabled' => $activity->isFull()]);
 					echo isset($activity->datetime)?'<strong>'.(new \Datetime($activity->datetime))->format('D M j').'</strong> - '.$activity->title:$activity->title;
 					if($activity->isFull()){
@@ -125,7 +125,7 @@ foreach ($event->activityGroups as $group) {?>
 					echo '</td>';
 					$activity_uuid = $activity->uuid;
 					$activity_in_model = 
-						array_filter($model->activities_with_quantities, 
+						array_filter($model->activities, 
 								function($item) use ($activity_uuid) {
 									return substr($item, 0, strlen($activity_uuid)) == $activity_uuid;
 								}
@@ -134,11 +134,9 @@ foreach ($event->activityGroups as $group) {?>
 					$quantity = $is_registered?explode(':', $activity_in_model[0])[1]:0;
 					echo '<td class="quantity">
 							<div class="input-group">
-								<input id="'.$activity->uuid.'" type="hidden" data-uuid="'.$activity->uuid.'" name="BookingForm[activities_with_quantities][]" value="'.$activity->uuid.':0"/>
-									<!-- '.$is_registered.' -->
-  								<input type="button" value="-" class="button-minus" data-field="quantity_'.$activity->uuid.'">
-  								<input type="text" step="1" max="" value="'.$quantity.'" data-uuid="'.$activity->uuid.'" name="quantity_'.$activity->uuid.'" class="quantity-field '.($is_registered?'active':'').'">
-  								<input type="button" value="+" class="button-plus" data-field="quantity_'.$activity->uuid.'">
+  								<input type="button" value="-" class="button-minus" data-field="BookingForm[activities]['.$activity->uuid.']" data-price="'.$activity->price.'">
+  								<input type="text" step="1" max="" value="'.$quantity.'" data-uuid="'.$activity->uuid.'" name="BookingForm[activities]['.$activity->uuid.']" class="quantity-field '.($is_registered?'active':'').'">
+  								<input type="button" value="+" class="button-plus" data-field="BookingForm[activities]['.$activity->uuid.']" data-price="'.$activity->price.'">
 							</div>
 						</td>';
 					echo '</tr>';
@@ -162,24 +160,90 @@ foreach ($event->activityGroups as $group) {?>
 <div class="text-right">
 	<button class="btn btn-primary btn-lg"><?= Yii::t('booking', 'Continue')?></button>
 </div>
+</div>
+<div class="col-md-4">
+	<div id="summary-sidebar" class="summary-sidebar">
+		<h3><?= Yii::t('booking', 'Your selection') ?></h3>
+		<ul id="summary-activities" class="list-unstyled">
+		</ul>
+		<div id="summary-reductions"></div>
+		<hr>
+		<div id="summary-total-container">
+			<h4><?= Yii::t('booking', 'Total') ?>: <span id="summary-total-price">0.00</span> &euro;</h4>
+		</div>
+	</div>
+</div>
 <?php
 ActiveForm::end();
+$this->registerJs("var ajaxPriceUrl = '{$ajaxUrl}';", \yii\web\View::POS_HEAD);
 $this->registerJs(
 '
 $(".table-activities td.activity").not(".full").on("click",function(e){
 	e.preventDefault();
 	if($(this).hasClass("checked")){
-		$(this).find("input[type=checkbox]").prop("checked", false);
+		$(this).find("input").val(0);
 		$(this).removeClass("checked");
 	}
 	else{
-		$(this).find("input[type=checkbox]").prop("checked", true);
+		$(this).find("input").val(1);
 		$(this).addClass("checked");
 	}
+	updateSummary();
 });
 '
 );
 $this->registerJs("
+function updateSummary() {
+    var formData = {
+        'BookingForm[promocode]': $('#bookingform-promocode').val(),
+        'BookingForm[activities]': {}
+    };
+
+    $('.table-activities td.activity.checked').each(function() {
+		var uuid = $(this).data('uuid');
+		formData['BookingForm[activities]'][uuid] = 1;
+    });
+
+    $('input.quantity-field').each(function() {
+        var quantity = parseInt($(this).val());
+        if (quantity > 0) {
+            var uuid = $(this).data('uuid');
+            formData['BookingForm[activities]'][uuid] = quantity;
+        }
+    });
+
+    $.ajax({
+        url: ajaxPriceUrl,
+        type: 'POST',
+        data: $.param(formData),
+        dataType: 'json',
+        success: function(data) {
+            if (data.error) {
+                console.error(data.error);
+                return;
+            }
+
+            $('#summary-activities').html(data.activitiesHtml);
+
+            var reductionsHtml = '';
+            if (data.reductions.length > 0) {
+                reductionsHtml += '<ul class=\"list-unstyled summary-reductions-list\">';
+                data.reductions.forEach(function(reduction) {
+                    reductionsHtml += '<li class=\"reduction\">' + reduction.name + '<span class=\"pull-right\">' + reduction.summary + '</span></li>';
+                });
+                reductionsHtml += '</ul>';
+            }
+            $('#summary-reductions').html(reductionsHtml);
+
+            if (data.unreducedPrice.toFixed(2) !== data.finalPrice.toFixed(2)) {
+                $('#summary-total-container').html('".Yii::t('booking', 'Subtotal') .": <span style=\"text-decoration: line-through;\" class=\"pull-right\">' + data.unreducedPrice.toFixed(2) + ' &euro;</span><br><h4>". Yii::t('booking', 'Total') .": <span id=\"summary-total-price\" class=\"pull-right\">' + data.finalPrice.toFixed(2) + ' &euro;</span></h4>');
+            } else {
+                $('#summary-total-container').html('<h4>". Yii::t('booking', 'Total') .": <span id=\"summary-total-price\" class=\"pull-right\">' + data.finalPrice.toFixed(2) + ' &euro;</span></h4>');
+            }
+        }
+    });
+}
+
 function incrementValue(e) {
   e.preventDefault();
   var fieldName = $(e.target).data('field');
@@ -194,8 +258,7 @@ function incrementValue(e) {
     field.val(0);
     field.removeClass('active');
   }
-  var uuid = field.data('uuid');
-  $('#'+uuid+'').val(uuid+':'+field.val());
+  updateSummary();
 }
 
 function decrementValue(e) {
@@ -212,8 +275,7 @@ function decrementValue(e) {
     field.val(0);
     field.removeClass('active');
   }
-  var uuid = field.data('uuid');
-  $('#'+uuid+'').val(uuid+':'+field.val());
+  updateSummary();
 }
 
 $('.input-group').on('click', '.button-plus', function(e) {
@@ -225,11 +287,20 @@ $('.input-group').on('click', '.button-minus', function(e) {
 });
 
 $('.input-group').on('keydown', '.quantity-field', function(e) {
-  var uuid = $(this).data('uuid');
-  $('#'+uuid+'').val(uuid+':'+$(this).val());
+  updateSummary();
 });
-")
+
+$('.input-group').on('change', '.quantity-field', function(e) {
+  updateSummary();
+});
+
+$('#bookingform-promocode').on('change keyup', function() {
+    updateSummary();
+});
+
+updateSummary(); // Initial summary calculation
+");
 ?>
+		</div>
 	</div>
-</div>
 <?php endif; ?>
