@@ -8,6 +8,7 @@ $params = array_merge(
 
 return [
     'id' => 'app-backend',
+    'name' => 'ItsBooked',
     'basePath' => dirname(__DIR__),
     'controllerNamespace' => 'backend\controllers',
     'defaultRoute' => 'event/index',

@@ -19,7 +19,8 @@ AppAsset::register($this);
     <meta charset="<?= Yii::$app->charset ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <?= Html::csrfMetaTags() ?>
-    <title><?= Html::encode($this->title) ?></title>
+    <title><?= Yii::$app->name ?> - <?= Html::encode($this->title) ?></title>
+    <link rel="icon" href="<?= Yii::getAlias('@web/img/favicon.png') ?>" />
     <?php $this->head() ?>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -31,7 +32,7 @@ AppAsset::register($this);
 <div class="wrap">
     <?php
     NavBar::begin([
-        'brandLabel' => 'Booking Platform',
+        'brandLabel' => Html::img('@web/img/Logo.svg', ['height' => 20, 'class' => 'pull-left']).'&nbsp;'.Yii::$app->name,
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
             'class' => 'navbar-default navbar-fixed-top',
@@ -43,10 +44,10 @@ AppAsset::register($this);
     if (Yii::$app->user->isGuest) {
         $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
     } else {
-        $menuItems[] = [
+        /*$menuItems[] = [
                            'label' => Yii::t('booking', 'Translations'),
                            'url' => ['/TranslationBackend'],
-                           'active' => Yii::$app->controller->id == 'default'];
+                           'active' => Yii::$app->controller->id == 'default'];*/
         $menuItems[] = '<li>'
             . Html::beginForm(['/site/logout'], 'post')
             . Html::submitButton(

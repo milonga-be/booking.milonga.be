@@ -22,8 +22,9 @@ body {
 }
 
 .wrap > .container {
-    padding: 30px 15px 20px;
+    padding: 60px 30px 60px;
     background-color:white;
+    border-radius: 4px;
 }
 .wrap .content-container{
     /*max-width: 800px;*/
