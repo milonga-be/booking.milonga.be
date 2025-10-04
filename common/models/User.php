@@ -6,6 +6,7 @@ use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
+use mootensai\behaviors\UUIDBehavior;
 
 /**
  * User model
@@ -26,6 +27,11 @@ class User extends ActiveRecord implements IdentityInterface
     const STATUS_DELETED = 0;
     const STATUS_ACTIVE = 10;
 
+    const ROLE_ADMINISTRATOR = 'administrator';
+    const ROLE_EDITOR = 'editor';
+    const ROLE_CONSULTANT = 'consultant';
+
+
 
     /**
      * @inheritdoc
@@ -42,6 +48,10 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return [
             TimestampBehavior::className(),
+            [
+                'class' => UUIDBehavior::class,
+                'column' => 'uuid'
+            ],
         ];
     }
 
@@ -52,7 +62,11 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return [
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
+            ['email', 'required'],
+            [['password'], 'string'],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
+            ['role', 'in', 'range' => [self::ROLE_ADMINISTRATOR, self::ROLE_EDITOR, self::ROLE_CONSULTANT]],
+            ['role', 'default', 'value' => self::ROLE_CONSULTANT],
         ];
     }
 
@@ -164,6 +178,25 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
+     * Fake getter to be able to use password in form
+     * @return string
+     */
+    public function getPassword(){
+        return '';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function beforeSave($insert){
+        if($insert){
+            $this->generateAuthKey();
+        }
+        $this->username = $this->email;
+        return parent::beforeSave($insert);
+    }
+
+    /**
      * Generates "remember me" authentication key
      */
     public function generateAuthKey()
@@ -185,5 +218,18 @@ class User extends ActiveRecord implements IdentityInterface
     public function removePasswordResetToken()
     {
         $this->password_reset_token = null;
+    }
+
+    /**
+     * Returns an array of available roles.
+     * @return array
+     */
+    public static function getRoles()
+    {
+        return [
+            self::ROLE_ADMINISTRATOR => 'Administrator',
+            self::ROLE_EDITOR => 'Editor',
+            self::ROLE_CONSULTANT => 'Consultant',
+        ];
     }
 }

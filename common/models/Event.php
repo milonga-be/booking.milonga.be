@@ -82,7 +82,7 @@ class Event extends ActiveRecord
      * @return string
      */
     public function getBookingUrl(){
-        return 'http://booking.brusselstangofestival.com/frontend/web/booking/create?event_uuid='.$this->uuid;
+        return '../../../frontend/web/booking/create?event_uuid='.$this->uuid;
     }
 
     /**
